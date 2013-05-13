@@ -1,0 +1,11 @@
+{
+	"grouped": true,
+	"title": "关于我们",
+    "controllerName": "LoginController",
+	"sections": [
+		{ "title":"", "headerImage":"login", "footer":"任玩堂 www.appgame.com", "elements": [
+                        {"type":"QTextElement", "text":"哪儿每天送最火的游戏？任玩堂！\n哪儿有最全的游戏攻略？任玩堂！\n哪儿去看最权威的游戏导购？任玩堂！\n大作新游几号上谁知道？任玩堂！\n哪儿活动丰富奖品丰厚真的发到你手里？任玩堂！\n任玩堂AppGame.com，推荐真正好玩的iPhone,iPad游戏！"}
+			]
+		}
+	]
+}

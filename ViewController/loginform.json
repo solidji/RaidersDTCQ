@@ -1,0 +1,17 @@
+{
+	"grouped": true,
+	"title": "我的账号",
+    "controllerName": "LoginController",
+	"sections": [
+		{ "title":"Awesome Login Form", "headerImage":"login", "footer":"Please type your credentials.", "elements": [
+				{ "type":"QEntryElement", "keyboardType":"EmailAddress", "title":"用户名","placeholder":"name@example.com", "bind":"textValue:login", "key":"login"},
+				{  "type":"QEntryElement", "title":"密码", "placeholder":"Password",  "secureTextEntry":true, "bind":"textValue:password" }
+			]
+		},
+		{ "elements":[
+                { "type":"QButtonElement", "key":"button", "title":"登录", "controllerAction":"onLogin:"},
+                { "type":"QButtonElement", "key":"button", "title":"注册", "controllerAction":"onSignup:"}
+			]
+		}
+	]
+}

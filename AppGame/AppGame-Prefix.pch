@@ -2,13 +2,27 @@
 // Prefix header for all source files of the 'AppGame' target in the 'AppGame' project
 //
 
+//#import <Availability.h>
+//
+//#ifndef __IPHONE_3_0
+//#warning "This project uses features only available in iOS SDK 3.0 and later."
+//#endif
+//
+//#ifdef __OBJC__
+//    #import <UIKit/UIKit.h>
+//    #import <Foundation/Foundation.h>
+//#endif
 #import <Availability.h>
+#import <SystemConfiguration/SystemConfiguration.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+#import <QuickDialog/QuickDialog.h>
 
-#ifndef __IPHONE_3_0
-#warning "This project uses features only available in iOS SDK 3.0 and later."
+#ifndef __IPHONE_5_0
+#warning "This project uses features only available in iOS SDK 5.0 and later."
 #endif
 
 #ifdef __OBJC__
-    #import <UIKit/UIKit.h>
-    #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "NSObject+Subscripts.h"
 #endif
