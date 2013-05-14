@@ -15,6 +15,7 @@
 #import "LoginController.h"
 #import "LoginInfo.h"
 #import "SVWebViewController.h"
+#import "IADisquser.h"
 
 @interface LoginController ()
 - (void)onLogin:(QButtonElement *)buttonElement;
@@ -78,12 +79,22 @@
     [self performSelector:@selector(loginCompleted:) withObject:info afterDelay:2];
     
     self.iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];
-    [iaDisquser loginWithUsername:info.login password:info.password];
+    [self.iaDisquser loginWithUsername:info.login password:info.password
+                          success:^(AFOAuthCredential *credential) {
+                              [self loading:NO];
+                              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"登录成功" message:[NSString stringWithFormat: @"您好 %@", credential.username] delegate:self cancelButtonTitle:@"好!" otherButtonTitles:nil];
+                              [alert show];
+                          }
+                          fail:^(NSError *error) {
+                              [self loading:NO];
+                              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"登录失败" message:[NSString stringWithFormat: @"%@,请检查网络与用户名密码", info.login] delegate:self cancelButtonTitle:@"好" otherButtonTitles:nil];
+                              [alert show];
+                          }];
 }
 
 - (void)onSignup:(QButtonElement *)buttonElement {
     
-    SVWebViewController *viewController = [[SVWebViewController alloc] initWithAddress:@"http://bbs.appgame.com/member.php?mod=register"];
+    SVWebViewController *viewController = [[SVWebViewController alloc] initWithAddress:@"http://disqus.com/next/register/?forum=appgame"];//http://bbs.appgame.com/member.php?mod=register
     
     //NSLog(@"didSelectArticle:%@",aArticle.content);
     [self.navigationController pushViewController:viewController animated:YES];

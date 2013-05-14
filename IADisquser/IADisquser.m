@@ -43,7 +43,9 @@
     return self;
 }
 
-- (void)loginWithUsername:(NSString *)username password:(NSString *)password {
+- (void)loginWithUsername:(NSString *)username password:(NSString *)password
+                  success:(DisqusLogin)successBlock fail:(DisqusFail)failBlock
+{
     NSURL *url = [NSURL URLWithString:DISQUS_OAUTH_URL];
     AFOAuth2Client *oauthClient = [AFOAuth2Client clientWithBaseURL:url
                                                            clientID:DISQUS_API_PUBLIC
@@ -60,14 +62,12 @@
                                             self.oCredential = credential;
                                             self.oUsername = credential.username;
                                             self.oPassword = password;
-                                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"登录成功" message:[NSString stringWithFormat: @"您好 %@", oUsername] delegate:self cancelButtonTitle:@"好!" otherButtonTitles:nil];
-                                            [alert show];
-
+                                            
+                                            successBlock(credential);
                                         }
                                         failure:^(NSError *error) {
                                             NSLog(@"Error: %@", error);
-                                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"登录失败" message:[NSString stringWithFormat: @"%@,请检查网络与用户名密码", username] delegate:self cancelButtonTitle:@"好" otherButtonTitles:nil];
-                                            [alert show];
+                                            failBlock(error);
                                         }];
     self.afOauth2 = oauthClient;
 }

@@ -20,6 +20,7 @@
 		D2B4AA501714097C005AEB22 /* settinglogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D2B4AA4E1714097C005AEB22 /* settinglogo@2x.png */; };
 		DB7AA3A6171B005600C1DC88 /* disqusCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DB7AA3A5171B005600C1DC88 /* disqusCommentCell.m */; };
 		DB7AA3AA171B0ADB00C1DC88 /* CommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB7AA3A9171B0ADB00C1DC88 /* CommentViewController.m */; };
+		DB9E20B61742B08D003B2809 /* PersonalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9E20B51742B08D003B2809 /* PersonalViewController.m */; };
 		DB9E9F8616F1E07300ED6B61 /* avatar-white.png in Resources */ = {isa = PBXBuildFile; fileRef = DB9E9F8216F1E07100ED6B61 /* avatar-white.png */; };
 		DB9E9F8716F1E07300ED6B61 /* avatar-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB9E9F8316F1E07100ED6B61 /* avatar-white@2x.png */; };
 		DB9E9F8816F1E07300ED6B61 /* avatar.png in Resources */ = {isa = PBXBuildFile; fileRef = DB9E9F8416F1E07200ED6B61 /* avatar.png */; };
@@ -215,6 +216,8 @@
 		DB7AA3A5171B005600C1DC88 /* disqusCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = disqusCommentCell.m; sourceTree = "<group>"; };
 		DB7AA3A8171B0ADB00C1DC88 /* CommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentViewController.h; sourceTree = "<group>"; };
 		DB7AA3A9171B0ADB00C1DC88 /* CommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentViewController.m; sourceTree = "<group>"; };
+		DB9E20B41742B08D003B2809 /* PersonalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonalViewController.h; sourceTree = "<group>"; };
+		DB9E20B51742B08D003B2809 /* PersonalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonalViewController.m; sourceTree = "<group>"; };
 		DB9E9F8216F1E07100ED6B61 /* avatar-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatar-white.png"; sourceTree = "<group>"; };
 		DB9E9F8316F1E07100ED6B61 /* avatar-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatar-white@2x.png"; sourceTree = "<group>"; };
 		DB9E9F8416F1E07200ED6B61 /* avatar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = avatar.png; sourceTree = "<group>"; };
@@ -724,6 +727,8 @@
 				DB9FD82F16E240F800F206AE /* ArticleItemCell.m */,
 				DBA4D350171313AF0076F703 /* SettingViewController.h */,
 				DBA4D351171313AF0076F703 /* SettingViewController.m */,
+				DB9E20B41742B08D003B2809 /* PersonalViewController.h */,
+				DB9E20B51742B08D003B2809 /* PersonalViewController.m */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -1030,6 +1035,7 @@
 				DBB3AE6C1715F2DA008E29AB /* IADisqusUser.m in Sources */,
 				DB7AA3A6171B005600C1DC88 /* disqusCommentCell.m in Sources */,
 				DB7AA3AA171B0ADB00C1DC88 /* CommentViewController.m in Sources */,
+				DB9E20B61742B08D003B2809 /* PersonalViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
