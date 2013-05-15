@@ -37,6 +37,7 @@ typedef void (^DisqusPostCommentSuccess)(void);
 typedef void (^DisqusFail)(NSError *);
 
 typedef void (^DisqusLogin)(AFOAuthCredential *);
+typedef void (^DisqusResponses)(NSDictionary *);
 
 @class IADisqusComment;
 
@@ -48,6 +49,8 @@ typedef void (^DisqusLogin)(AFOAuthCredential *);
 
 - (id)initWithIdentifier:(NSString *)identifier;
 - (void)loginWithUsername:(NSString *)username password:(NSString *)password success:(DisqusLogin)successBlock fail:(DisqusFail)failBlock;
+
+- (void)getUsersDetails:(NSDictionary *)parameters success:(DisqusResponses)successBlock fail:(DisqusFail)failBlock;
 
 #pragma mark - get active threads
 + (void)getActiveThreadsWithCursor:(NSString *)cursor user:(NSString *)user success:(DisqusFetchCommentsSuccess)successBlock fail:(DisqusFail)failBlock;

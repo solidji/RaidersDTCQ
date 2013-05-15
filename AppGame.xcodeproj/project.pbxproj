@@ -21,6 +21,8 @@
 		DB7AA3A6171B005600C1DC88 /* disqusCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DB7AA3A5171B005600C1DC88 /* disqusCommentCell.m */; };
 		DB7AA3AA171B0ADB00C1DC88 /* CommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB7AA3A9171B0ADB00C1DC88 /* CommentViewController.m */; };
 		DB9E20B61742B08D003B2809 /* PersonalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9E20B51742B08D003B2809 /* PersonalViewController.m */; };
+		DB9E857717438F5200B0DFE4 /* UITableView+ZGParallelView.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9E857617438F5200B0DFE4 /* UITableView+ZGParallelView.m */; };
+		DB9E857C1743B5FE00B0DFE4 /* AppDataSouce.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9E857B1743B5FE00B0DFE4 /* AppDataSouce.m */; };
 		DB9E9F8616F1E07300ED6B61 /* avatar-white.png in Resources */ = {isa = PBXBuildFile; fileRef = DB9E9F8216F1E07100ED6B61 /* avatar-white.png */; };
 		DB9E9F8716F1E07300ED6B61 /* avatar-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB9E9F8316F1E07100ED6B61 /* avatar-white@2x.png */; };
 		DB9E9F8816F1E07300ED6B61 /* avatar.png in Resources */ = {isa = PBXBuildFile; fileRef = DB9E9F8416F1E07200ED6B61 /* avatar.png */; };
@@ -218,6 +220,11 @@
 		DB7AA3A9171B0ADB00C1DC88 /* CommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentViewController.m; sourceTree = "<group>"; };
 		DB9E20B41742B08D003B2809 /* PersonalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonalViewController.h; sourceTree = "<group>"; };
 		DB9E20B51742B08D003B2809 /* PersonalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonalViewController.m; sourceTree = "<group>"; };
+		DB9E857517438F5200B0DFE4 /* UITableView+ZGParallelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+ZGParallelView.h"; sourceTree = "<group>"; };
+		DB9E857617438F5200B0DFE4 /* UITableView+ZGParallelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+ZGParallelView.m"; sourceTree = "<group>"; };
+		DB9E857A1743B5FE00B0DFE4 /* AppDataSouce.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDataSouce.h; sourceTree = "<group>"; };
+		DB9E857B1743B5FE00B0DFE4 /* AppDataSouce.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDataSouce.m; sourceTree = "<group>"; };
+		DB9E857D1744040300B0DFE4 /* GlobalConfigure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalConfigure.h; sourceTree = "<group>"; };
 		DB9E9F8216F1E07100ED6B61 /* avatar-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatar-white.png"; sourceTree = "<group>"; };
 		DB9E9F8316F1E07100ED6B61 /* avatar-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatar-white@2x.png"; sourceTree = "<group>"; };
 		DB9E9F8416F1E07200ED6B61 /* avatar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = avatar.png; sourceTree = "<group>"; };
@@ -448,6 +455,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DB9E857417438F5200B0DFE4 /* ZGParallelView */ = {
+			isa = PBXGroup;
+			children = (
+				DB9E857517438F5200B0DFE4 /* UITableView+ZGParallelView.h */,
+				DB9E857617438F5200B0DFE4 /* UITableView+ZGParallelView.m */,
+			);
+			path = ZGParallelView;
+			sourceTree = "<group>";
+		};
+		DB9E85791743B5FE00B0DFE4 /* AppDataSouce */ = {
+			isa = PBXGroup;
+			children = (
+				DB9E857D1744040300B0DFE4 /* GlobalConfigure.h */,
+				DB9E857A1743B5FE00B0DFE4 /* AppDataSouce.h */,
+				DB9E857B1743B5FE00B0DFE4 /* AppDataSouce.m */,
+			);
+			path = AppDataSouce;
+			sourceTree = "<group>";
+		};
 		DB9E9FCE16F2325500ED6B61 /* iVersion */ = {
 			isa = PBXGroup;
 			children = (
@@ -520,6 +546,8 @@
 				DBA015B216D8B0B7007B2AE5 /* SVWebViewController */,
 				DB9FD85716E2885900F206AE /* RSSParser */,
 				DB9FD83116E26AE200F206AE /* AFNetworking */,
+				DB9E85791743B5FE00B0DFE4 /* AppDataSouce */,
+				DB9E857417438F5200B0DFE4 /* ZGParallelView */,
 				DBACD67316E5238A00FBD341 /* PullToRefresh&ScrollPage */,
 				DBB3AE5F1715F2DA008E29AB /* IADisquser */,
 				DBA015B816D8B0B7007B2AE5 /* ViewController */,
@@ -1036,6 +1064,8 @@
 				DB7AA3A6171B005600C1DC88 /* disqusCommentCell.m in Sources */,
 				DB7AA3AA171B0ADB00C1DC88 /* CommentViewController.m in Sources */,
 				DB9E20B61742B08D003B2809 /* PersonalViewController.m in Sources */,
+				DB9E857717438F5200B0DFE4 /* UITableView+ZGParallelView.m in Sources */,
+				DB9E857C1743B5FE00B0DFE4 /* AppDataSouce.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

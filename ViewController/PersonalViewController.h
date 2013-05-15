@@ -12,46 +12,48 @@
 #import "PullToRefreshTableView.h"
 #import "AlerViewManager.h"
 
+#import "UITableView+ZGParallelView.h"
+#import "AFOAuth2Client.h"
+#import "IADisquser.h"
+#import "IADisqusUser.h"
+
 typedef void (^PersonalRevealBlock)();
 
-@interface PersonalViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIGestureRecognizerDelegate, ScrollPageDataSource> {
-    NSMutableArray *promos;//促销数据源
-    NSMutableArray *historys;//搜索历史
-    NSMutableArray *hotkeys;//热门搜索
-    NSMutableArray *recommends;//根据输入推荐的游戏名关键词
-    NSMutableArray *itunesAppnames;//从苹果商店获取的游戏名数据库
-    NSMutableArray *articles;//文章数据源
+@interface PersonalViewController : UIViewController <UITableViewDataSource, UITableViewDelegate,  UIGestureRecognizerDelegate, ScrollPageDataSource> {
+    NSMutableArray *following;//关注列表
+    NSMutableArray *follower;//粉丝列表
+    NSMutableArray *active;//动态列表
+
+    //NSMutableArray *itunesAppnames;//从苹果商店获取的游戏名数据库
     //UIActivityIndicatorView *indicator;
     
     AlerViewManager *alerViewManager;
-    NSString *webURL;
     NSInteger start;
     NSInteger receiveMember;
     BOOL ifNeedFristLoading;
-    NSString *searchStr;
-    UISearchBar *_searchBar;
+    BOOL ifLoging;//是否已登录
+    IADisqusUser *dUser;//个人页面的用户
     TableHeaderView *headerView;
 
-    PullToRefreshTableView *pullToRefreshTableView, *recommendsTableView, *hotkeysTableView, *historysTableView;
+    PullToRefreshTableView *pullToRefreshTableView;
     
 @private
 	PersonalRevealBlock _revealBlock;
 }
 
-@property (nonatomic, copy) NSString *webURL;
-
+//@property (nonatomic, copy) NSString *webURL;
+@property (nonatomic, strong) IADisqusUser *dUser;
 @property (nonatomic, strong) TableHeaderView *headerView;
 
-@property (nonatomic, strong) PullToRefreshTableView *pullToRefreshTableView, *recommendsTableView, *hotkeysTableView, *historysTableView;
-@property (strong, nonatomic) NSMutableArray *articles;
-@property (strong, nonatomic) NSMutableArray *promos;
-@property (strong, nonatomic) NSMutableArray *historys;
-@property (strong, nonatomic) NSMutableArray *hotkeys;
-@property (strong, nonatomic) NSMutableArray *recommends;
-@property (strong, nonatomic) NSMutableArray *itunesAppnames;
-@property (nonatomic, copy)NSString *searchStr;
+@property (nonatomic, strong) PullToRefreshTableView *pullToRefreshTableView;
+@property (strong, nonatomic) NSMutableArray *following;
+@property (strong, nonatomic) NSMutableArray *follower;
+@property (strong, nonatomic) NSMutableArray *active;
+//@property (strong, nonatomic) NSMutableArray *itunesAppnames;
+//@property (nonatomic, copy)NSString *searchStr;
+@property (nonatomic, retain) IADisquser *iaDisquser;
 
-- (id)initWithTitle:(NSString *)title withUrl:(NSString *)url withRevealBlock:(PersonalRevealBlock)revealBlock;
+- (id)initWithTitle:(NSString *)title withUser:(NSNumber *)userID withRevealBlock:(PersonalRevealBlock)revealBlock;
 
 - (void)updateThread:(NSString *)returnKey;
 - (void)updateTableView;

@@ -17,9 +17,14 @@
 #import "APService.h"
 #import "SettingViewController.h"
 
-#define kReviewTrollerRunCountDefault @"kReviewTrollerRunCountDefault"
-#define kReviewTrollerDoneDefault @"kReviewTrollerDoneDefault"
-#define kPushDefault @"kPushDefault"
+#import "AppDataSouce.h"//for login
+#import "GlobalConfigure.h"
+#import "IADisqusUser.h"
+#import "IADisquser.h"
+#import "IADisqusConfig.h"
+
+
+
 
 #pragma mark -
 #pragma mark Private Interface
@@ -89,6 +94,53 @@
     //iVersion 更新检测
     [iVersion sharedInstance].appStoreID = 573452997;
     
+    //检查并登录disqus
+    [standardDefaults setBool:NO forKey:kIfLogin];//每次重新登录
+    NSString *disqusUsername = [standardDefaults stringForKey:kUsername];
+    NSString *disqusPassword = [standardDefaults stringForKey:kPassword];
+    disqusUsername = @"jw@appgame.com";
+    disqusPassword = @"12161127";
+    
+    IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];
+    [iaDisquser loginWithUsername:disqusUsername password:disqusPassword
+                               success:^(AFOAuthCredential *credential) {
+                                   kDataSource.credentialObject = credential;
+                                   [standardDefaults setValue:credential.accessToken forKey:kAccessToken];
+                                   [standardDefaults setBool:YES forKey:kIfLogin];
+                                   
+                                   // make the parameters dictionary
+                                   NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                               kDataSource.credentialObject.accessToken, @"access_token",
+                                                               DISQUS_API_SECRET, @"api_secret",
+                                                               //@"", @"user",
+                                                               nil];
+                                   
+                                   // send the request
+                                   [iaDisquser getUsersDetails:parameters
+                                     success:^(NSDictionary *responseDictionary){
+                                         // check the code (success is 0)
+                                         NSNumber *code = [responseDictionary objectForKey:@"code"];
+                                         
+                                         if ([code integerValue] != 0) {   // there's an error
+                                             NSLog(@"disqus账户信息获取失败");
+                                         }else {
+                                             NSDictionary *responseArray = [responseDictionary objectForKey:@"response"];
+                                             if ([responseArray count] != 0) {
+                                                 kDataSource.userObject.name = [responseArray objectForKey:@"name"];
+                                                 NSLog(@"disqus账户信息:%@", kDataSource.userObject.name);
+                                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"欢迎回来" message:[NSString stringWithFormat: @"您好 %@", kDataSource.userObject.name] delegate:self cancelButtonTitle:@"好!" otherButtonTitles:nil];
+                                                 [alert show];
+                                             }
+                                         }
+                                     }
+                                        fail:^(NSError *error) {
+                                            NSLog(@"disqus账户登录失败:%@",error);
+                                        }];
+                               }
+                                  fail:^(NSError *error) {
+                                      NSLog(@"disqus账户登录失败:%@",error);
+                                  }];
+    
     //初始化
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:NO];
 	
@@ -104,41 +156,32 @@
     
 	NSArray *headers = @[
 		@"",
-		@""
+		@"任玩堂"
 	];
 	NSArray *controllers = @[
 		@[
-      [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"任玩堂" withUrl:@"http://www.appgame.com/feed?paged=%d" withRevealBlock:revealBlock]],
-      [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"论坛" withUrl:@"http://bbs.appgame.com/" withRevealBlock:revealBlock]],
-      [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"游戏专区" withUrl:@"http://gl.appgame.com/hot-games.html" withRevealBlock:revealBlock]],
-      [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"我的收藏" withUrl:@"Favorites" withRevealBlock:revealBlock]],
-      [[UINavigationController alloc] initWithRootViewController:[[SettingViewController alloc] initWithTitle:@"设置" withUrl:@"Setting" withRevealBlock:revealBlock]]
+      [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"主页" withUrl:@"http://www.appgame.com/feed?paged=%d" withRevealBlock:revealBlock]],
+      [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"资讯" withUrl:@"http://bbs.appgame.com/" withRevealBlock:revealBlock]],
+      [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"热门" withUrl:@"http://gl.appgame.com/hot-games.html" withRevealBlock:revealBlock]]
+      //[[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"我的收藏" withUrl:@"Favorites" withRevealBlock:revealBlock]],
+      
 		],
 		@[
-            [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"首页" withUrl:@"http://www.appgame.com/feed?paged=%d" withRevealBlock:revealBlock]],
-            [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"新游预告" withUrl:@"http://www.appgame.com/archives/category/apple-news/upcoming-games/feed?paged=%d" withRevealBlock:revealBlock]],
-			[[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"游戏评测" withUrl:@"http://www.appgame.com/archives/category/game-reviews/feed?paged=%d" withRevealBlock:revealBlock]],
-			[[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"热门攻略" withUrl:@"http://www.appgame.com/archives/category/hot-strategy/strategy-recommended/feed?paged=%d" withRevealBlock:revealBlock]],
-			[[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"手机网游" withUrl:@"http://www.appgame.com/archives/category/games/mmorpg/feed?paged=%d" withRevealBlock:revealBlock]],
-            [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"免费游戏" withUrl:@"http://www.appgame.com/archives/category/free/feed?paged=%d" withRevealBlock:revealBlock]]
+            [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"个人" withUrl:@"http://www.appgame.com/feed?paged=%d" withRevealBlock:revealBlock]],
+            [[UINavigationController alloc] initWithRootViewController:[[SettingViewController alloc] initWithTitle:@"设置" withUrl:@"Setting" withRevealBlock:revealBlock]]
 		]
 	];
     
 	NSArray *cellInfos = @[
 		@[
-			@{kSidebarCellImageKey: @"avatar.png", kSidebarCellTextKey: NSLocalizedString(@"任玩堂", @"")},
-            @{kSidebarCellImageKey: @"Forum.png", kSidebarCellTextKey: NSLocalizedString(@"论坛", @"")},
-            @{kSidebarCellImageKey: @"Game-Zone.png", kSidebarCellTextKey: NSLocalizedString(@"游戏专区", @"")},
-            @{kSidebarCellImageKey: @"Favorites.png", kSidebarCellTextKey: NSLocalizedString(@"我的收藏", @"")},
-            @{kSidebarCellImageKey: @"Set-up.png", kSidebarCellTextKey: NSLocalizedString(@"设置", @"")}
+			@{kSidebarCellImageKey: @"home.png", kSidebarCellTextKey: NSLocalizedString(@"主页", @"")},
+            @{kSidebarCellImageKey: @"xinyouyugao.png", kSidebarCellTextKey: NSLocalizedString(@"资讯", @"")},
+            @{kSidebarCellImageKey: @"Forum.png", kSidebarCellTextKey: NSLocalizedString(@"热门", @"")}
+            //@{kSidebarCellImageKey: @"Favorites.png", kSidebarCellTextKey: NSLocalizedString(@"我的收藏", @"")}
 		],
 		@[
-            @{kSidebarCellImageKey: @"home.png", kSidebarCellTextKey: NSLocalizedString(@"首页", @"")},
-			@{kSidebarCellImageKey: @"xinyouyugao.png", kSidebarCellTextKey: NSLocalizedString(@"新游预告", @"")},
-			@{kSidebarCellImageKey: @"youxipingce.png", kSidebarCellTextKey: NSLocalizedString(@"游戏评测", @"")},
-			@{kSidebarCellImageKey: @"youxigonglue.png", kSidebarCellTextKey: NSLocalizedString(@"热门攻略", @"")},
-            @{kSidebarCellImageKey: @"shoujiwangyou.png", kSidebarCellTextKey: NSLocalizedString(@"手机网游", @"")},
-            @{kSidebarCellImageKey: @"Free.png", kSidebarCellTextKey: NSLocalizedString(@"免费游戏", @"")}
+            @{kSidebarCellImageKey: @"avatar.png", kSidebarCellTextKey: NSLocalizedString(@"个人", @"")},
+			@{kSidebarCellImageKey: @"Set-up.png", kSidebarCellTextKey: NSLocalizedString(@"设置", @"")}
 		]
 	];
 	
