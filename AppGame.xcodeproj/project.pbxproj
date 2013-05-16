@@ -122,6 +122,12 @@
 		DBA0161116D8B104007B2AE5 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0161016D8B104007B2AE5 /* MessageUI.framework */; };
 		DBA0161316D8B1C4007B2AE5 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBA0161216D8B1C4007B2AE5 /* Icon@2x.png */; };
 		DBA0161516D8B1CA007B2AE5 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = DBA0161416D8B1CA007B2AE5 /* Icon.png */; };
+		DBA4ABB91745326400F351B8 /* GreenAlert.png in Resources */ = {isa = PBXBuildFile; fileRef = DBA4ABB31745326400F351B8 /* GreenAlert.png */; };
+		DBA4ABBA1745326400F351B8 /* GreenAlert@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBA4ABB41745326400F351B8 /* GreenAlert@2x.png */; };
+		DBA4ABBB1745326400F351B8 /* UserAlertBack.png in Resources */ = {isa = PBXBuildFile; fileRef = DBA4ABB51745326400F351B8 /* UserAlertBack.png */; };
+		DBA4ABBC1745326400F351B8 /* UserAlertBack@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBA4ABB61745326400F351B8 /* UserAlertBack@2x.png */; };
+		DBA4ABBD1745326400F351B8 /* YellowAlert.png in Resources */ = {isa = PBXBuildFile; fileRef = DBA4ABB71745326400F351B8 /* YellowAlert.png */; };
+		DBA4ABBE1745326400F351B8 /* YellowAlert@x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBA4ABB81745326400F351B8 /* YellowAlert@x.png */; };
 		DBA4D352171313AF0076F703 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DBA4D351171313AF0076F703 /* SettingViewController.m */; };
 		DBA4D357171315D60076F703 /* libQuickDialog.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA04BF71712125E00AEBF51 /* libQuickDialog.a */; };
 		DBAAB99516E35A2900DC9946 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBAAB99116E35A2900DC9946 /* Default-568h@2x.png */; };
@@ -358,6 +364,12 @@
 		DBA0161216D8B1C4007B2AE5 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../Icon@2x.png"; sourceTree = "<group>"; };
 		DBA0161416D8B1CA007B2AE5 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Icon.png; sourceTree = "<group>"; };
 		DBA04BEF1712125E00AEBF51 /* QuickDialog.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = QuickDialog.xcodeproj; path = QuickDialog/QuickDialog.xcodeproj; sourceTree = "<group>"; };
+		DBA4ABB31745326400F351B8 /* GreenAlert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GreenAlert.png; sourceTree = "<group>"; };
+		DBA4ABB41745326400F351B8 /* GreenAlert@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "GreenAlert@2x.png"; sourceTree = "<group>"; };
+		DBA4ABB51745326400F351B8 /* UserAlertBack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UserAlertBack.png; sourceTree = "<group>"; };
+		DBA4ABB61745326400F351B8 /* UserAlertBack@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "UserAlertBack@2x.png"; sourceTree = "<group>"; };
+		DBA4ABB71745326400F351B8 /* YellowAlert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = YellowAlert.png; sourceTree = "<group>"; };
+		DBA4ABB81745326400F351B8 /* YellowAlert@x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "YellowAlert@x.png"; sourceTree = "<group>"; };
 		DBA4D350171313AF0076F703 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
 		DBA4D351171313AF0076F703 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		DBAAB99116E35A2900DC9946 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -629,6 +641,12 @@
 		DBA0156F16D8B0B7007B2AE5 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				DBA4ABB31745326400F351B8 /* GreenAlert.png */,
+				DBA4ABB41745326400F351B8 /* GreenAlert@2x.png */,
+				DBA4ABB51745326400F351B8 /* UserAlertBack.png */,
+				DBA4ABB61745326400F351B8 /* UserAlertBack@2x.png */,
+				DBA4ABB71745326400F351B8 /* YellowAlert.png */,
+				DBA4ABB81745326400F351B8 /* YellowAlert@x.png */,
 				D2B4AA4D1714097C005AEB22 /* login@2x.png */,
 				D2B4AA4E1714097C005AEB22 /* settinglogo@2x.png */,
 				D2B4AA4117140683005AEB22 /* Set-up-red.png */,
@@ -1012,6 +1030,12 @@
 				D2B4AA4C17140683005AEB22 /* Set-up@2x.png in Resources */,
 				D2B4AA4F1714097C005AEB22 /* login@2x.png in Resources */,
 				D2B4AA501714097C005AEB22 /* settinglogo@2x.png in Resources */,
+				DBA4ABB91745326400F351B8 /* GreenAlert.png in Resources */,
+				DBA4ABBA1745326400F351B8 /* GreenAlert@2x.png in Resources */,
+				DBA4ABBB1745326400F351B8 /* UserAlertBack.png in Resources */,
+				DBA4ABBC1745326400F351B8 /* UserAlertBack@2x.png in Resources */,
+				DBA4ABBD1745326400F351B8 /* YellowAlert.png in Resources */,
+				DBA4ABBE1745326400F351B8 /* YellowAlert@x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

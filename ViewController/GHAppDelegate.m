@@ -93,53 +93,7 @@
     
     //iVersion 更新检测
     [iVersion sharedInstance].appStoreID = 573452997;
-    
-    //检查并登录disqus
-    [standardDefaults setBool:NO forKey:kIfLogin];//每次重新登录
-    NSString *disqusUsername = [standardDefaults stringForKey:kUsername];
-    NSString *disqusPassword = [standardDefaults stringForKey:kPassword];
-    disqusUsername = @"jw@appgame.com";
-    disqusPassword = @"12161127";
-    
-    IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];
-    [iaDisquser loginWithUsername:disqusUsername password:disqusPassword
-                               success:^(AFOAuthCredential *credential) {
-                                   kDataSource.credentialObject = credential;
-                                   [standardDefaults setValue:credential.accessToken forKey:kAccessToken];
-                                   [standardDefaults setBool:YES forKey:kIfLogin];
-                                   
-                                   // make the parameters dictionary
-                                   NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                               kDataSource.credentialObject.accessToken, @"access_token",
-                                                               DISQUS_API_SECRET, @"api_secret",
-                                                               //@"", @"user",
-                                                               nil];
-                                   
-                                   // send the request
-                                   [iaDisquser getUsersDetails:parameters
-                                     success:^(NSDictionary *responseDictionary){
-                                         // check the code (success is 0)
-                                         NSNumber *code = [responseDictionary objectForKey:@"code"];
-                                         
-                                         if ([code integerValue] != 0) {   // there's an error
-                                             NSLog(@"disqus账户信息获取失败");
-                                         }else {
-                                             NSDictionary *responseArray = [responseDictionary objectForKey:@"response"];
-                                             if ([responseArray count] != 0) {
-                                                 kDataSource.userObject.name = [responseArray objectForKey:@"name"];
-                                                 NSLog(@"disqus账户信息:%@", kDataSource.userObject.name);
-                                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"欢迎回来" message:[NSString stringWithFormat: @"您好 %@", kDataSource.userObject.name] delegate:self cancelButtonTitle:@"好!" otherButtonTitles:nil];
-                                                 [alert show];
-                                             }
-                                         }
-                                     }
-                                        fail:^(NSError *error) {
-                                            NSLog(@"disqus账户登录失败:%@",error);
-                                        }];
-                               }
-                                  fail:^(NSError *error) {
-                                      NSLog(@"disqus账户登录失败:%@",error);
-                                  }];
+
     
     //初始化
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:NO];
@@ -162,8 +116,8 @@
 		@[
       [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"主页" withUrl:@"http://www.appgame.com/feed?paged=%d" withRevealBlock:revealBlock]],
       [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"资讯" withUrl:@"http://bbs.appgame.com/" withRevealBlock:revealBlock]],
-      [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"热门" withUrl:@"http://gl.appgame.com/hot-games.html" withRevealBlock:revealBlock]]
-      //[[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"我的收藏" withUrl:@"Favorites" withRevealBlock:revealBlock]],
+      [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"热门" withUrl:@"http://gl.appgame.com/hot-games.html" withRevealBlock:revealBlock]],
+      [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"收藏" withUrl:@"Favorites" withRevealBlock:revealBlock]],
       
 		],
 		@[
@@ -176,8 +130,8 @@
 		@[
 			@{kSidebarCellImageKey: @"home.png", kSidebarCellTextKey: NSLocalizedString(@"主页", @"")},
             @{kSidebarCellImageKey: @"xinyouyugao.png", kSidebarCellTextKey: NSLocalizedString(@"资讯", @"")},
-            @{kSidebarCellImageKey: @"Forum.png", kSidebarCellTextKey: NSLocalizedString(@"热门", @"")}
-            //@{kSidebarCellImageKey: @"Favorites.png", kSidebarCellTextKey: NSLocalizedString(@"我的收藏", @"")}
+            @{kSidebarCellImageKey: @"Forum.png", kSidebarCellTextKey: NSLocalizedString(@"热门", @"")},
+            @{kSidebarCellImageKey: @"Favorites.png", kSidebarCellTextKey: NSLocalizedString(@"收藏", @"")}
 		],
 		@[
             @{kSidebarCellImageKey: @"avatar.png", kSidebarCellTextKey: NSLocalizedString(@"个人", @"")},
@@ -222,6 +176,60 @@
 																		  withHeaders:headers 
 																	  withControllers:controllers 
 																		withCellInfos:cellInfos];
+    
+    //检查并登录disqus
+    [standardDefaults setBool:NO forKey:kIfLogin];//每次重新登录
+    NSString *disqusUsername = [standardDefaults stringForKey:kUsername];
+    NSString *disqusPassword = [standardDefaults stringForKey:kPassword];
+//    disqusUsername = @"jw@appgame.com";
+//    disqusPassword = @"12161127";    
+    disqusUsername = @"appgame";
+    disqusPassword = @"kiueo_0903xerw3";
+    
+    IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];
+    [iaDisquser loginWithUsername:disqusUsername password:disqusPassword
+                          success:^(AFOAuthCredential *credential) {
+                              kDataSource.credentialObject = credential;
+                              [standardDefaults setValue:credential.accessToken forKey:kAccessToken];
+                              [standardDefaults setBool:YES forKey:kIfLogin];
+                              
+                              // make the parameters dictionary
+                              NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                          kDataSource.credentialObject.accessToken, @"access_token",
+                                                          //DISQUS_API_SECRET, @"api_secret",
+                                                          DISQUS_API_PUBLIC,@"api_key",
+                                                          //@"", @"user",
+                                                          nil];
+                              
+                              // send the request
+                              [iaDisquser getUsersDetails:parameters
+                                                  success:^(NSDictionary *responseDictionary){
+                                                      // check the code (success is 0)
+                                                      NSNumber *code = [responseDictionary objectForKey:@"code"];
+                                                      
+                                                      if ([code integerValue] != 0) {   // there's an error
+                                                          NSLog(@"disqus账户信息异常");
+                                                      }else {
+                                                          NSDictionary *responseArray = [responseDictionary objectForKey:@"response"];
+                                                          if ([responseArray count] != 0) {
+                                                              kDataSource.userObject.name = [responseArray objectForKey:@"name"];
+                                                              kDataSource.userObject.authorAvatar = [[[responseArray objectForKey:@"avatar"] objectForKey:@"small"] objectForKey:@"cache"];
+                                                              NSLog(@"disqus账户信息:%@,%@", kDataSource.userObject.name, kDataSource.userObject.authorAvatar);
+                                                              //                                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"欢迎回来" message:[NSString stringWithFormat: @"您好 %@", kDataSource.userObject.name] delegate:self cancelButtonTitle:@"好!" otherButtonTitles:nil];
+                                                              //                                                 [alert show];
+                                                              [self performSelector:@selector(showWelcome) withObject:nil afterDelay:2.4];
+                                                              [self.menuController reloadTable];
+                                                          }
+                                                      }
+                                                  }
+                                                     fail:^(NSError *error) {
+                                                         NSLog(@"disqus账户信息获取失败:%@",error);
+                                                     }];
+                          }
+                             fail:^(NSError *error) {
+                                 NSLog(@"disqus账户登录失败:%@",error);
+                             }];
+    
     
     //处理程序通过推送通知来启动时的情况    
     NSDictionary *remoteNotif = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
@@ -433,5 +441,200 @@
     pushInfo = userInfo;
     NSLog(@"收到消息\ndate:%@\ntitle:%@\ncontent:%@", [dateFormatter stringFromDate:[NSDate date]],title,content);
 }
+
+
+#pragma mark -
+#pragma mark - userAlerts
+
+- (void)showNewReger
+{
+    [self addUserMsg:@"10000" withMsg:[NSString stringWithFormat:@"亲爱的%@，您已经注册成功！！",kDataSource.userObject.name]];
+}
+
+- (void)showWelcome
+{
+    [self addUserMsg:@"10000" withMsg:[NSString stringWithFormat:@"亲爱的%@，欢迎回来！！",kDataSource.userObject.name]];
+}
+
+- (void)showNewAward
+{
+    [self addUserMsg:@"20000" withMsg:@"恭喜您获得了新的奖品！！！\n请前往“我的宝贝”查收！"];
+}
+
+- (void)showNeedRegMsg
+{
+    [self addUserMsg:@"30000" withMsg:@"亲爱的用户，\n为了便于您参与我们讨论，请前往注册您的《任玩堂》帐号。"];
+}
+
+- (void)showFreeMsg:(NSString *)type withMsg:(NSString *)msg
+{
+    [self addUserMsg:type withMsg:msg];
+}
+
+
+#pragma mark -
+#pragma mark - UserMsg
+
+- (void)addUserMsg:(NSString *)msgType withMsg:(NSString *)msg
+{
+    if (userMsgArray == nil) {
+        userMsgArray = [[NSMutableArray alloc] initWithCapacity:5];
+    }
+    
+    for (NSString *temp in userMsgArray) {
+        if ([msgType isEqualToString:[temp substringToIndex:5]]) {
+            return;
+        }
+    }
+    
+    NSInteger msgCount = [userMsgArray count];
+    NSString *msgObj = [NSString stringWithFormat:@"%@%@",msgType,msg];
+    [userMsgArray addObject:msgObj];
+    [self doUserMsgCircle:msgCount];
+}
+
+- (void)doUserMsgCircle:(NSInteger)msgCount
+{
+    if (!ifUserMsgCircleRunning) {
+        
+        ifUserMsgCircleRunning = YES;
+        [self creatUserMsg];
+        NSString *msgObj = [userMsgArray objectAtIndex:0];
+        NSInteger type = [[msgObj substringToIndex:5] integerValue];
+        NSString *msg = [msgObj substringFromIndex:5];
+        
+        switch (type) {
+            case 10000:[userMsgIcon setImage:[UIImage imageNamed:@"GreenAlert.png"]];userMsgLabel.text = msg;break;
+            case 20000:[userMsgIcon setImage:[UIImage imageNamed:@"GiftAlert.png"]];userMsgLabel.text = msg;break;
+            case 30000:[userMsgIcon setImage:[UIImage imageNamed:@"GreenAlert.png"]];userMsgLabel.text = msg;break;
+            case 40000:[userMsgIcon setImage:[UIImage imageNamed:@"YellowAlert.png"]];userMsgLabel.text = msg;break;
+            default: break;
+        }
+        userMsgButton.tag = type;
+        [self showUserMsg];
+    }
+    else {
+        NSLog(@"waitUserMsgCircle");
+        [self performSelector:@selector(doUserMsgCircle:) withObject:nil afterDelay:msgCount * 7.0];
+    }
+    
+}
+
+- (void)creatUserMsg
+{
+    if (userMsgView == nil) {
+        
+        UIImageView *back = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"UserAlertBack.png"]];
+        userMsgView = [[UIView alloc] initWithFrame:CGRectMake((320 - back.frame.size.width) / 2, -90, back.frame.size.width, back.frame.size.height)];
+        [userMsgView addSubview:back];
+
+        [self.window addSubview:userMsgView];
+        
+        userMsgIcon = [[UIImageView alloc] initWithFrame:CGRectMake(14, (userMsgView.frame.size.height - 23) / 2, 23, 23)];
+        [userMsgView addSubview:userMsgIcon];
+        
+        userMsgLabel = [[UILabel alloc] initWithFrame:CGRectMake(44, 7, 201, userMsgView.frame.size.height - 14)];
+        userMsgLabel.backgroundColor = [UIColor clearColor];
+        userMsgLabel.numberOfLines = 0;
+        userMsgLabel.textAlignment = UITextAlignmentCenter;
+        userMsgLabel.font = [UIFont boldSystemFontOfSize:10.0];
+        userMsgLabel.textColor = [UIColor colorWithRed:255.0/255 green:255.0/255 blue:255.0/255 alpha:1.0];
+        userMsgLabel.shadowColor = [UIColor colorWithRed:0.0/255 green:0.0/255 blue:0.0/255 alpha:1.0];
+        userMsgLabel.shadowOffset = CGSizeMake(0, 1);
+        [userMsgView addSubview:userMsgLabel];
+        
+        //        userMsgButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+        //        userMsgButton.frame = CGRectMake(0, userMsgView.frame.origin.y, 320, userMsgView.frame.size.height);
+        //        userMsgButton.tag = 10000;
+        //        [userMsgButton addTarget:self action:@selector(buttonActon:) forControlEvents:UIControlEventTouchUpInside];
+        //        [self.window addSubview:userMsgButton];
+        
+        cancelUserMsgButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        //cancelUserMsgButton.frame = CGRectMake(0, 500, 320, 480 - userMsgButton.frame.size.height - 50);
+        cancelUserMsgButton.frame = CGRectMake(0, 500+88, 320, [[UIScreen mainScreen] bounds].size.height - userMsgButton.frame.size.height - 50);
+        cancelUserMsgButton.tag = 100000;
+        [cancelUserMsgButton addTarget:self action:@selector(buttonActon:) forControlEvents:UIControlEventTouchUpInside];
+        [self.window addSubview:cancelUserMsgButton];
+    }
+}
+
+
+- (void)removeUserMsg
+{
+    userMsgArray = nil;
+    [userMsgView removeFromSuperview];
+    userMsgView = nil;
+    userMsgLabel = nil;
+    //    [userMsgButton release];userMsgButton = nil;
+    cancelUserMsgButton = nil;
+}
+
+
+- (void)showUserMsg
+{
+    [UIView beginAnimations:@"showUserMsg" context:NULL];
+    [UIView setAnimationDuration:0.8];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    [UIView setAnimationDelegate:self];
+    userMsgView.frame = CGRectMake((320 - userMsgView.frame.size.width) / 2, 18, userMsgView.frame.size.width, userMsgView.frame.size.height);
+    //    userMsgButton.frame = CGRectMake(0, 20, 320, userMsgButton.frame.size.height);
+    [UIView commitAnimations];
+}
+
+- (void)dismissUserMsg
+{
+    if (cancelUserMsgButton.tag == 100000) {
+        return;
+    }
+    
+    //cancelUserMsgButton.frame = CGRectMake(0, 500, 320, 480 - userMsgButton.frame.size.height - 50);
+    cancelUserMsgButton.frame = CGRectMake(0, 588, 320, [[UIScreen mainScreen] bounds].size.height - userMsgButton.frame.size.height - 50);
+    cancelUserMsgButton.tag = 100000;
+    
+    [UIView beginAnimations:@"dismissUserMsg" context:NULL];
+    [UIView setAnimationDuration:0.8];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    [UIView setAnimationDelegate:self];
+    userMsgView.frame = CGRectMake((320 - userMsgView.frame.size.width) / 2, -90, userMsgView.frame.size.width, userMsgView.frame.size.height);
+    //    userMsgButton.frame = CGRectMake(0, -90, 320, userMsgButton.frame.size.height);
+    [UIView commitAnimations];
+}
+
+- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context
+{
+    if([animationID isEqualToString:@"showUserMsg"])
+    {
+        //cancelUserMsgButton.frame = CGRectMake(0, userMsgButton.frame.size.height, 320, 480 - userMsgButton.frame.size.height - 50);
+        cancelUserMsgButton.frame = CGRectMake(0, userMsgButton.frame.size.height, 320, [[UIScreen mainScreen] bounds].size.height - userMsgButton.frame.size.height - 50);
+        cancelUserMsgButton.tag = 99999;
+        [self performSelector:@selector(dismissUserMsg) withObject:nil afterDelay:3.2];
+    }
+    
+    if([animationID isEqualToString:@"dismissUserMsg"])
+    {
+        [userMsgArray removeObjectAtIndex:0];
+        ifUserMsgCircleRunning = NO;
+        
+        if ([userMsgArray count] == 0 && !ifUserMsgCircleRunning) {
+            [self removeUserMsg];
+        }
+    }
+}
+
+- (void)buttonActon:(UIButton *)aButton
+{
+    switch (aButton.tag) {
+        case 99999:
+        {
+            //cancel
+            
+            [self dismissUserMsg];
+            break;
+        } 
+        default:
+            break;
+    }
+}
+///////UserMsg/////////
 
 @end

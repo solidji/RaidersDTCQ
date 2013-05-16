@@ -10,7 +10,9 @@
 #import "GHMenuCell.h"
 #import "GHRevealViewController.h"
 #import <QuartzCore/QuartzCore.h>
-
+#import "AppDataSouce.h"//for login
+#import "GlobalConfigure.h"
+#import "UIImageView+AFNetworking.h"//为了头像
 
 #pragma mark -
 #pragma mark Implementation
@@ -63,6 +65,7 @@
 	_menuTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 	_menuTableView.backgroundColor = [UIColor clearColor];
 	_menuTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _menuTableView.scrollEnabled = NO;//设置为不能拖动
 	[self.view addSubview:_menuTableView];
 	[self selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:NO scrollPosition:UITableViewScrollPositionTop];//侧边栏选中哪一项
 }
@@ -117,11 +120,41 @@
 
 #pragma mark UITableViewDelegate
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-	return (_headers[section] == [NSNull null]) ? 0.0f : 21.0f;
+
+    if(section == 0){return 44.0f;}
+    return (_headers[section] == [NSNull null]) ? 0.0f : 21.0f;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	NSObject *headerText = _headers[section];
+    
+    if (section == 0) {
+        NSObject *headerText = kDataSource.userObject.name;
+        UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+        [bgImage setImage: [UIImage imageNamed:@"top.png"]];
+        UIView *headerView = nil;
+        if (headerText != [NSNull null]) {
+            headerView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.height, 44.0f)];
+            [headerView addSubview:bgImage];
+            UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(44.0f, 0.0f,[UIScreen mainScreen].bounds.size.height, 44.0f)];
+            textLabel.text = (NSString *) headerText;
+            textLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:([UIFont systemFontSize] * 1.4f)];
+            //textLabel.shadowOffset = CGSizeMake(0.0f, 1.0f);
+            //textLabel.shadowColor = [UIColor colorWithWhite:0.0f alpha:0.25f];
+            //		textLabel.textColor = [UIColor colorWithRed:(125.0f/255.0f) green:(129.0f/255.0f) blue:(146.0f/255.0f) alpha:1.0f];
+            textLabel.textColor = [UIColor whiteColor];
+            textLabel.backgroundColor = [UIColor clearColor];
+            [headerView addSubview:textLabel];
+            
+            UIImageView *avatarImage=[[UIImageView alloc] initWithFrame:CGRectMake(6, 6, 32, 32)];
+            [avatarImage setImageWithURL:[NSURL URLWithString:kDataSource.userObject.authorAvatar]
+                        placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
+            [headerView addSubview:avatarImage];
+
+        }
+        return headerView;
+    }
+    
+	NSObject *headerText = _headers[section];    
     
     UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
     [bgImage setImage: [UIImage imageNamed:@"Title-Red.png"]];
@@ -137,13 +170,14 @@
 //		];
 //		[headerView.layer insertSublayer:gradient atIndex:0];
 		[headerView addSubview:bgImage];
-		UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectInset(headerView.bounds, 12.0f, 5.0f)];
+		UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(12.0f, 0.0f,[UIScreen mainScreen].bounds.size.height, 22.0f)];//CGRectInset
 		textLabel.text = (NSString *) headerText;
-		textLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:([UIFont systemFontSize] * 0.8f)];
+		textLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:([UIFont systemFontSize] * 1.0f)];
 		textLabel.shadowOffset = CGSizeMake(0.0f, 1.0f);
 		textLabel.shadowColor = [UIColor colorWithWhite:0.0f alpha:0.25f];
 //		textLabel.textColor = [UIColor colorWithRed:(125.0f/255.0f) green:(129.0f/255.0f) blue:(146.0f/255.0f) alpha:1.0f];
-        textLabel.textColor = [UIColor colorWithRed:(225.0f/255.0f) green:(174.0f/255.0f) blue:(174.0f/255.0f) alpha:1.0f];
+        //textLabel.textColor = [UIColor colorWithRed:(225.0f/255.0f) green:(174.0f/255.0f) blue:(174.0f/255.0f) alpha:1.0f];
+        textLabel.textColor = [UIColor whiteColor];
 		textLabel.backgroundColor = [UIColor clearColor];
 		[headerView addSubview:textLabel];
 		
@@ -170,6 +204,10 @@
 		[_menuTableView scrollToRowAtIndexPath:indexPath atScrollPosition:scrollPosition animated:animated];
 	}
 	_sidebarVC.contentViewController = _controllers[indexPath.section][indexPath.row];
+}
+
+- (void)reloadTable {
+	[_menuTableView reloadData];
 }
 
 @end

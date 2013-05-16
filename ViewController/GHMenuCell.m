@@ -62,10 +62,14 @@ NSString const *kSidebarCellImageKey = @"CellImage";
 #pragma mark UIView
 - (void)layoutSubviews {
 	[super layoutSubviews];
-	self.textLabel.frame = CGRectMake(52.0f, 0.0f, 200.0f, 44.0f);
+	self.textLabel.frame = CGRectMake(40.0f, 0.0f, 200.0f, 44.0f);
 	//self.imageView.frame = CGRectMake(0.0f, 0.0f, 52.0f, 44.0f);
-    self.imageView.frame = CGRectMake(12.0f, 12.0f, 20.0f, 20.0f);
-
+    self.imageView.frame = CGRectMake(10.0f, 12.0f, 20.0f, 20.0f);
+    if([self.textLabel.text isEqualToString:@"个人"] || [self.textLabel.text isEqualToString:@"设置"])
+    {
+        self.textLabel.frame = CGRectMake(70.0f, 0.0f, 200.0f, 44.0f);
+        self.imageView.frame = CGRectMake(40.0f, 12.0f, 20.0f, 20.0f);
+    }
 }
 
 //- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
