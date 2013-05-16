@@ -115,7 +115,7 @@
 	];
 	NSArray *controllers = @[
 		@[
-      [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"主页" withUrl:@"http://www.appgame.com/feed?paged=%d" withRevealBlock:revealBlock]],
+      [[UINavigationController alloc] initWithRootViewController:[[PersonalViewController alloc] initWithTitle:@"主页" withUser:[NSNumber numberWithInt:-1] withRevealBlock:revealBlock]],
       [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"资讯" withUrl:@"http://bbs.appgame.com/" withRevealBlock:revealBlock]],
       [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"热门" withUrl:@"http://gl.appgame.com/hot-games.html" withRevealBlock:revealBlock]],
       [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"收藏" withUrl:@"Favorites" withRevealBlock:revealBlock]],

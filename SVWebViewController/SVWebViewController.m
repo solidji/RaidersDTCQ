@@ -594,7 +594,10 @@
 //        [self.pageActionSheet showFromToolbar:self.navigationController.toolbar];
     
     //IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];//path
-    CommentViewController *viewController = [[CommentViewController alloc] initWithTitle:self.htmlString.title withUrl:self.htmlString.articleURL.absoluteString];
+    //CommentViewController *viewController = [[CommentViewController alloc] initWithTitle:self.htmlString.title withUrl:self.htmlString.articleURL.absoluteString];
+    
+    CommentViewController *viewController = [[CommentViewController alloc] initWithTitle:self.htmlString.title withUrl:self.mainWebView.request.URL.absoluteString];
+    
     [self.navigationController pushViewController:viewController animated:YES];    
 }
 

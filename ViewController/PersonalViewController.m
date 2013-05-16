@@ -39,6 +39,7 @@
 - (id)initWithTitle:(NSString *)title withUser:(NSNumber *)userID withRevealBlock:(PersonalRevealBlock)revealBlock {
     if (self = [super initWithNibName:nil bundle:nil]) {
 		self.title = title;
+        self.dUser = [[IADisqusUser alloc] init];
         self.dUser.userID = userID;
         _revealBlock = [revealBlock copy];
         
@@ -163,7 +164,8 @@
     if (tableView.tag == 100000) {
         if ([self.follower count] > indexPath.row) {
             ArticleItem *aArticle = [self.follower objectAtIndex:indexPath.row];
-            SVWebViewController *viewController = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];
+//            SVWebViewController *viewController = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];
+            SVWebViewController *viewController = [[SVWebViewController alloc] initWithURL:aArticle.articleURL];
             
             //NSLog(@"didSelectArticle:%@",aArticle.content);
             [self.navigationController pushViewController:viewController animated:YES];
@@ -337,6 +339,60 @@
     NSMutableArray *article = [NSMutableArray array];
     
     IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];
+    
+    if ([dUser.userID isEqualToNumber:[NSNumber numberWithInt:-1]]) {
+        // make the parameters dictionary
+        NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    kDataSource.credentialObject.accessToken, @"access_token",
+                                    //DISQUS_API_SECRET, @"api_secret",
+                                    DISQUS_API_PUBLIC,@"api_key",
+                                    //dUser.userID, @"user",
+                                    nil];
+        
+        // send the request
+        [iaDisquser getUsersActivity:parameters
+                              success:^(NSDictionary *responseDictionary){
+                                  // check the code (success is 0)
+                                  NSNumber *code = [responseDictionary objectForKey:@"code"];
+                                  
+                                  if ([code integerValue] != 0) {   // there's an error
+                                      NSLog(@"disqus动态列表异常");
+                                  }else {
+                                      NSArray *responseArray = [responseDictionary objectForKey:@"response"];
+                                      if ([responseArray count] != 0) {
+                                          for (NSDictionary *followingDic in responseArray) {                                              
+                                              //[self performSelector:@selector(showWelcome) withObject:nil afterDelay:2.4];
+                                              ArticleItem *articleItem = [[ArticleItem alloc] init];
+                                              
+                                              articleItem.title = [[followingDic objectForKey:@"object"] objectForKey:@"raw_message"];
+                                              articleItem.content = [[[followingDic objectForKey:@"object"] objectForKey:@"thread"] objectForKey:@"title"];
+                                              articleItem.creator = [[[followingDic objectForKey:@"object"] objectForKey:@"author"] objectForKey:@"name"];
+                                              articleItem.articleURL = [NSURL URLWithString:[[[followingDic objectForKey:@"object"] objectForKey:@"thread"] objectForKey:@"link"]];
+                                              
+                                              NSLog(@"disqus动态列表:%@,%@", articleItem.title, articleItem.creator);
+                                              
+                                              [article addObject:articleItem];
+                                          }
+                                      }
+                                  }
+                                  [follower removeAllObjects];
+                                  follower = article;
+                                  [alerViewManager dismissMessageView:self.view];
+                                  // reload the table
+                                  [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
+                              }
+                                 fail:^(NSError *error) {
+                                     NSLog(@"disqus动态列表获取失败:%@",error);
+                                     if ([pullToRefreshTableView isHidden])
+                                     {
+                                         [pullToRefreshTableView setHidden:NO];
+                                     }
+                                     [alerViewManager dismissMessageView:self.view];
+                                     [alerViewManager showOnlyMessage:@"请求数据失败" inView:self.view];
+                                     
+                                     [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
+                                 }];
+    }else {
     // make the parameters dictionary
     NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
                                 kDataSource.credentialObject.accessToken, @"access_token",
@@ -385,6 +441,7 @@
                                
                                [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
                            }];
+    }
 }
 
 @end
