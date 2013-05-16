@@ -91,6 +91,28 @@
                       failBlock(error);
                   }];
 }
+
+- (void)getUsersFollowing:(NSDictionary *)parameters success:(DisqusResponses)successBlock fail:(DisqusFail)failBlock{
+    
+    // make a http client for disqus
+    AFHTTPClient *disqusClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:DISQUS_BASE_URL]];
+    
+    // make and send a get request
+    [disqusClient getPath:@"users/listFollowing.json"
+               parameters:parameters
+                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                      // fetch the json response to a dictionary
+                      NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+                      // pass it to the block
+                      successBlock(responseDictionary);
+                  }
+                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                      // pass error to the block
+                      failBlock(error);
+                  }];
+}
+
+
 #pragma mark - View comments
 + (void)getCommentsWithParameters:(NSDictionary *)parameters success:(DisqusFetchCommentsSuccess)successBlock fail:(DisqusFail)failBlock {
     // make a http client for disqus

@@ -52,6 +52,8 @@ typedef void (^DisqusResponses)(NSDictionary *);
 
 - (void)getUsersDetails:(NSDictionary *)parameters success:(DisqusResponses)successBlock fail:(DisqusFail)failBlock;
 
+- (void)getUsersFollowing:(NSDictionary *)parameters success:(DisqusResponses)successBlock fail:(DisqusFail)failBlock;
+
 #pragma mark - get active threads
 + (void)getActiveThreadsWithCursor:(NSString *)cursor user:(NSString *)user success:(DisqusFetchCommentsSuccess)successBlock fail:(DisqusFail)failBlock;
 #pragma mark - get top discussions

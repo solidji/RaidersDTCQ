@@ -19,7 +19,7 @@
 
 typedef void (^PersonalRevealBlock)();
 
-@interface PersonalViewController : UIViewController <UITableViewDataSource, UITableViewDelegate,  UIGestureRecognizerDelegate, ScrollPageDataSource> {
+@interface PersonalViewController : UIViewController <UITableViewDataSource, UITableViewDelegate> {
     NSMutableArray *following;//关注列表
     NSMutableArray *follower;//粉丝列表
     NSMutableArray *active;//动态列表

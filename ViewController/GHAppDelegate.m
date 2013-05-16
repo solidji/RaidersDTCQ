@@ -16,6 +16,7 @@
 #import "iVersion.h"//StoreKit framework.
 #import "APService.h"
 #import "SettingViewController.h"
+#import "PersonalViewController.h"
 
 #import "AppDataSouce.h"//for login
 #import "GlobalConfigure.h"
@@ -121,7 +122,7 @@
       
 		],
 		@[
-            [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"个人" withUrl:@"http://www.appgame.com/feed?paged=%d" withRevealBlock:revealBlock]],
+            [[UINavigationController alloc] initWithRootViewController:[[PersonalViewController alloc] initWithTitle:@"个人" withUser:kDataSource.userObject.userID withRevealBlock:revealBlock]],
             [[UINavigationController alloc] initWithRootViewController:[[SettingViewController alloc] initWithTitle:@"设置" withUrl:@"Setting" withRevealBlock:revealBlock]]
 		]
 	];
@@ -213,8 +214,9 @@
                                                           NSDictionary *responseArray = [responseDictionary objectForKey:@"response"];
                                                           if ([responseArray count] != 0) {
                                                               kDataSource.userObject.name = [responseArray objectForKey:@"name"];
+                                                              kDataSource.userObject.userID = [responseArray objectForKey:@"id"];
                                                               kDataSource.userObject.authorAvatar = [[[responseArray objectForKey:@"avatar"] objectForKey:@"small"] objectForKey:@"cache"];
-                                                              NSLog(@"disqus账户信息:%@,%@", kDataSource.userObject.name, kDataSource.userObject.authorAvatar);
+                                                              NSLog(@"disqus账户信息:%@,%@,%@", kDataSource.userObject.name, kDataSource.userObject.authorAvatar,kDataSource.userObject.userID);
                                                               //                                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"欢迎回来" message:[NSString stringWithFormat: @"您好 %@", kDataSource.userObject.name] delegate:self cancelButtonTitle:@"好!" otherButtonTitles:nil];
                                                               //                                                 [alert show];
                                                               [self performSelector:@selector(showWelcome) withObject:nil afterDelay:2.4];

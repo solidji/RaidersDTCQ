@@ -158,6 +158,10 @@
 		DBB3AE6C1715F2DA008E29AB /* IADisqusUser.m in Sources */ = {isa = PBXBuildFile; fileRef = DBB3AE681715F2DA008E29AB /* IADisqusUser.m */; };
 		DBC15A14171209AC00967301 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBC15A13171209AB00967301 /* MapKit.framework */; };
 		DBC15A16171209B900967301 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBC15A15171209B900967301 /* CoreLocation.framework */; };
+		DBC7F71717456FCE002F61F8 /* ZG.png in Resources */ = {isa = PBXBuildFile; fileRef = DBC7F71617456FCE002F61F8 /* ZG.png */; };
+		DBC7F71C17457600002F61F8 /* CellHeader.png in Resources */ = {isa = PBXBuildFile; fileRef = DBC7F71917457600002F61F8 /* CellHeader.png */; };
+		DBC7F71D17457600002F61F8 /* CellHeader@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBC7F71A17457600002F61F8 /* CellHeader@2x.png */; };
+		DBC7F71E17457600002F61F8 /* ZGLDT.png in Resources */ = {isa = PBXBuildFile; fileRef = DBC7F71B17457600002F61F8 /* ZGLDT.png */; };
 		DBDF6C7216E68C0700B07DA9 /* AlerViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DBDF6C7116E68C0700B07DA9 /* AlerViewManager.m */; };
 		DBDFE073170DCCCA003D2E68 /* Favorited.png in Resources */ = {isa = PBXBuildFile; fileRef = DBDFE063170DCCCA003D2E68 /* Favorited.png */; };
 		DBDFE074170DCCCA003D2E68 /* Favorited@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBDFE064170DCCCA003D2E68 /* Favorited@2x.png */; };
@@ -410,6 +414,10 @@
 		DBB3AE681715F2DA008E29AB /* IADisqusUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IADisqusUser.m; sourceTree = "<group>"; };
 		DBC15A13171209AB00967301 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DBC15A15171209B900967301 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		DBC7F71617456FCE002F61F8 /* ZG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ZG.png; sourceTree = "<group>"; };
+		DBC7F71917457600002F61F8 /* CellHeader.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CellHeader.png; sourceTree = "<group>"; };
+		DBC7F71A17457600002F61F8 /* CellHeader@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CellHeader@2x.png"; sourceTree = "<group>"; };
+		DBC7F71B17457600002F61F8 /* ZGLDT.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ZGLDT.png; sourceTree = "<group>"; };
 		DBDF6C7016E68C0700B07DA9 /* AlerViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlerViewManager.h; sourceTree = "<group>"; };
 		DBDF6C7116E68C0700B07DA9 /* AlerViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlerViewManager.m; sourceTree = "<group>"; };
 		DBDFE063170DCCCA003D2E68 /* Favorited.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Favorited.png; sourceTree = "<group>"; };
@@ -641,6 +649,10 @@
 		DBA0156F16D8B0B7007B2AE5 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				DBC7F71917457600002F61F8 /* CellHeader.png */,
+				DBC7F71A17457600002F61F8 /* CellHeader@2x.png */,
+				DBC7F71B17457600002F61F8 /* ZGLDT.png */,
+				DBC7F71617456FCE002F61F8 /* ZG.png */,
 				DBA4ABB31745326400F351B8 /* GreenAlert.png */,
 				DBA4ABB41745326400F351B8 /* GreenAlert@2x.png */,
 				DBA4ABB51745326400F351B8 /* UserAlertBack.png */,
@@ -1036,6 +1048,10 @@
 				DBA4ABBC1745326400F351B8 /* UserAlertBack@2x.png in Resources */,
 				DBA4ABBD1745326400F351B8 /* YellowAlert.png in Resources */,
 				DBA4ABBE1745326400F351B8 /* YellowAlert@x.png in Resources */,
+				DBC7F71717456FCE002F61F8 /* ZG.png in Resources */,
+				DBC7F71C17457600002F61F8 /* CellHeader.png in Resources */,
+				DBC7F71D17457600002F61F8 /* CellHeader@2x.png in Resources */,
+				DBC7F71E17457600002F61F8 /* ZGLDT.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
