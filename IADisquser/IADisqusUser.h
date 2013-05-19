@@ -14,6 +14,9 @@
 @property (nonatomic, copy) NSString *about;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, strong) NSNumber *numPosts;
+@property (nonatomic, strong) NSNumber *numFollowers;
+@property (nonatomic, strong) NSNumber *numFollowing;
+@property (nonatomic, strong) NSNumber *numLikesReceived;
 @property (nonatomic, copy) NSString *url;
 
 @property (nonatomic, copy) NSString *profileUrl;

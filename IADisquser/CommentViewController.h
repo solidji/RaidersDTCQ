@@ -19,6 +19,7 @@
     
     AlerViewManager *alerViewManager;
     NSString *webURL;
+    NSNumber *thread;
     NSInteger start;
     NSInteger receiveMember;
     BOOL ifNeedFristLoading;
@@ -27,10 +28,11 @@
 }
 
 @property (nonatomic, copy) NSString *webURL, *nextCursor;
+@property (nonatomic, copy) NSNumber *thread;
 @property (nonatomic, strong) PullToRefreshTableView * pullToRefreshTableView;
 @property (strong, nonatomic) NSMutableArray *comments;
 
-- (id)initWithTitle:(NSString *)title withUrl:(NSString *)url;
+- (id)initWithTitle:(NSString *)title withUrl:(NSString *)url threadID:(NSNumber *)threadID;
 
 - (void)updateThread:(NSString *)returnKey;
 - (void)updateTableView;

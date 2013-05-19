@@ -13,6 +13,7 @@
 #import "AppDataSouce.h"//for login
 #import "GlobalConfigure.h"
 #import "UIImageView+AFNetworking.h"//为了头像
+#import "ActivityViewController.h"
 
 #pragma mark -
 #pragma mark Implementation
@@ -208,6 +209,13 @@
 
 - (void)reloadTable {
 	[_menuTableView reloadData];
+    //[((ActivityViewController *)(_sidebarVC.contentViewController reloadData) performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
+//    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+//    UIViewController *rootViewController = window.rootViewController;
+    UINavigationController *root = (UINavigationController *)_sidebarVC.contentViewController;
+    ActivityViewController *act = (ActivityViewController *)[root.viewControllers objectAtIndex:0];
+    [act performSelectorOnMainThread:@selector(getArticles) withObject:nil waitUntilDone:NO];
+    NSLog(@"menuTableView reloadTable");
 }
 
 @end

@@ -59,6 +59,19 @@
         //        [imageView.layer setOpaque:NO];
         //        [imageView.layer setCornerRadius:5.0];
         [self.contentView addSubview:imageView];
+        
+        //增加上下分割线
+		UIView *topLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
+		topLine.backgroundColor = [UIColor colorWithRed:(235.0f/255.0f) green:(231.0f/255.0f) blue:(226.0f/255.0f) alpha:1.0f];
+		[self.textLabel.superview addSubview:topLine];
+		
+        UIView *topLine2 = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 1.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
+		topLine2.backgroundColor = [UIColor colorWithRed:(249.0f/255.0f) green:(245.0f/255.0f) blue:(240.0f/255.0f) alpha:1.0f];
+		[self.textLabel.superview addSubview:topLine2];
+        
+		UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 51.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
+		bottomLine.backgroundColor = [UIColor colorWithRed:(246.0f/255.0f) green:(242.0f/255.0f) blue:(237.0f/255.0f) alpha:1.0f];
+		[self.textLabel.superview addSubview:bottomLine];
     }
     return self;
 }
@@ -74,53 +87,53 @@
     //    CGSize constraint = CGSizeMake(200, 20000);
     //    CGSize size = [@"多" sizeWithFont:[UIFont fontWithName:@"Helvetica" size:11] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
     
-    [nameLabel setFrame:CGRectMake(8.0, 8.0, 320-16.0, 40)];
-    [articleLabel setFrame:CGRectMake(8.0, 40+8+4, 320-80-16-4, 148-8-14-4-8-40-4)];
-    [dateLabel setFrame:CGRectMake(8.0, 148-8-14, 100.0, 14.0)];
-    [creatorLabel setFrame:CGRectMake(108.0, 148-8-14, 100.0, 14.0)];
-    [imageView setFrame:CGRectMake(320-80-8, 40.0+8, 80.0, 88.0)];
+    [nameLabel setFrame:CGRectMake(52.0, 0, 320-52.0, 26)];
+    [articleLabel setFrame:CGRectMake(52.0, 26.0, 320-52.0, 26)];
+    //[dateLabel setFrame:CGRectMake(8.0, 148-8-14, 100.0, 14.0)];
+    //[creatorLabel setFrame:CGRectMake(108.0, 148-8-14, 100.0, 14.0)];
+    [imageView setFrame:CGRectMake(10.0, 10.0, 32.0, 32.0)];
 }
 
-- (void)drawRect:(CGRect)rect {
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    // set gradient
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGFloat locations[] = {0.0, 1.0};
-    
-    UIColor *startColor = [UIColor colorWithRed:0.96 green:.97 blue:.98 alpha:1.0];
-    UIColor *endColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
-    
-    NSArray *colors = [NSArray arrayWithObjects:(id)startColor.CGColor, (id)endColor.CGColor, nil];
-    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colors, locations);
-    
-    CGPoint startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
-    CGPoint endPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
-    
-    //CGContextSaveGState(context);ios 6 bug
-    UIGraphicsPushContext(context);
-    CGContextAddRect(context, rect);
-    CGContextClip(context);
-    CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
-    //CGContextRestoreGState(context);
-    UIGraphicsPopContext();
-    
-    // set bottom line
-    CGContextSetLineCap(context, kCGLineCapSquare);
-    CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:0.79 green:0.82 blue:0.85 alpha:1.0].CGColor);
-    CGContextSetLineWidth(context, 1.0);
-    CGContextMoveToPoint(context, 0.0, rect.size.height);
-    CGContextAddLineToPoint(context, rect.size.width, rect.size.height);
-    CGContextStrokePath(context);
-    
-    // set top line
-    CGContextSetStrokeColorWithColor(context, [UIColor whiteColor].CGColor);
-    CGContextMoveToPoint(context, 0.0, 0.0);
-    CGContextAddLineToPoint(context, rect.size.width, 0.0);
-    CGContextStrokePath(context);
-    
-    CGGradientRelease(gradient);
-    CGColorSpaceRelease(colorSpace);
-}
+//- (void)drawRect:(CGRect)rect {
+//    CGContextRef context = UIGraphicsGetCurrentContext();
+////    
+////    // set gradient
+////    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+////    CGFloat locations[] = {0.0, 1.0};
+////
+////    UIColor *startColor = [UIColor colorWithRed:0.96 green:.97 blue:.98 alpha:1.0];
+////    UIColor *endColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
+////    
+////    NSArray *colors = [NSArray arrayWithObjects:(id)startColor.CGColor, (id)endColor.CGColor, nil];
+////    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colors, locations);
+////    
+////    CGPoint startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
+////    CGPoint endPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
+////    
+//    //CGContextSaveGState(context);ios 6 bug
+//    UIGraphicsPushContext(context);
+//    CGContextAddRect(context, rect);
+//    CGContextClip(context);
+//    //CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
+//    //CGContextRestoreGState(context);
+//    UIGraphicsPopContext();
+//
+//    // set bottom line
+//    CGContextSetLineCap(context, kCGLineCapSquare);
+//    CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:0.79 green:0.82 blue:0.85 alpha:1.0].CGColor);
+//    CGContextSetLineWidth(context, 1.0);
+//    CGContextMoveToPoint(context, 0.0, rect.size.height);
+//    CGContextAddLineToPoint(context, rect.size.width, rect.size.height);
+//    CGContextStrokePath(context);
+//    
+//    // set top line
+//    CGContextSetStrokeColorWithColor(context, [UIColor whiteColor].CGColor);
+//    CGContextMoveToPoint(context, 0.0, 0.0);
+//    CGContextAddLineToPoint(context, rect.size.width, 0.0);
+//    CGContextStrokePath(context);
+////
+////    CGGradientRelease(gradient);
+////    CGColorSpaceRelease(colorSpace);
+//}
 
 @end

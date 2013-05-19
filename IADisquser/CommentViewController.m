@@ -25,15 +25,17 @@
 
 @implementation CommentViewController
 
-@synthesize comments,pullToRefreshTableView,webURL,nextCursor;
+@synthesize comments,pullToRefreshTableView,webURL,nextCursor,thread;
 
 //- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-- (id)initWithTitle:(NSString *)title withUrl:(NSString *)url
+- (id)initWithTitle:(NSString *)title withUrl:(NSString *)url  threadID:(NSNumber *)threadID
 {
     //self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self = [super initWithNibName:nil bundle:nil]) {
         // Custom initialization
         self.webURL = url;
+        self.title = title;
+        self.thread = [[NSNumber alloc] initWithInteger:[threadID integerValue]];
         self.nextCursor = nil;
         hasNext = false;
         
@@ -116,7 +118,7 @@
         //IOS5
         [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
     }
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    //[self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -372,13 +374,23 @@
 - (void)getComments {
     
     [alerViewManager showMessage:@"正在加载数据" inView:self.view];
-    // make the parameters dictionary
+        // make the parameters dictionary
     NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
                                 DISQUS_API_SECRET, @"api_secret",
                                 DISQUS_FORUM_NAME, @"forum",
                                 self.webURL, @"thread:link",
                                 self.nextCursor, @"cursor",
                                 nil];
+    
+    if (![self.thread isEqualToNumber:[NSNumber numberWithInteger:-1]]) {
+         parameters = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    DISQUS_API_SECRET, @"api_secret",
+                                    DISQUS_FORUM_NAME, @"forum",
+                                    self.thread, @"thread",
+                                    self.nextCursor, @"cursor",
+                                    nil];
+    }
+
     
     // send the request
     //[IADisquser getCommentsFromThreadLink:self.webURL

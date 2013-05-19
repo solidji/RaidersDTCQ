@@ -162,6 +162,18 @@
 		DBC7F71C17457600002F61F8 /* CellHeader.png in Resources */ = {isa = PBXBuildFile; fileRef = DBC7F71917457600002F61F8 /* CellHeader.png */; };
 		DBC7F71D17457600002F61F8 /* CellHeader@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBC7F71A17457600002F61F8 /* CellHeader@2x.png */; };
 		DBC7F71E17457600002F61F8 /* ZGLDT.png in Resources */ = {isa = PBXBuildFile; fileRef = DBC7F71B17457600002F61F8 /* ZGLDT.png */; };
+		DBD6EDB51748EFCF008144F0 /* Download.png in Resources */ = {isa = PBXBuildFile; fileRef = DBD6EDAD1748EFB2008144F0 /* Download.png */; };
+		DBD6EDB61748EFCF008144F0 /* Download@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBD6EDAE1748EFB5008144F0 /* Download@2x.png */; };
+		DBD6EDB71748EFCF008144F0 /* Favorite.png in Resources */ = {isa = PBXBuildFile; fileRef = DBD6EDAF1748EFB9008144F0 /* Favorite.png */; };
+		DBD6EDB81748EFCF008144F0 /* Favorite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBD6EDB01748EFBC008144F0 /* Favorite@2x.png */; };
+		DBD6EDB91748EFCF008144F0 /* Leave-a-message.png in Resources */ = {isa = PBXBuildFile; fileRef = DBD6EDB11748EFC0008144F0 /* Leave-a-message.png */; };
+		DBD6EDBA1748EFCF008144F0 /* Leave-a-message@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBD6EDB21748EFC3008144F0 /* Leave-a-message@2x.png */; };
+		DBD6EDBB1748EFCF008144F0 /* Share.png in Resources */ = {isa = PBXBuildFile; fileRef = DBD6EDB31748EFC7008144F0 /* Share.png */; };
+		DBD6EDBC1748EFCF008144F0 /* Share@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBD6EDB41748EFCA008144F0 /* Share@2x.png */; };
+		DBD6EDC01748EFFB008144F0 /* Comment.png in Resources */ = {isa = PBXBuildFile; fileRef = DBD6EDBE1748EFF4008144F0 /* Comment.png */; };
+		DBD6EDC11748EFFB008144F0 /* Comment@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBD6EDBF1748EFF8008144F0 /* Comment@2x.png */; };
+		DBD6EDC417490F8D008144F0 /* ActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DBD6EDC317490F8D008144F0 /* ActivityViewController.m */; };
+		DBD6EDC717493132008144F0 /* ActivityItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DBD6EDC617493132008144F0 /* ActivityItemCell.m */; };
 		DBDF6C7216E68C0700B07DA9 /* AlerViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DBDF6C7116E68C0700B07DA9 /* AlerViewManager.m */; };
 		DBDFE073170DCCCA003D2E68 /* Favorited.png in Resources */ = {isa = PBXBuildFile; fileRef = DBDFE063170DCCCA003D2E68 /* Favorited.png */; };
 		DBDFE074170DCCCA003D2E68 /* Favorited@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBDFE064170DCCCA003D2E68 /* Favorited@2x.png */; };
@@ -418,6 +430,20 @@
 		DBC7F71917457600002F61F8 /* CellHeader.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CellHeader.png; sourceTree = "<group>"; };
 		DBC7F71A17457600002F61F8 /* CellHeader@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CellHeader@2x.png"; sourceTree = "<group>"; };
 		DBC7F71B17457600002F61F8 /* ZGLDT.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ZGLDT.png; sourceTree = "<group>"; };
+		DBD6EDAD1748EFB2008144F0 /* Download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Download.png; sourceTree = "<group>"; };
+		DBD6EDAE1748EFB5008144F0 /* Download@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Download@2x.png"; sourceTree = "<group>"; };
+		DBD6EDAF1748EFB9008144F0 /* Favorite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Favorite.png; sourceTree = "<group>"; };
+		DBD6EDB01748EFBC008144F0 /* Favorite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Favorite@2x.png"; sourceTree = "<group>"; };
+		DBD6EDB11748EFC0008144F0 /* Leave-a-message.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Leave-a-message.png"; sourceTree = "<group>"; };
+		DBD6EDB21748EFC3008144F0 /* Leave-a-message@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Leave-a-message@2x.png"; sourceTree = "<group>"; };
+		DBD6EDB31748EFC7008144F0 /* Share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Share.png; sourceTree = "<group>"; };
+		DBD6EDB41748EFCA008144F0 /* Share@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Share@2x.png"; sourceTree = "<group>"; };
+		DBD6EDBE1748EFF4008144F0 /* Comment.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Comment.png; sourceTree = "<group>"; };
+		DBD6EDBF1748EFF8008144F0 /* Comment@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Comment@2x.png"; sourceTree = "<group>"; };
+		DBD6EDC217490F8D008144F0 /* ActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityViewController.h; sourceTree = "<group>"; };
+		DBD6EDC317490F8D008144F0 /* ActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityViewController.m; sourceTree = "<group>"; };
+		DBD6EDC517493131008144F0 /* ActivityItemCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityItemCell.h; sourceTree = "<group>"; };
+		DBD6EDC617493132008144F0 /* ActivityItemCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityItemCell.m; sourceTree = "<group>"; };
 		DBDF6C7016E68C0700B07DA9 /* AlerViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlerViewManager.h; sourceTree = "<group>"; };
 		DBDF6C7116E68C0700B07DA9 /* AlerViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlerViewManager.m; sourceTree = "<group>"; };
 		DBDFE063170DCCCA003D2E68 /* Favorited.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Favorited.png; sourceTree = "<group>"; };
@@ -649,6 +675,16 @@
 		DBA0156F16D8B0B7007B2AE5 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				DBD6EDBE1748EFF4008144F0 /* Comment.png */,
+				DBD6EDBF1748EFF8008144F0 /* Comment@2x.png */,
+				DBD6EDAD1748EFB2008144F0 /* Download.png */,
+				DBD6EDAE1748EFB5008144F0 /* Download@2x.png */,
+				DBD6EDAF1748EFB9008144F0 /* Favorite.png */,
+				DBD6EDB01748EFBC008144F0 /* Favorite@2x.png */,
+				DBD6EDB11748EFC0008144F0 /* Leave-a-message.png */,
+				DBD6EDB21748EFC3008144F0 /* Leave-a-message@2x.png */,
+				DBD6EDB31748EFC7008144F0 /* Share.png */,
+				DBD6EDB41748EFCA008144F0 /* Share@2x.png */,
 				DBC7F71917457600002F61F8 /* CellHeader.png */,
 				DBC7F71A17457600002F61F8 /* CellHeader@2x.png */,
 				DBC7F71B17457600002F61F8 /* ZGLDT.png */,
@@ -787,6 +823,10 @@
 				DBA4D351171313AF0076F703 /* SettingViewController.m */,
 				DB9E20B41742B08D003B2809 /* PersonalViewController.h */,
 				DB9E20B51742B08D003B2809 /* PersonalViewController.m */,
+				DBD6EDC217490F8D008144F0 /* ActivityViewController.h */,
+				DBD6EDC317490F8D008144F0 /* ActivityViewController.m */,
+				DBD6EDC517493131008144F0 /* ActivityItemCell.h */,
+				DBD6EDC617493132008144F0 /* ActivityItemCell.m */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -1052,6 +1092,16 @@
 				DBC7F71C17457600002F61F8 /* CellHeader.png in Resources */,
 				DBC7F71D17457600002F61F8 /* CellHeader@2x.png in Resources */,
 				DBC7F71E17457600002F61F8 /* ZGLDT.png in Resources */,
+				DBD6EDB51748EFCF008144F0 /* Download.png in Resources */,
+				DBD6EDB61748EFCF008144F0 /* Download@2x.png in Resources */,
+				DBD6EDB71748EFCF008144F0 /* Favorite.png in Resources */,
+				DBD6EDB81748EFCF008144F0 /* Favorite@2x.png in Resources */,
+				DBD6EDB91748EFCF008144F0 /* Leave-a-message.png in Resources */,
+				DBD6EDBA1748EFCF008144F0 /* Leave-a-message@2x.png in Resources */,
+				DBD6EDBB1748EFCF008144F0 /* Share.png in Resources */,
+				DBD6EDBC1748EFCF008144F0 /* Share@2x.png in Resources */,
+				DBD6EDC01748EFFB008144F0 /* Comment.png in Resources */,
+				DBD6EDC11748EFFB008144F0 /* Comment@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1106,6 +1156,8 @@
 				DB9E20B61742B08D003B2809 /* PersonalViewController.m in Sources */,
 				DB9E857717438F5200B0DFE4 /* UITableView+ZGParallelView.m in Sources */,
 				DB9E857C1743B5FE00B0DFE4 /* AppDataSouce.m in Sources */,
+				DBD6EDC417490F8D008144F0 /* ActivityViewController.m in Sources */,
+				DBD6EDC717493132008144F0 /* ActivityItemCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

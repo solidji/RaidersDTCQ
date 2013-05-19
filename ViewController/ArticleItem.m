@@ -18,6 +18,8 @@
 @synthesize creator = _strCreator;
 @synthesize description = _strDescription;
 @synthesize content = _strContent;
+@synthesize userID = _strUserID;
+@synthesize articleIconURL = _strArticleIconURL;
 
 - (BOOL)isEqual:(id)anObject {
     if (![anObject isKindOfClass:[ArticleItem class]]) return NO;
@@ -37,6 +39,8 @@
         self.creator = [coder decodeObjectForKey:@"creator"];
         self.description = [coder decodeObjectForKey:@"description"];
         self.content = [coder decodeObjectForKey:@"content"];
+        self.userID = [coder decodeObjectForKey:@"userID"];
+        self.articleIconURL = [coder decodeObjectForKey:@"articleIconURL"];
     }
     return self;
 }
@@ -51,5 +55,7 @@
     [coder encodeObject:self.creator forKey:@"creator"];
     [coder encodeObject:self.description forKey:@"description"];
     [coder encodeObject:self.content forKey:@"content"];
+    [coder encodeObject:self.userID forKey:@"userID"];
+    [coder encodeObject:self.articleIconURL forKey:@"articleIconURL"];
 }
 @end

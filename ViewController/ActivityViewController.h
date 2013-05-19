@@ -1,8 +1,8 @@
 //
-//  PersonalViewController.h
+//  ActivityViewController.h
 //  AppGame
 //
-//  Created by 计 炜 on 13-5-15.
+//  Created by 计 炜 on 13-5-19.
 //  Copyright (c) 2013年 计 炜. All rights reserved.
 //
 
@@ -17,14 +17,14 @@
 #import "IADisquser.h"
 #import "IADisqusUser.h"
 
-typedef void (^PersonalRevealBlock)();
+typedef void (^ActivityRevealBlock)();
 
-@interface PersonalViewController : UIViewController <UITableViewDataSource, UITableViewDelegate> {
+@interface ActivityViewController : UIViewController <UITableViewDataSource, UITableViewDelegate> {
     NSMutableArray *following;//关注列表
     NSMutableArray *follower;//粉丝列表
     NSMutableArray *active;//动态列表
     NSMutableArray *post;//讨论列表
-
+    
     //NSMutableArray *itunesAppnames;//从苹果商店获取的游戏名数据库
     //UIActivityIndicatorView *indicator;
     
@@ -35,12 +35,11 @@ typedef void (^PersonalRevealBlock)();
     BOOL ifLoging;//是否已登录
     IADisqusUser *dUser;//个人页面的用户
     TableHeaderView *headerView;
-
+    
     PullToRefreshTableView *pullToRefreshTableView;
-    UILabel *followingLabel;
-    UILabel *followerLabel;
+    
 @private
-	PersonalRevealBlock _revealBlock;
+	ActivityRevealBlock _revealBlock;
 }
 
 //@property (nonatomic, copy) NSString *webURL;
@@ -55,10 +54,8 @@ typedef void (^PersonalRevealBlock)();
 //@property (strong, nonatomic) NSMutableArray *itunesAppnames;
 //@property (nonatomic, copy)NSString *searchStr;
 @property (nonatomic, retain) IADisquser *iaDisquser;
-@property (nonatomic, strong) UILabel *followingLabel;
-@property (nonatomic, strong) UILabel *followerLabel;
 
-- (id)initWithTitle:(NSString *)title withUser:(NSNumber *)userID withRevealBlock:(PersonalRevealBlock)revealBlock;
+- (id)initWithTitle:(NSString *)title withUser:(NSNumber *)userID withRevealBlock:(ActivityRevealBlock)revealBlock;
 
 - (void)updateThread:(NSString *)returnKey;
 - (void)updateTableView;

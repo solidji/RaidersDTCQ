@@ -18,6 +18,7 @@
 #import "RSSParser.h"
 #import "RSSItem.h"
 #import "SVWebViewController.h"
+#import "CommentViewController.h"
 
 #import "GlobalConfigure.h"
 #import "AppDataSouce.h"
@@ -32,8 +33,8 @@
 @implementation PersonalViewController
 
 @synthesize headerView;
-@synthesize pullToRefreshTableView,dUser;
-@synthesize following,follower,active;
+@synthesize pullToRefreshTableView,dUser,followingLabel,followerLabel;
+@synthesize following,follower,active,post;
 
 #pragma mark - View lifecycle
 - (id)initWithTitle:(NSString *)title withUser:(NSNumber *)userID withRevealBlock:(PersonalRevealBlock)revealBlock {
@@ -70,19 +71,31 @@
     self.following = [[NSMutableArray alloc] init];
     self.follower = [[NSMutableArray alloc] init];
     self.active = [[NSMutableArray alloc] init];
+    self.post = [[NSMutableArray alloc] init];
+    
+    dUser.numFollowing = [[NSNumber alloc] initWithInteger:0];
+    dUser.numFollowers = [[NSNumber alloc] initWithInteger:0];
+    dUser.numPosts = [[NSNumber alloc] initWithInteger:0];
+    dUser.numLikesReceived = [[NSNumber alloc] initWithInteger:0];
+    
+    followingLabel = [[UILabel alloc] init];
+    followerLabel = [[UILabel alloc] init];
+
     start = 0;
     receiveMember = 0;
     
     // #添加列表
     // 搜索结果
     [self.pullToRefreshTableView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
-    pullToRefreshTableView = [[PullToRefreshTableView alloc] initWithFrame: CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height-20-44) withType: withStateViews];
+    pullToRefreshTableView = [[PullToRefreshTableView alloc] initWithFrame: CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height-20) withType: withStateViews];
     self.pullToRefreshTableView.tag = 100000;
     pullToRefreshTableView.delegate = self;
     pullToRefreshTableView.dataSource = self;
     pullToRefreshTableView.allowsSelection = YES;
     pullToRefreshTableView.backgroundColor = [UIColor clearColor];
+    pullToRefreshTableView.backgroundColor = [UIColor colorWithRed:248.0f/255.0f green:244.0f/255.0f blue:239.0f/255.0f alpha:1.0f];
     pullToRefreshTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    pullToRefreshTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [pullToRefreshTableView setHidden:NO];
     [self.view addSubview:pullToRefreshTableView];
     
@@ -137,11 +150,11 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     NSObject *headerText = @"";
     if (section == 0) {
-        headerText = @"动态";
+        headerText = [[NSString alloc] initWithString:[NSString stringWithFormat:@"评论 %@",dUser.numPosts]];
     }else if(section == 1) {
-        headerText = @"关注";
+        headerText = [[NSString alloc] initWithString:[NSString stringWithFormat:@"关注 %@",dUser.numFollowing]];
     }else if(section == 2) {
-        headerText = @"粉丝";
+        headerText = [[NSString alloc] initWithString:[NSString stringWithFormat:@"粉丝 %@",dUser.numFollowers]];
     }
     UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
     [bgImage setImage: [UIImage imageNamed:@"CellHeader.png"]];
@@ -154,24 +167,50 @@
         textLabel.font = [UIFont fontWithName:@"Helvetica" size:([UIFont systemFontSize] * 1.0f)];
         textLabel.textColor = [UIColor whiteColor];
         textLabel.backgroundColor = [UIColor clearColor];
-        [sectionView addSubview:textLabel];        
+        [sectionView addSubview:textLabel];
     }
     return sectionView;
 }
 
 //某一行被选中,由ViewController来实现push详细页面
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (tableView.tag == 100000) {
-        if ([self.follower count] > indexPath.row) {
-            ArticleItem *aArticle = [self.follower objectAtIndex:indexPath.row];
-//            SVWebViewController *viewController = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];
-            SVWebViewController *viewController = [[SVWebViewController alloc] initWithURL:aArticle.articleURL];
+    
+    PersonalRevealBlock revealBlock = ^(){
+        [[self navigationController] popViewControllerAnimated:YES];
+    };
+    
+    if (indexPath.section == 0) {
+        if ([self.post count] > indexPath.row) {
+            ArticleItem *aArticle = [self.post objectAtIndex:indexPath.row];
+
+            CommentViewController *viewController = [[CommentViewController alloc] initWithTitle:aArticle.title withUrl:nil threadID:aArticle.userID];
             
             //NSLog(@"didSelectArticle:%@",aArticle.content);
             [self.navigationController pushViewController:viewController animated:YES];
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
         }
+    }else if(indexPath.section == 1){
+        if ([self.following count] > indexPath.row) {
+            ArticleItem *aArticle = [self.following objectAtIndex:indexPath.row];
+            PersonalViewController *viewController = [[PersonalViewController alloc] initWithTitle:aArticle.title
+                                                                                          withUser:aArticle.userID withRevealBlock:revealBlock];
+            
+            //NSLog(@"didSelectArticle:%@",aArticle.content);
+            [self.navigationController pushViewController:viewController animated:YES];
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        }
+    }else if(indexPath.section == 2){
+        if ([self.follower count] > indexPath.row) {
+            ArticleItem *aArticle = [self.follower objectAtIndex:indexPath.row];
+            PersonalViewController *viewController = [[PersonalViewController alloc] initWithTitle:aArticle.title
+                                                                                          withUser:aArticle.userID withRevealBlock:revealBlock];
+           
+            //NSLog(@"didSelectArticle:%@",aArticle.content);
+            [self.navigationController pushViewController:viewController animated:YES];
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        }
     }
+
 }
 
 #pragma mark - Table view data source
@@ -185,16 +224,24 @@
     //    CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000);
     //    CGSize size = [article sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
     
-    return 53;//计算每一个cell的高度
+    return 52;//计算每一个cell的高度
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (tableView.tag == 100000) {
-        if ([follower count] == 0) {
-            //  本方法是为了在数据为空时，让“下拉刷新”视图可直接显示，比较直观
-            tableView.contentInset = UIEdgeInsetsMake(k_STATE_VIEW_HEIGHT, 0, 0, 0);
-        }
-        return MAX(5, [follower count]);
+//    if ([post count] == 0 && [follower count] == 0 && [following count] == 0) {
+//        //  本方法是为了在数据为空时，让“下拉刷新”视图可直接显示，比较直观
+//        tableView.contentInset = UIEdgeInsetsMake(k_STATE_VIEW_HEIGHT, 0, 0, 0);
+//    }
+
+    if (section == 0) {
+        //return MIN(5, [follower count]);
+        return [post count];
+    }else if (section == 1) {
+                //return MIN(5, [follower count]);
+        return [following count];
+    }else if (section == 2) {
+        //return MIN(5, [follower count]);
+        return [follower count];
     }
     return 5;
 }
@@ -207,7 +254,54 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     //NSLog(@"tag:%ld", (long)tableView.tag);
-    if (tableView.tag == 100000) {
+    if (indexPath.section == 0) {
+        // Leave cells empty if there's no data yet
+        if ([self.post count] > 0) {
+            // Set up the cell...
+            if (indexPath.row+1 > [self.post count]) {
+                cell.nameLabel.text = @"";
+                cell.imageView.image = [UIImage imageNamed:@"IconPlaceholder.png"];
+                [cell.imageView setHidden:YES];
+            }else {
+                ArticleItem *aArticle = [self.post objectAtIndex:indexPath.row];
+                cell.nameLabel.text = aArticle.description;
+                cell.articleLabel.text = @"";
+                cell.imageView.image = [UIImage imageNamed:@"Leave-a-message.png"];
+//                [cell.imageView setImageWithURL:aArticle.iconURL
+//                               placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
+                
+                //[cell.nameLabel setFrame:CGRectMake(8.0, 16.0, 320.0-16.0, 20.0)];
+                [cell.imageView setHidden:NO];
+            }
+        }else {
+            cell.nameLabel.text = @"";
+            cell.imageView.image = [UIImage imageNamed:@"IconPlaceholder.png"];
+            [cell.imageView setHidden:YES];
+        }
+    }else if(indexPath.section == 1) {
+        // Leave cells empty if there's no data yet
+        if ([self.following count] > 0) {
+            // Set up the cell...
+            if (indexPath.row+1 > [self.following count]) {
+                cell.nameLabel.text = @"";
+                cell.imageView.image = [UIImage imageNamed:@"IconPlaceholder.png"];
+                [cell.imageView setHidden:YES];
+            }else {
+                ArticleItem *aArticle = [self.following objectAtIndex:indexPath.row];
+                cell.nameLabel.text = aArticle.title;
+                cell.articleLabel.text = aArticle.description;
+                [cell.imageView setImageWithURL:aArticle.iconURL
+                               placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
+                
+                //[cell.nameLabel setFrame:CGRectMake(8.0, 16.0, 320.0-16.0, 20.0)];
+                [cell.imageView setHidden:NO];
+            }
+        }else {
+            cell.nameLabel.text = @"";
+            cell.imageView.image = [UIImage imageNamed:@"IconPlaceholder.png"];
+            [cell.imageView setHidden:YES];
+        }
+    }else if(indexPath.section == 2) {
         // Leave cells empty if there's no data yet
         if ([self.follower count] > 0) {
             // Set up the cell...
@@ -218,11 +312,12 @@
             }else {
                 ArticleItem *aArticle = [self.follower objectAtIndex:indexPath.row];
                 cell.nameLabel.text = aArticle.title;
+                cell.articleLabel.text = aArticle.description;
                 [cell.imageView setImageWithURL:aArticle.iconURL
                                placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
                 
-                [cell.nameLabel setFrame:CGRectMake(8.0, 16.0, 320.0-16.0, 20.0)];
-                [cell.imageView setHidden:YES];
+                //[cell.nameLabel setFrame:CGRectMake(8.0, 16.0, 320.0-16.0, 20.0)];
+                [cell.imageView setHidden:NO];
             }
         }else {
             cell.nameLabel.text = @"";
@@ -242,7 +337,9 @@
         switch ([returnKey intValue]) {
             case k_RETURN_REFRESH:
             {
-                [follower removeAllObjects];
+//                [follower removeAllObjects];
+//                [following removeAllObjects];
+//                [post removeAllObjects];
                 start = 0;
                 [self performSelectorOnMainThread:@selector(getArticles) withObject:nil waitUntilDone:NO];
                 
@@ -250,9 +347,9 @@
             }
             case k_RETURN_LOADMORE:
             {
-                start = [self.follower count]/20 + 1;
+                //start = [self.follower count]/20 + 1;
                 
-                [self performSelectorOnMainThread:@selector(getArticles) withObject:nil waitUntilDone:NO];
+                //[self performSelectorOnMainThread:@selector(getArticles) withObject:nil waitUntilDone:NO];
                 break;
             }
             default:
@@ -262,21 +359,21 @@
     [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
 }
 
-- (void)updateThreadHotkey:(NSString *)returnKey{
-    @autoreleasepool {
-        sleep(2);
-        switch ([returnKey intValue]) {
-            case k_RETURN_REFRESH:
-            {
-                start = 0;                
-                break;
-            }
-            default:
-                break;
-        }
-    }
-    [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
-}
+//- (void)updateThreadHotkey:(NSString *)returnKey{
+//    @autoreleasepool {
+//        sleep(2);
+//        switch ([returnKey intValue]) {
+//            case k_RETURN_REFRESH:
+//            {
+//                start = 0;                
+//                break;
+//            }
+//            default:
+//                break;
+//        }
+//    }
+//    [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
+//}
 
 - (void)updateTableView
 {
@@ -292,6 +389,33 @@
         //如果已全部加载，则传入YES
         [pullToRefreshTableView reloadData:YES];
     }
+    
+    UIImageView *avatarImage=[[UIImageView alloc] initWithFrame:CGRectMake(18, 110, 53, 53)];
+    [avatarImage.layer setMasksToBounds:YES];
+    [avatarImage.layer setOpaque:NO];
+    [avatarImage.layer setCornerRadius:0.5];
+    
+    [avatarImage setImageWithURL:[NSURL URLWithString:kDataSource.userObject.authorAvatar]
+                placeholderImage:[UIImage imageNamed:@""]];
+    [pullToRefreshTableView addSubview:avatarImage];
+    
+    [followingLabel setTextColor:[UIColor whiteColor]];//[UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0]];
+    [followingLabel setFont:[UIFont fontWithName:@"Helvetica" size:20.0]];
+    [followingLabel setBackgroundColor:[UIColor clearColor]];
+    [followingLabel setLineBreakMode:NSLineBreakByTruncatingTail];
+    [followingLabel setNumberOfLines:1];
+    followingLabel.text = [[NSString alloc] initWithString:[NSString stringWithFormat:@"关注 %d",[dUser.numFollowing intValue]]];
+    [followingLabel setFrame:CGRectMake(250.0-80.0, 70.0, 320.0-250.0, 40.0)];
+    [pullToRefreshTableView addSubview:followingLabel];
+    
+    [followerLabel setTextColor:[UIColor whiteColor]];//:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0]];
+    [followerLabel setFont:[UIFont fontWithName:@"Helvetica" size:20.0]];
+    [followerLabel setBackgroundColor:[UIColor clearColor]];
+    [followerLabel setLineBreakMode:NSLineBreakByTruncatingTail];
+    [followerLabel setNumberOfLines:1];
+    followerLabel.text = [[NSString alloc] initWithString:[NSString stringWithFormat:@"粉丝 %d",[dUser.numFollowers intValue]]];
+    [followerLabel setFrame:CGRectMake(250.0, 70.0, 320.0-250.0, 40.0)];
+    [pullToRefreshTableView addSubview:followerLabel];
 }
 
 #pragma mark -
@@ -336,70 +460,20 @@
     //[pullToRefreshTableView setHidden:YES];
     [alerViewManager showMessage:@"正在加载数据" inView:self.view];
     
-    NSMutableArray *article = [NSMutableArray array];
-    
     IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];
     
-    if ([dUser.userID isEqualToNumber:[NSNumber numberWithInt:-1]]) {
+    //if ([dUser.userID isEqualToNumber:[NSNumber numberWithInt:-1]]) {
         // make the parameters dictionary
-        NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
+    
+    NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
                                     kDataSource.credentialObject.accessToken, @"access_token",
                                     //DISQUS_API_SECRET, @"api_secret",
                                     DISQUS_API_PUBLIC,@"api_key",
-                                    //dUser.userID, @"user",
+                                    dUser.userID, @"user",
                                     nil];
         
-        // send the request
-        [iaDisquser getUsersActivity:parameters
-                              success:^(NSDictionary *responseDictionary){
-                                  // check the code (success is 0)
-                                  NSNumber *code = [responseDictionary objectForKey:@"code"];
-                                  
-                                  if ([code integerValue] != 0) {   // there's an error
-                                      NSLog(@"disqus动态列表异常");
-                                  }else {
-                                      NSArray *responseArray = [responseDictionary objectForKey:@"response"];
-                                      if ([responseArray count] != 0) {
-                                          for (NSDictionary *followingDic in responseArray) {                                              
-                                              //[self performSelector:@selector(showWelcome) withObject:nil afterDelay:2.4];
-                                              ArticleItem *articleItem = [[ArticleItem alloc] init];
-                                              
-                                              articleItem.title = [[followingDic objectForKey:@"object"] objectForKey:@"raw_message"];
-                                              articleItem.content = [[[followingDic objectForKey:@"object"] objectForKey:@"thread"] objectForKey:@"title"];
-                                              articleItem.creator = [[[followingDic objectForKey:@"object"] objectForKey:@"author"] objectForKey:@"name"];
-                                              articleItem.articleURL = [NSURL URLWithString:[[[followingDic objectForKey:@"object"] objectForKey:@"thread"] objectForKey:@"link"]];
-                                              
-                                              NSLog(@"disqus动态列表:%@,%@", articleItem.title, articleItem.creator);
-                                              
-                                              [article addObject:articleItem];
-                                          }
-                                      }
-                                  }
-                                  [follower removeAllObjects];
-                                  follower = article;
-                                  [alerViewManager dismissMessageView:self.view];
-                                  // reload the table
-                                  [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
-                              }
-                                 fail:^(NSError *error) {
-                                     NSLog(@"disqus动态列表获取失败:%@",error);
-                                     if ([pullToRefreshTableView isHidden])
-                                     {
-                                         [pullToRefreshTableView setHidden:NO];
-                                     }
-                                     [alerViewManager dismissMessageView:self.view];
-                                     [alerViewManager showOnlyMessage:@"请求数据失败" inView:self.view];
-                                     
-                                     [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
-                                 }];
-    }else {
+    NSMutableArray *articleFollowing = [NSMutableArray array];
     // make the parameters dictionary
-    NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
-                                kDataSource.credentialObject.accessToken, @"access_token",
-                                //DISQUS_API_SECRET, @"api_secret",
-                                DISQUS_API_PUBLIC,@"api_key",
-                                dUser.userID, @"user",
-                                nil];
     
     // send the request
     [iaDisquser getUsersFollowing:parameters
@@ -414,18 +488,25 @@
                                 if ([responseArray count] != 0) {
                                     for (NSDictionary *followingDic in responseArray) {
                                         IADisqusUser *followingGuy = [[IADisqusUser alloc] init];
-                                        followingGuy.userID = [followingDic objectForKey:@"id"];
+                                        followingGuy.userID = [NSNumber numberWithInteger:[[followingDic objectForKey:@"id"] integerValue]];
                                         followingGuy.name = [followingDic objectForKey:@"name"];
+                                        followingGuy.about = [followingDic objectForKey:@"about"];
+                                        followingGuy.authorAvatar = [[[followingDic objectForKey:@"avatar"] objectForKey:@"small"] objectForKey:@"cache"];
+
                                         NSLog(@"disqus关注列表:%@,%@", followingGuy.name, followingGuy.userID);
                                         //[self performSelector:@selector(showWelcome) withObject:nil afterDelay:2.4];
                                         ArticleItem *articleItem = [[ArticleItem alloc] init];
-                                        articleItem.title = followingGuy.name;
-                                        [article addObject:articleItem];
+                                        articleItem.title = [followingGuy.name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                                        articleItem.description = followingGuy.about;
+                                        articleItem.userID = followingGuy.userID;
+                                        articleItem.iconURL = [NSURL URLWithString:[followingGuy.authorAvatar stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                                        [articleFollowing addObject:articleItem];
                                     }
                                 }
                             }
-                            [follower removeAllObjects];
-                            follower = article;
+                            [following removeAllObjects];
+                            following = articleFollowing;
+                            dUser.numFollowing = [NSNumber numberWithInt:[following count]];
                             [alerViewManager dismissMessageView:self.view];
                             // reload the table
                             [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
@@ -441,7 +522,104 @@
                                
                                [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
                            }];
-    }
+
+
+
+    NSMutableArray *articleFollowers = [NSMutableArray array];
+    // send the request
+    [iaDisquser getUsersFollowers:parameters
+                          success:^(NSDictionary *responseDictionary){
+                              // check the code (success is 0)
+                              NSNumber *code = [responseDictionary objectForKey:@"code"];
+                              
+                              if ([code integerValue] != 0) {   // there's an error
+                                  NSLog(@"disqus粉丝列表异常");
+                              }else {
+                                  NSArray *responseArray = [responseDictionary objectForKey:@"response"];
+                                  if ([responseArray count] != 0) {
+                                      for (NSDictionary *followingDic in responseArray) {
+                                          IADisqusUser *followingGuy = [[IADisqusUser alloc] init];
+                                          followingGuy.userID = [followingDic objectForKey:@"id"];
+                                          followingGuy.name = [followingDic objectForKey:@"name"];
+                                          followingGuy.about = [followingDic objectForKey:@"about"];
+                                          followingGuy.authorAvatar = [[[followingDic objectForKey:@"avatar"] objectForKey:@"small"] objectForKey:@"cache"];
+                                          
+                                          NSLog(@"disqus粉丝列表:%@,%@", followingGuy.name, followingGuy.userID);
+                                          //[self performSelector:@selector(showWelcome) withObject:nil afterDelay:2.4];
+                                          ArticleItem *articleItem = [[ArticleItem alloc] init];
+                                          articleItem.title = [followingGuy.name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                                          articleItem.description = followingGuy.about;
+                                          articleItem.userID = followingGuy.userID;
+                                          articleItem.iconURL = [NSURL URLWithString:[followingGuy.authorAvatar stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                                          [articleFollowers addObject:articleItem];
+                                      }
+                                  }
+                              }
+                              [follower removeAllObjects];
+                              follower = articleFollowers;
+                              dUser.numFollowers = [NSNumber numberWithInt:[follower count]];
+                              [alerViewManager dismissMessageView:self.view];
+                              // reload the table
+                              [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
+                          }
+                             fail:^(NSError *error) {
+                                 NSLog(@"disqus粉丝列表获取失败:%@",error);
+                                 if ([pullToRefreshTableView isHidden])
+                                 {
+                                     [pullToRefreshTableView setHidden:NO];
+                                 }
+                                 [alerViewManager dismissMessageView:self.view];
+                                 [alerViewManager showOnlyMessage:@"请求数据失败" inView:self.view];
+                                 
+                                 [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
+                             }];
+    
+    NSMutableArray *articlePosts = [NSMutableArray array];
+    // send the request
+    [iaDisquser getUsersPosts:parameters
+                          success:^(NSDictionary *responseDictionary){
+                              // check the code (success is 0)
+                              NSNumber *code = [responseDictionary objectForKey:@"code"];
+                              
+                              if ([code integerValue] != 0) {   // there's an error
+                                  NSLog(@"disqus评论列表异常");
+                              }else {
+                                  NSArray *responseArray = [responseDictionary objectForKey:@"response"];
+                                  if ([responseArray count] != 0) {
+                                      for (NSDictionary *followingDic in responseArray) {
+                                          //[self performSelector:@selector(showWelcome) withObject:nil afterDelay:2.4];
+                                          ArticleItem *articleItem = [[ArticleItem alloc] init];
+                                          
+                                          articleItem.userID = [followingDic objectForKey:@"thread"];
+                                          articleItem.description = [followingDic objectForKey:@"raw_message"];
+                                          articleItem.creator = [[followingDic objectForKey:@"author"] objectForKey:@"name"];
+                                          articleItem.title = [[[followingDic objectForKey:@"author"] objectForKey:@"name"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                                          articleItem.iconURL = [NSURL URLWithString:[[[[followingDic objectForKey:@"author"] objectForKey:@"avatar"] objectForKey:@"cache"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                                          
+                                          NSLog(@"disqus评论列表:%@,%@", articleItem.title, articleItem.creator);
+                                          [articlePosts addObject:articleItem];
+                                      }
+                                  }
+                              }
+                              [post removeAllObjects];
+                              post = articlePosts;
+                              dUser.numPosts = [NSNumber numberWithInt:[post count]];
+                              [alerViewManager dismissMessageView:self.view];
+                              // reload the table
+                              [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
+                          }
+                             fail:^(NSError *error) {
+                                 NSLog(@"disqus粉评论列表获取失败:%@",error);
+                                 if ([pullToRefreshTableView isHidden])
+                                 {
+                                     [pullToRefreshTableView setHidden:NO];
+                                 }
+                                 [alerViewManager dismissMessageView:self.view];
+                                 [alerViewManager showOnlyMessage:@"请求数据失败" inView:self.view];
+                                 
+                                 [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
+                             }];
+
 }
 
 @end

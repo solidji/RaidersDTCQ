@@ -10,6 +10,6 @@
 
 @implementation IADisqusUser
 
-@synthesize username, about, name, numPosts, url, profileUrl, reputation, location, joinedAt, userID, authorAvatar;
+@synthesize username, about, name, numPosts, url, profileUrl, reputation, location, joinedAt, userID, authorAvatar,numFollowers,numFollowing,numLikesReceived;
 
 @end

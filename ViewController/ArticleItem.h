@@ -11,24 +11,30 @@
 @interface ArticleItem : NSObject {
 @private
     
-    NSURL    *_strArticleURL;           //文章url
-    NSString *_strTitle;                //文章标题
-    NSURL    *_strIconURL;              //缩略图url
-    NSString *_strCategory;             //文章分类
+    NSString *_strTitle;                //文章标题    
+    NSString *_strCategory;             //文章分类 type
     NSDate   *_strPubDate;              //发布日期
-    NSString *_strCreator;              //文章作者
+    
+    NSURL    *_strArticleURL;           //文章url
+    NSURL    *_strArticleIconURL;       //文章缩略图url
     NSString *_strDescription;          //文章描述
     NSString *_strContent;              //文章正文
+    
+    NSString *_strCreator;              //文章作者
+    NSURL    *_strIconURL;              //作者头像url
+    NSNumber *_strUserID;               //关注与粉丝列表中的用户ID,既文章作者ID
 }
 
 @property (nonatomic, strong) NSURL *articleURL;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, strong) NSURL *iconURL;
+@property (nonatomic, strong) NSURL *articleIconURL;
 @property (nonatomic, copy) NSString *category;
 @property (nonatomic, strong) NSDate *pubDate;
 @property (nonatomic, copy) NSString *creator;
 @property (nonatomic, copy) NSString *description;
 @property (nonatomic, copy) NSString *content;
+@property (nonatomic, strong) NSNumber *userID;
 
 - (BOOL)isEqual:(id)anObject;
 

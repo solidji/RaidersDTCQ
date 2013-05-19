@@ -112,6 +112,26 @@
                   }];
 }
 
+- (void)getUsersFollowers:(NSDictionary *)parameters success:(DisqusResponses)successBlock fail:(DisqusFail)failBlock{
+    
+    // make a http client for disqus
+    AFHTTPClient *disqusClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:DISQUS_BASE_URL]];
+    
+    // make and send a get request
+    [disqusClient getPath:@"users/listFollowers.json"
+               parameters:parameters
+                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                      // fetch the json response to a dictionary
+                      NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+                      // pass it to the block
+                      successBlock(responseDictionary);
+                  }
+                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                      // pass error to the block
+                      failBlock(error);
+                  }];
+}
+
 - (void)getUsersActivity:(NSDictionary *)parameters success:(DisqusResponses)successBlock fail:(DisqusFail)failBlock{
     
     // make a http client for disqus
@@ -119,6 +139,26 @@
     
     // make and send a get request
     [disqusClient getPath:@"users/listActivity.json"
+               parameters:parameters
+                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                      // fetch the json response to a dictionary
+                      NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+                      // pass it to the block
+                      successBlock(responseDictionary);
+                  }
+                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                      // pass error to the block
+                      failBlock(error);
+                  }];
+}
+
+- (void)getUsersPosts:(NSDictionary *)parameters success:(DisqusResponses)successBlock fail:(DisqusFail)failBlock{
+    
+    // make a http client for disqus
+    AFHTTPClient *disqusClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:DISQUS_BASE_URL]];
+    
+    // make and send a get request
+    [disqusClient getPath:@"users/listPosts.json"
                parameters:parameters
                   success:^(AFHTTPRequestOperation *operation, id responseObject) {
                       // fetch the json response to a dictionary

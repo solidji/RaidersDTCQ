@@ -17,6 +17,7 @@
 #import "APService.h"
 #import "SettingViewController.h"
 #import "PersonalViewController.h"
+#import "ActivityViewController.h"
 
 #import "AppDataSouce.h"//for login
 #import "GlobalConfigure.h"
@@ -114,9 +115,9 @@
 		@"任玩堂"
 	];
 	NSArray *controllers = @[
-		@[
-      [[UINavigationController alloc] initWithRootViewController:[[PersonalViewController alloc] initWithTitle:@"主页" withUser:[NSNumber numberWithInt:-1] withRevealBlock:revealBlock]],
-      [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"资讯" withUrl:@"http://bbs.appgame.com/" withRevealBlock:revealBlock]],
+		@[//[NSNumber numberWithInt:-1]
+      [[UINavigationController alloc] initWithRootViewController:[[ActivityViewController alloc] initWithTitle:@"主页" withUser:nil withRevealBlock:revealBlock]],
+      [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"资讯" withUrl:@"http://www.appgame.com/feed?paged=%@" withRevealBlock:revealBlock]],
       [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"热门" withUrl:@"http://gl.appgame.com/hot-games.html" withRevealBlock:revealBlock]],
       [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"收藏" withUrl:@"Favorites" withRevealBlock:revealBlock]],
       
@@ -215,12 +216,13 @@
                                                           if ([responseArray count] != 0) {
                                                               kDataSource.userObject.name = [responseArray objectForKey:@"name"];
                                                               kDataSource.userObject.userID = [responseArray objectForKey:@"id"];
-                                                              kDataSource.userObject.authorAvatar = [[[responseArray objectForKey:@"avatar"] objectForKey:@"small"] objectForKey:@"cache"];
+                                                              kDataSource.userObject.authorAvatar = [[[responseArray objectForKey:@"avatar"] objectForKey:@"large"] objectForKey:@"cache"];
                                                               NSLog(@"disqus账户信息:%@,%@,%@", kDataSource.userObject.name, kDataSource.userObject.authorAvatar,kDataSource.userObject.userID);
                                                               //                                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"欢迎回来" message:[NSString stringWithFormat: @"您好 %@", kDataSource.userObject.name] delegate:self cancelButtonTitle:@"好!" otherButtonTitles:nil];
                                                               //                                                 [alert show];
+                                                              [self.menuController reloadTable];//刷新侧边栏头像
+                                                              
                                                               [self performSelector:@selector(showWelcome) withObject:nil afterDelay:2.4];
-                                                              [self.menuController reloadTable];
                                                           }
                                                       }
                                                   }
