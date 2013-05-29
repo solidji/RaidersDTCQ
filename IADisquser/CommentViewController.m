@@ -40,7 +40,7 @@
         hasNext = false;
         
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        leftButton.frame = CGRectMake(0, 0, 49, 25);
+        leftButton.frame = CGRectMake(0, 0, 45, 33);
         [leftButton setBackgroundImage:[UIImage imageNamed:@"menu.png"] forState:UIControlStateNormal];
         [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -86,16 +86,16 @@
     
     pullToRefreshTableView = [[PullToRefreshTableView alloc] initWithFrame: CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height-20) withType: withStateViews];
     
+    [self.pullToRefreshTableView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
     pullToRefreshTableView.delegate = self;
     pullToRefreshTableView.dataSource = self;
     pullToRefreshTableView.allowsSelection = YES;
     pullToRefreshTableView.backgroundColor = [UIColor clearColor];
+    pullToRefreshTableView.backgroundColor = [UIColor colorWithRed:248.0f/255.0f green:244.0f/255.0f blue:239.0f/255.0f alpha:1.0f];
     pullToRefreshTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [pullToRefreshTableView setHidden:YES];
+    pullToRefreshTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    [pullToRefreshTableView setHidden:NO];
     [self.view addSubview:pullToRefreshTableView];
-    
-    // set view's interface
-    [self.pullToRefreshTableView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
     
     //UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(getarticles)];
     //[self.navigationItem setRightBarButtonItem:refresh];
@@ -148,11 +148,11 @@
 #pragma mark - Table view data source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    //    NSString *article = [(ArticleItem *)[self.articles objectAtIndex:indexPath.row] description];
-    //    CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000);
-    //    CGSize size = [article sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
+    IADisqusComment *comment = (IADisqusComment *)[self.comments objectAtIndex:indexPath.row];
+    CGSize constraint = CGSizeMake(320.0f - 52.0f, 20000);
+    CGSize size = [comment.rawMessage sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:13] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
     
-    return 62;//计算每一个cell的高度
+    return MAX(size.height, 18.0f) + 34.0f;//计算每一个cell的高度
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -199,13 +199,10 @@
         [cell.imageView setImageWithURL:[NSURL URLWithString:aComment.authorAvatar]
                        placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
         
-        [cell.nameLabel setFrame:CGRectMake(8.0+46.0+8.0, 16.0, 320.0-16.0-46.0, 20.0)];
-        [cell.imageView setFrame:CGRectMake(8.0, 8.0, 46.0, 46.0)];
-        [cell.articleLabel setFrame:CGRectMake(8.0+46.0+8.0, 9.0, 320.0-16.0-46.0-8.0, 30.0)];
-        [cell.dateLabel setFrame:CGRectMake(8.0+46.0+8.0, 40.0, 100.0, 14.0)];
-        [cell.creatorLabel setFrame:CGRectMake(8.0+46.0+8.0+8.0+100, 40.0, 100.0, 14.0)];
-        [cell.nameLabel setHidden:YES];
-        
+        CGSize constraint = CGSizeMake(320.0f-52.0f, 20000);
+        CGSize size = [cell.articleLabel.text sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:13] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+        [cell.articleLabel setFrame:CGRectMake(8.0+36.0+8.0, 26.0, 320.0-16.0-36.0-8.0, MAX(size.height, 18.0f))];
+
     }
     
     return cell;

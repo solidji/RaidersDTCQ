@@ -598,7 +598,7 @@
     
     CommentViewController *viewController = [[CommentViewController alloc] initWithTitle:self.htmlString.title withUrl:[self.htmlString.articleURL absoluteString] threadID:[NSNumber numberWithInteger:-1]];
     
-    [self.navigationController pushViewController:viewController animated:YES];    
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 - (void)doneButtonClicked:(id)sender {

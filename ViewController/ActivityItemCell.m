@@ -6,18 +6,19 @@
 //  Copyright (c) 2013年 计 炜. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "ActivityItemCell.h"
 
 @implementation ActivityItemCell
 
-@synthesize imageView, imageType, imageCreator, dateLabel, articleLabel, creatorLabel;
+@synthesize imageView, imageType, imageCreator, dateLabel, articleLabel, creatorLabel, personalButton;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
-
+        
         articleLabel = [[UILabel alloc] init];
         [articleLabel setTextColor:[UIColor colorWithRed:0.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0]];
         [articleLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:14.0]];//每行高度20
@@ -30,25 +31,38 @@
         [dateLabel setTextColor:[UIColor colorWithRed:136.0/255.0 green:136.0/255.0 blue:136.0/255.0 alpha:1.0]];
         [dateLabel setFont:[UIFont fontWithName:@"Helvetica" size:11.0]];//每行高度14
         [dateLabel setBackgroundColor:[UIColor clearColor]];
+        [dateLabel setLineBreakMode:NSLineBreakByTruncatingTail];
+        [dateLabel setNumberOfLines:1];
         [self.contentView addSubview:dateLabel];
         
         creatorLabel = [[UILabel alloc] init];
         [creatorLabel setTextColor:[UIColor colorWithRed:136.0/255.0 green:136.0/255.0 blue:136.0/255.0 alpha:1.0]];
         [creatorLabel setFont:[UIFont fontWithName:@"Helvetica" size:11.0]];//每行高度14
         [creatorLabel setBackgroundColor:[UIColor clearColor]];
+        [creatorLabel setLineBreakMode:NSLineBreakByTruncatingTail];
+        [creatorLabel setNumberOfLines:1];
         [self.contentView addSubview:creatorLabel];
         
         imageView = [[UIImageView alloc] init];
         [imageView setContentMode:UIViewContentModeScaleToFill];
         [imageView setBackgroundColor:[UIColor clearColor]];//lightGrayColor
-        //        [imageView.layer setMasksToBounds:YES];
-        //        [imageView.layer setOpaque:NO];
-        //        [imageView.layer setCornerRadius:5.0];
+        [imageView.layer setMasksToBounds:YES];
+        [imageView.layer setOpaque:NO];
+        [imageView setBackgroundColor:[UIColor clearColor]];
+        [imageView.layer setBorderColor: [[UIColor whiteColor] CGColor]];
+        [imageView.layer setBorderWidth: 2.0];
+        [imageView.layer setCornerRadius:23.0];
         [self.contentView addSubview:imageView];
         
         imageCreator = [[UIImageView alloc] init];
         [imageCreator setContentMode:UIViewContentModeScaleToFill];
         [imageCreator setBackgroundColor:[UIColor clearColor]];//lightGrayColor
+        [imageCreator.layer setMasksToBounds:YES];
+        [imageCreator.layer setOpaque:NO];
+        [imageCreator setBackgroundColor:[UIColor clearColor]];
+        [imageCreator.layer setBorderColor: [[UIColor whiteColor] CGColor]];
+        [imageCreator.layer setBorderWidth: 1.0];
+        [imageCreator.layer setCornerRadius:16.0];
         [self.contentView addSubview:imageCreator];
         
         //增加上下分割线
@@ -90,7 +104,13 @@
         [imageType setBackgroundColor:[UIColor clearColor]];//lightGrayColor
         [self.contentView addSubview:imageType];
         
-        [self.contentView bringSubviewToFront:imageType];
+        //[self.contentView bringSubviewToFront:imageType];
+        
+        personalButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        personalButton.backgroundColor = [UIColor clearColor];
+        personalButton.userInteractionEnabled = YES;
+        [self addSubview:personalButton];
+        //[self.contentView bringSubviewToFront:personalButton];
     }
     return self;
 }
@@ -113,6 +133,7 @@
     [imageView setFrame:CGRectMake(17.0, 17.0, 46.0, 46.0)];
     [imageType setFrame:CGRectMake(72.5, 32.0, 15.0, 15.0)];
     [imageCreator setFrame:CGRectMake(105.0, 40.0, 32.0, 32.0)];
+    [personalButton setFrame:CGRectMake(105.0, 40.0, 320.0-105.0, 40.0)];
 }
 
 @end

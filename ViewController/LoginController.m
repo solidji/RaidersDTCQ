@@ -15,7 +15,12 @@
 #import "LoginController.h"
 #import "LoginInfo.h"
 #import "SVWebViewController.h"
+
+#import "AppDataSouce.h"//for login
+#import "GlobalConfigure.h"
+#import "IADisqusUser.h"
 #import "IADisquser.h"
+#import "IADisqusConfig.h"
 
 @interface LoginController ()
 - (void)onLogin:(QButtonElement *)buttonElement;
@@ -45,8 +50,8 @@
     [super viewWillAppear:animated];
     //self.navigationController.navigationBar.tintColor = [UIColor redColor];//[UIColor colorWithRed:187.0/255.0 green:18.0/255.0 blue:30.0/255.0 alpha:1.0000];
     UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    leftButton.frame = CGRectMake(0, 0, 49, 25);
-    [leftButton setBackgroundImage:[UIImage imageNamed:@"Set-up-red.png"] forState:UIControlStateNormal];
+    leftButton.frame = CGRectMake(0, 0, 45, 33);
+    [leftButton setBackgroundImage:[UIImage imageNamed:@"menu.png"] forState:UIControlStateNormal];
     //[leftButton setBackgroundColor:[UIColor redColor]];
     [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -78,16 +83,60 @@
     [self.root fetchValueUsingBindingsIntoObject:info];
     [self performSelector:@selector(loginCompleted:) withObject:info afterDelay:2];
     
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     self.iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];
     [self.iaDisquser loginWithUsername:info.login password:info.password
                           success:^(AFOAuthCredential *credential) {
                               [self loading:NO];
+                              kDataSource.credentialObject = credential;
+                              [standardDefaults setValue:credential.accessToken forKey:kAccessToken];
+                              [standardDefaults setBool:YES forKey:kIfLogin];
+                              
+                              // make the parameters dictionary
+                              NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                          kDataSource.credentialObject.accessToken, @"access_token",
+                                                          //DISQUS_API_SECRET, @"api_secret",
+                                                          DISQUS_API_PUBLIC,@"api_key",
+                                                          //@"", @"user",
+                                                          nil];
+                              
+                              // send the request
+                              [iaDisquser getUsersDetails:parameters
+                                                  success:^(NSDictionary *responseDictionary){
+                                                      // check the code (success is 0)
+                                                      NSNumber *code = [responseDictionary objectForKey:@"code"];
+                                                      
+                                                      if ([code integerValue] != 0) {   // there's an error
+                                                          NSLog(@"disqus账户信息异常");
+                                                      }else {
+                                                          NSDictionary *responseArray = [responseDictionary objectForKey:@"response"];
+                                                          if ([responseArray count] != 0) {
+                                                              kDataSource.userObject.name = [responseArray objectForKey:@"name"];
+                                                              kDataSource.userObject.about = [responseArray objectForKey:@"about"];
+                                                              
+                                                              kDataSource.userObject.numFollowers = [responseArray objectForKey:@"numFollowers"];
+                                                              kDataSource.userObject.numFollowing = [responseArray objectForKey:@"numFollowing"];
+                                                              kDataSource.userObject.numPosts = [responseArray objectForKey:@"numPosts"];
+                                                              kDataSource.userObject.numLikesReceived = [responseArray objectForKey:@"numLikesReceived"];
+                                                              kDataSource.userObject.userID = [responseArray objectForKey:@"id"];
+                                                              kDataSource.userObject.authorAvatar = [[[responseArray objectForKey:@"avatar"] objectForKey:@"large"] objectForKey:@"cache"];
+                                                              NSLog(@"disqus账户信息:%@,%@,%@", kDataSource.userObject.name, kDataSource.userObject.authorAvatar,kDataSource.userObject.userID);
+                                                              //                                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"欢迎回来" message:[NSString stringWithFormat: @"您好 %@", kDataSource.userObject.name] delegate:self cancelButtonTitle:@"好!" otherButtonTitles:nil];
+                                                              //                                                 [alert show];
+                                                              [kDataSource.menuController reloadTable];//刷新侧边栏头像
+                                                          }
+                                                      }
+                                                  }
+                                                     fail:^(NSError *error) {
+                                                         NSLog(@"disqus账户信息获取失败:%@",error);
+                                                     }];
+
                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"登录成功" message:[NSString stringWithFormat: @"您好 %@", credential.username] delegate:self cancelButtonTitle:@"好!" otherButtonTitles:nil];
                               [alert show];
                           }
                           fail:^(NSError *error) {
                               [self loading:NO];
-                              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"登录失败" message:[NSString stringWithFormat: @"%@,请检查网络与用户名密码", info.login] delegate:self cancelButtonTitle:@"好" otherButtonTitles:nil];
+                              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"登录失败" message:[NSString stringWithFormat: @"%@,请检查用户名密码", info.login] delegate:self cancelButtonTitle:@"好" otherButtonTitles:nil];
                               [alert show];
                           }];
 }

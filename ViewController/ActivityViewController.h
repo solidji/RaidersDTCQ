@@ -37,6 +37,7 @@ typedef void (^ActivityRevealBlock)();
     TableHeaderView *headerView;
     
     PullToRefreshTableView *pullToRefreshTableView;
+    UIImageView *avatarImage;
     
 @private
 	ActivityRevealBlock _revealBlock;
@@ -54,6 +55,7 @@ typedef void (^ActivityRevealBlock)();
 //@property (strong, nonatomic) NSMutableArray *itunesAppnames;
 //@property (nonatomic, copy)NSString *searchStr;
 @property (nonatomic, retain) IADisquser *iaDisquser;
+@property (nonatomic, strong) UIImageView *avatarImage;
 
 - (id)initWithTitle:(NSString *)title withUser:(NSNumber *)userID withRevealBlock:(ActivityRevealBlock)revealBlock;
 

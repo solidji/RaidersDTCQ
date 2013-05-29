@@ -36,7 +36,7 @@
         _revealBlock = [revealBlock copy];
         
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        leftButton.frame = CGRectMake(0, 0, 49, 25);
+        leftButton.frame = CGRectMake(0, 0, 45, 33);
         [leftButton setBackgroundImage:[UIImage imageNamed:@"menu.png"] forState:UIControlStateNormal];
         [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -56,7 +56,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor colorWithRed:234.0/255 green:234.0/255 blue:234.0/255 alpha:1.0];
+    self.view.backgroundColor = [UIColor colorWithRed:237.0f/255 green:237.0f/255 blue:237.0f/255 alpha:1.0];
     articles = [[NSMutableArray alloc] init];
     start = 0;
     receiveMember = 0;
@@ -66,18 +66,17 @@
     //    pullToRefreshTableView.backgroundColor = [UIColor clearColor];
     //    [self.view addSubview:pullToRefreshTableView];
     
-    pullToRefreshTableView = [[PullToRefreshTableView alloc] initWithFrame: CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height-40-20) withType: withStateViews];
-    
+    [self.pullToRefreshTableView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
+    pullToRefreshTableView = [[PullToRefreshTableView alloc] initWithFrame: CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height-20) withType: withStateViews];
     pullToRefreshTableView.delegate = self;
     pullToRefreshTableView.dataSource = self;
     pullToRefreshTableView.allowsSelection = YES;
     pullToRefreshTableView.backgroundColor = [UIColor clearColor];
+    pullToRefreshTableView.backgroundColor = [UIColor colorWithRed:237.0f/255.0f green:237.0f/255.0f blue:237.0f/255.0f alpha:1.0f];
     pullToRefreshTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [pullToRefreshTableView setHidden:YES];
+    pullToRefreshTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    [pullToRefreshTableView setHidden:NO];
     [self.view addSubview:pullToRefreshTableView];
-    
-    // set view's interface
-    [self.pullToRefreshTableView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
     
     //UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(getarticles)];
     //[self.navigationItem setRightBarButtonItem:refresh];
@@ -138,7 +137,7 @@
     //    CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000);
     //    CGSize size = [article sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
     
-    return 144;//计算每一个cell的高度
+    return 160.0f;//计算每一个cell的高度
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -164,7 +163,7 @@
 	{
         // Set up the cell...
         ArticleItem *aArticle = [self.articles objectAtIndex:indexPath.row];
-        cell.nameLabel.text = aArticle.title;
+        cell.descriptLabel.text = aArticle.description;
         
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"YYYY-MM-dd HH:mm"];
@@ -173,7 +172,7 @@
         cell.creatorLabel.text = aArticle.creator;
         //        CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000);
         //        CGSize size = [aArticle.description sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12.0] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
-        cell.articleLabel.text = aArticle.description;
+        cell.articleLabel.text = aArticle.title;
         //        cell.articleLabel.frame = CGRectMake(4.0, 52.0,
         //                                             CELL_CONTENT_WIDTH - (2 * CELL_CONTENT_MARGIN),
         //                                             45.0 + CELL_CONTENT_MARGIN);

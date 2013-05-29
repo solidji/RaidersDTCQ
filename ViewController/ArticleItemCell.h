@@ -10,7 +10,7 @@
 
 @interface ArticleItemCell : UITableViewCell {
     UIImageView *imageView;
-    UILabel *nameLabel;
+    UILabel *descriptLabel;
     UILabel *dateLabel;
     UILabel *articleLabel;
     UILabel *creatorLabel;
@@ -18,7 +18,7 @@
 }
 
 @property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UILabel *descriptLabel;
 @property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) UILabel *articleLabel;
 @property (nonatomic, strong) UILabel *creatorLabel;

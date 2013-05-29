@@ -20,6 +20,7 @@
 #import "RSSItem.h"
 #import "SVWebViewController.h"
 #import "CommentViewController.h"
+#import "PersonalViewController.h"
 
 #import "GlobalConfigure.h"
 #import "AppDataSouce.h"
@@ -29,12 +30,13 @@
 
 @interface ActivityViewController ()
 - (void)revealSidebar;
+- (void)didTapButton:(id)sender;
 @end
 
 @implementation ActivityViewController
 
 @synthesize headerView;
-@synthesize pullToRefreshTableView,dUser;
+@synthesize pullToRefreshTableView,dUser,avatarImage;
 @synthesize following,follower,active,post;
 
 #pragma mark - View lifecycle
@@ -46,7 +48,7 @@
         _revealBlock = [revealBlock copy];
         
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        leftButton.frame = CGRectMake(0, 0, 49, 25);
+        leftButton.frame = CGRectMake(0, 0, 45, 33);
         [leftButton setBackgroundImage:[UIImage imageNamed:@"menu.png"] forState:UIControlStateNormal];
         [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -75,11 +77,17 @@
     self.post = [[NSMutableArray alloc] init];
     start = 0;
     receiveMember = 0;
+    avatarImage=[[UIImageView alloc] initWithFrame:CGRectMake(18, 128-53, 53, 53)];
+    [avatarImage.layer setMasksToBounds:YES];
+    [avatarImage.layer setOpaque:NO];
+    [avatarImage setBackgroundColor:[UIColor clearColor]];
+    [avatarImage.layer setBorderColor: [[UIColor whiteColor] CGColor]];
+    [avatarImage.layer setBorderWidth: 2.0];
+    [avatarImage.layer setCornerRadius:26.0];
     
     // #添加列表
-    [self.pullToRefreshTableView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
+    [pullToRefreshTableView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
     pullToRefreshTableView = [[PullToRefreshTableView alloc] initWithFrame: CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height-20) withType: withStateViews];
-    self.pullToRefreshTableView.tag = 100000;
     pullToRefreshTableView.delegate = self;
     pullToRefreshTableView.dataSource = self;
     pullToRefreshTableView.allowsSelection = YES;
@@ -93,15 +101,15 @@
     //添加ZG平行图
     //UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(-(640-320)/2, -(960-320)/2, 320, 480)];
     //UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.height, 320.0f)];
-    UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 320)];
+    UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 160)];
     //UIImageView *avatarImage=[[UIImageView alloc] initWithFrame:CGRectMake(32, 180, 92, 92)];
     
-    [bgImage setImage: [UIImage imageNamed:@"ZG.png"]];
+    [bgImage setImage: [UIImage imageNamed:@"ZGAppGame.png"]];
     //[headView addSubview:bgImage];
     //[avatarImage setImageWithURL:[NSURL URLWithString:kDataSource.userObject.authorAvatar]
     //            placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
     //[headView addSubview:avatarImage];
-    [self.pullToRefreshTableView addParallelViewWithUIView:bgImage withDisplayRadio:0.5 headerViewStyle:ZGScrollViewStyleDefault];
+    [pullToRefreshTableView addParallelViewWithUIView:bgImage withDisplayRadio:0.8 headerViewStyle:ZGScrollViewStyleDefault];
     //By default, displayRadio is 0.5
     //By default, cutOffAtMax is set to NO
     //Set cutOffAtMax to YES to stop the scrolling when it hits the top.
@@ -155,11 +163,12 @@
     UIView *sectionView = nil;
     if (headerText != [NSNull null]) {
         sectionView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.height, 22.0f)];
-        [sectionView addSubview:bgImage];
+        //[sectionView addSubview:bgImage];
+        sectionView.backgroundColor = [UIColor colorWithRed:(227.0f/255.0f) green:(222.0f/255.0f) blue:(216.0f/255.0f) alpha:1.0f];
         UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0f, 0.0f,[UIScreen mainScreen].bounds.size.height, 22.0f)];
         textLabel.text = (NSString *) headerText;
         textLabel.font = [UIFont fontWithName:@"Helvetica" size:([UIFont systemFontSize] * 1.0f)];
-        textLabel.textColor = [UIColor whiteColor];
+        textLabel.textColor = [UIColor blackColor];
         textLabel.backgroundColor = [UIColor clearColor];
         [sectionView addSubview:textLabel];
     }
@@ -177,7 +186,7 @@
     UIImageView *imageType = [[UIImageView alloc] initWithFrame:CGRectMake(72.5, 3.0, 15.0, 15.0)];
     [imageType setContentMode:UIViewContentModeScaleToFill];
     [imageType setBackgroundColor:[UIColor clearColor]];//lightGrayColor
-    imageType.image = [UIImage imageNamed:@"Download.png"];
+    imageType.image = [UIImage imageNamed:@"Dynamic.png"];
 
     [sectionView addSubview:imageType];
 
@@ -269,7 +278,7 @@
             // Set up the cell...
             if (indexPath.row+1 > [self.active count]) {
                 //cell.nameLabel.text = @"";
-                cell.imageView.image = [UIImage imageNamed:@"IconPlaceholder.png"];
+                //cell.imageView.image = [UIImage imageNamed:@"IconPlaceholder.png"];
                 [cell.imageView setHidden:YES];
             }else {
                 ArticleItem *aArticle = [self.active objectAtIndex:indexPath.row];
@@ -303,51 +312,112 @@
                                             nil];
                 
                 // make and send a get request
-                [jsonapiClient getPath:@""
-                           parameters:parameters
-                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                  // fetch the json response to a dictionary
-                                  NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-                                  // pass it to the block
-                                  // check the code (success is 0)
-                                  NSString *code = [responseDictionary objectForKey:@"status"];
-                                  
-                                  if (![code isEqualToString:@"ok"]) {   // there's an error
-                                      NSLog(@"获取文章json异常");
-                                  }else {
+                if (aArticle.articleIconURL == nil || [aArticle.content isEqualToString:nil]) {
+                    [jsonapiClient getPath:@""
+                               parameters:parameters
+                                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                       
-                                      aArticle.articleIconURL = [NSURL URLWithString:[[[responseDictionary objectForKey:@"post"] objectForKey:@"thumbnail"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                                      __block NSString *jsonString = operation.responseString;
                                       
-                                      [cell.imageView setImageWithURL:aArticle.articleIconURL
-                                                     placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
-                                      aArticle.description = [[responseDictionary objectForKey:@"post"] objectForKey:@"excerpt"];
+                                      //过滤掉w3tc缓存附加在json数据后面的
+                                      /*
+                                       <!-- W3 Total Cache: Page cache debug info:
+                                       Engine:             memcached
+                                       Cache key:          4e14f98a5d7a178df9c7d3251ace098d
+                                       Caching:            enabled
+                                       Status:             not cached
+                                       Creation Time:      2.143s
+                                       Header info:
+                                       X-Powered-By:        PHP/5.4.14-1~precise+1
+                                       X-W3TC-Minify:       On
+                                       Last-Modified:       Sun, 12 May 2013 16:17:48 GMT
+                                       Vary:
+                                       X-Pingback:           http://www.appgame.com/xmlrpc.php
+                                       Content-Type:         application/json; charset=UTF-8
+                                       -->
+                                       */
+                                      NSError *error;
+                                      //(.|\\s)*或([\\s\\S]*)可以匹配包括换行在内的任意字符
+                                      NSRegularExpression *regexW3tc = [NSRegularExpression
+                                                                        regularExpressionWithPattern:@"<!-- W3 Total Cache:([\\s\\S]*)-->"
+                                                                        options:NSRegularExpressionCaseInsensitive
+                                                                        error:&error];
+                                      [regexW3tc enumerateMatchesInString:jsonString
+                                                                  options:0
+                                                                    range:NSMakeRange(0, jsonString.length)
+                                                               usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                                                                   jsonString = [jsonString stringByReplacingOccurrencesOfString:[jsonString substringWithRange:result.range] withString:@""];
+                                                               }];
+
+                                      jsonString = [jsonString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                                       
-                                      aArticle.content = [[responseDictionary objectForKey:@"post"] objectForKey:@"content"];
-                                      if (aArticle.content != nil) {
-                                          NSString *htmlFilePath = [[NSBundle mainBundle] pathForResource:@"appgame" ofType:@"html"];
-                                          NSString *htmlString = [NSString stringWithContentsOfFile:htmlFilePath encoding:NSUTF8StringEncoding error:nil];
-                                          NSString *contentHtml = @"";
-                                          NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                                          [dateFormatter setDateFormat:@"YYYY-MM-dd HH:mm"];
-                                          contentHtml = [contentHtml stringByAppendingFormat:htmlString,
-                                                         aArticle.title, aArticle.creator, [dateFormatter stringFromDate:aArticle.pubDate]];
-                                          contentHtml = [contentHtml stringByReplacingOccurrencesOfString:@"<!--content-->" withString:aArticle.content];
-                                          aArticle.content = contentHtml;
+                                      NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+                                      // fetch the json response to a dictionary
+                                      NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+                                      // pass it to the block
+                                      // check the code (success is 0)
+                                      NSString *code = [responseDictionary objectForKey:@"status"];
+                                      
+                                      if (![code isEqualToString:@"ok"]) {   // there's an error
+                                          NSLog(@"获取文章json异常:%@",aArticle.articleURL);
+                                      }else {
+                                          
+                                          aArticle.articleIconURL = [NSURL URLWithString:[[[responseDictionary objectForKey:@"post"] objectForKey:@"thumbnail"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                                          
+                                          [cell.imageView setImageWithURL:aArticle.articleIconURL
+                                                         placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
+                                          aArticle.description = [[responseDictionary objectForKey:@"post"] objectForKey:@"excerpt"];
+                                          
+                                          aArticle.content = [[responseDictionary objectForKey:@"post"] objectForKey:@"content"];
+                                          if (aArticle.content != nil) {
+                                              NSString *htmlFilePath = [[NSBundle mainBundle] pathForResource:@"appgame" ofType:@"html"];
+                                              NSString *htmlString = [NSString stringWithContentsOfFile:htmlFilePath encoding:NSUTF8StringEncoding error:nil];
+                                              NSString *contentHtml = @"";
+                                              NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                                              [dateFormatter setDateFormat:@"YYYY-MM-dd HH:mm"];
+                                              contentHtml = [contentHtml stringByAppendingFormat:htmlString,
+                                                             aArticle.title, aArticle.creator, [dateFormatter stringFromDate:aArticle.pubDate]];
+                                              contentHtml = [contentHtml stringByReplacingOccurrencesOfString:@"<!--content-->" withString:aArticle.content];
+                                              aArticle.content = contentHtml;
+                                          }
                                       }
                                   }
-                              }
-                              failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                  // pass error to the block
-                                  NSLog(@"获取文章json失败:%@",error);
+                                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                      // pass error to the block
+                                      NSLog(@"获取文章json失败:%@",error);
                               }];
+                }else{
+                    [cell.imageView setImageWithURL:aArticle.articleIconURL
+                                   placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
+                }
+                [cell.personalButton addTarget:self action:@selector(didTapButton:) forControlEvents:UIControlEventTouchUpInside];
+                //cell.personalButton.clipsToBounds = YES;
+                //[cell.personalButton becomeFirstResponder];
             }
         }else {
             //cell.nameLabel.text = @"";
-            cell.imageView.image = [UIImage imageNamed:@"IconPlaceholder.png"];
+            //cell.imageView.image = [UIImage imageNamed:@"IconPlaceholder.png"];
             [cell.imageView setHidden:YES];
         }
     }
     return cell;
+}
+
+-(void)didTapButton:(id)sender{
+    UIButton *myBtn=(UIButton *)sender;
+    ActivityItemCell *myCell=(ActivityItemCell *)[myBtn superview];
+    NSIndexPath * indexPath = [pullToRefreshTableView indexPathForCell:myCell];
+    NSLog(@"您点击了第%d行",indexPath.row);
+    PersonalRevealBlock revealBlock = ^(){
+        [[self navigationController] popViewControllerAnimated:YES];
+    };
+    ArticleItem *aArticle = [self.active objectAtIndex:indexPath.row];
+    PersonalViewController *viewController = [[PersonalViewController alloc] initWithTitle:aArticle.title
+                                                                                  withUser:aArticle.userID withRevealBlock:revealBlock];
+    
+    //NSLog(@"didSelectArticle:%@",aArticle.content);
+    [self.navigationController pushViewController:viewController animated:YES];
+    [pullToRefreshTableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark -
@@ -409,13 +479,11 @@
         //如果已全部加载，则传入YES
         [pullToRefreshTableView reloadData:YES];
     }
-    UIImageView *avatarImage=[[UIImageView alloc] initWithFrame:CGRectMake(18, 110, 53, 53)];
-    [avatarImage.layer setMasksToBounds:YES];
-    [avatarImage.layer setOpaque:NO];
-    [avatarImage.layer setCornerRadius:0.5];
 
-    [avatarImage setImageWithURL:[NSURL URLWithString:kDataSource.userObject.authorAvatar]
+    //if (avatarImage.image == nil) {
+        [avatarImage setImageWithURL:[NSURL URLWithString:kDataSource.userObject.authorAvatar]
                 placeholderImage:[UIImage imageNamed:@""]];
+    //}
     [pullToRefreshTableView addSubview:avatarImage];
 }
 
@@ -500,7 +568,7 @@
                                          articleItem.userID = [[[followingDic objectForKey:@"object"] objectForKey:@"author"] objectForKey:@"id"];
                                          
                                          articleItem.articleURL = [NSURL URLWithString:[[[followingDic objectForKey:@"object"] objectForKey:@"thread"] objectForKey:@"link"]];
-                                         articleItem.iconURL = [NSURL URLWithString:[[[[[[followingDic objectForKey:@"object"] objectForKey:@"author"] objectForKey:@"avatar"] objectForKey:@"small"] objectForKey:@"cache"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                                         articleItem.iconURL = [NSURL URLWithString:[[[[[[followingDic objectForKey:@"object"] objectForKey:@"author"] objectForKey:@"avatar"] objectForKey:@"large"] objectForKey:@"cache"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
                                          
                                          NSDateFormatter *df = [[NSDateFormatter alloc] init];
                                          NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];

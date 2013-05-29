@@ -30,7 +30,7 @@
 
 #pragma mark -
 #pragma mark Private Interface
-@interface GHAppDelegate () <GHSidebarSearchViewControllerDelegate>
+@interface GHAppDelegate () //<GHSidebarSearchViewControllerDelegate>
 @property (nonatomic, strong) GHRevealViewController *revealController;
 @property (nonatomic, strong) GHSidebarSearchViewController *searchController;
 @property (nonatomic, strong) GHMenuViewController *menuController;
@@ -100,7 +100,8 @@
     //初始化
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:NO];
 	
-	UIColor *bgColor = [UIColor colorWithRed:(215.0f/255.0f) green:(215.0f/255.0f) blue:(215.0f/255.0f) alpha:1.0f];
+	//UIColor *bgColor = [UIColor colorWithRed:(215.0f/255.0f) green:(215.0f/255.0f) blue:(215.0f/255.0f) alpha:1.0f];
+    UIColor *bgColor = [UIColor colorWithRed:(46.0f/255.0f) green:(51.0f/255.0f) blue:(57.0f/255.0f) alpha:1.0f];
 	self.revealController = [[GHRevealViewController alloc] initWithNibName:nil bundle:nil];
 	self.revealController.view.backgroundColor = bgColor;
     //self.revealController.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Basemap.png"]];
@@ -117,26 +118,26 @@
 	NSArray *controllers = @[
 		@[//[NSNumber numberWithInt:-1]
       [[UINavigationController alloc] initWithRootViewController:[[ActivityViewController alloc] initWithTitle:@"主页" withUser:nil withRevealBlock:revealBlock]],
-      [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"资讯" withUrl:@"http://www.appgame.com/feed?paged=%@" withRevealBlock:revealBlock]],
+      [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"资讯" withUrl:@"http://www.appgame.com/feed?paged=%d" withRevealBlock:revealBlock]],
       [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"热门" withUrl:@"http://gl.appgame.com/hot-games.html" withRevealBlock:revealBlock]],
       [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"收藏" withUrl:@"Favorites" withRevealBlock:revealBlock]],
       
 		],
 		@[
-            [[UINavigationController alloc] initWithRootViewController:[[PersonalViewController alloc] initWithTitle:@"个人" withUser:kDataSource.userObject.userID withRevealBlock:revealBlock]],
+            [[UINavigationController alloc] initWithRootViewController:[[PersonalViewController alloc] initWithTitle:@"个人" withUser:nil withRevealBlock:revealBlock]],
             [[UINavigationController alloc] initWithRootViewController:[[SettingViewController alloc] initWithTitle:@"设置" withUrl:@"Setting" withRevealBlock:revealBlock]]
 		]
 	];
     
 	NSArray *cellInfos = @[
 		@[
-			@{kSidebarCellImageKey: @"home.png", kSidebarCellTextKey: NSLocalizedString(@"主页", @"")},
-            @{kSidebarCellImageKey: @"xinyouyugao.png", kSidebarCellTextKey: NSLocalizedString(@"资讯", @"")},
-            @{kSidebarCellImageKey: @"Forum.png", kSidebarCellTextKey: NSLocalizedString(@"热门", @"")},
-            @{kSidebarCellImageKey: @"Favorites.png", kSidebarCellTextKey: NSLocalizedString(@"收藏", @"")}
+			@{kSidebarCellImageKey: @"Home.png", kSidebarCellTextKey: NSLocalizedString(@"主页", @"")},
+            @{kSidebarCellImageKey: @"Information.png", kSidebarCellTextKey: NSLocalizedString(@"资讯", @"")},
+            @{kSidebarCellImageKey: @"Hot.png", kSidebarCellTextKey: NSLocalizedString(@"热门", @"")},
+            @{kSidebarCellImageKey: @"Collection.png", kSidebarCellTextKey: NSLocalizedString(@"收藏", @"")}
 		],
 		@[
-            @{kSidebarCellImageKey: @"avatar.png", kSidebarCellTextKey: NSLocalizedString(@"个人", @"")},
+            @{kSidebarCellImageKey: @"Personal.png", kSidebarCellTextKey: NSLocalizedString(@"个人", @"")},
 			@{kSidebarCellImageKey: @"Set-up.png", kSidebarCellTextKey: NSLocalizedString(@"设置", @"")}
 		]
 	];
@@ -152,33 +153,33 @@
 		}];
 	}];
 	
-	self.searchController = [[GHSidebarSearchViewController alloc] initWithSidebarViewController:self.revealController];
-	self.searchController.view.backgroundColor = [UIColor clearColor];
-    self.searchController.searchDelegate = self;
-	self.searchController.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
-	self.searchController.searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
-	self.searchController.searchBar.backgroundImage = [UIImage imageNamed:@"searchBarBG.png"];
-	self.searchController.searchBar.placeholder = NSLocalizedString(@"Search", @"");
-	self.searchController.searchBar.tintColor = [UIColor colorWithRed:(58.0f/255.0f) green:(67.0f/255.0f) blue:(104.0f/255.0f) alpha:1.0f];
-	for (UIView *subview in self.searchController.searchBar.subviews) {
-		if ([subview isKindOfClass:[UITextField class]]) {
-			UITextField *searchTextField = (UITextField *) subview;
-			searchTextField.textColor = [UIColor colorWithRed:(154.0f/255.0f) green:(162.0f/255.0f) blue:(176.0f/255.0f) alpha:1.0f];
-		}
-	}
-	[self.searchController.searchBar setSearchFieldBackgroundImage:[[UIImage imageNamed:@"searchTextBG.png"] 
-																		resizableImageWithCapInsets:UIEdgeInsetsMake(16.0f, 17.0f, 16.0f, 17.0f)]	
-														  forState:UIControlStateNormal];
-	[self.searchController.searchBar setImage:[UIImage imageNamed:@"searchBarIcon.png"] 
-							 forSearchBarIcon:UISearchBarIconSearch 
-										state:UIControlStateNormal];
+//	self.searchController = [[GHSidebarSearchViewController alloc] initWithSidebarViewController:self.revealController];
+//	self.searchController.view.backgroundColor = [UIColor clearColor];
+//    self.searchController.searchDelegate = self;
+//	self.searchController.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
+//	self.searchController.searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
+//	self.searchController.searchBar.backgroundImage = [UIImage imageNamed:@"searchBarBG.png"];
+//	self.searchController.searchBar.placeholder = NSLocalizedString(@"Search", @"");
+//	self.searchController.searchBar.tintColor = [UIColor colorWithRed:(58.0f/255.0f) green:(67.0f/255.0f) blue:(104.0f/255.0f) alpha:1.0f];
+//	for (UIView *subview in self.searchController.searchBar.subviews) {
+//		if ([subview isKindOfClass:[UITextField class]]) {
+//			UITextField *searchTextField = (UITextField *) subview;
+//			searchTextField.textColor = [UIColor colorWithRed:(154.0f/255.0f) green:(162.0f/255.0f) blue:(176.0f/255.0f) alpha:1.0f];
+//		}
+//	}
+//	[self.searchController.searchBar setSearchFieldBackgroundImage:[[UIImage imageNamed:@"searchTextBG.png"] 
+//																		resizableImageWithCapInsets:UIEdgeInsetsMake(16.0f, 17.0f, 16.0f, 17.0f)]	
+//														  forState:UIControlStateNormal];
+//	[self.searchController.searchBar setImage:[UIImage imageNamed:@"searchBarIcon.png"] 
+//							 forSearchBarIcon:UISearchBarIconSearch 
+//										state:UIControlStateNormal];
 	
 	self.menuController = [[GHMenuViewController alloc] initWithSidebarViewController:self.revealController 
 																		withSearchBar:self.searchController.searchBar 
 																		  withHeaders:headers 
 																	  withControllers:controllers 
 																		withCellInfos:cellInfos];
-    
+    kDataSource.menuController = self.menuController;
     //检查并登录disqus
     [standardDefaults setBool:NO forKey:kIfLogin];//每次重新登录
     NSString *disqusUsername = [standardDefaults stringForKey:kUsername];
@@ -215,6 +216,12 @@
                                                           NSDictionary *responseArray = [responseDictionary objectForKey:@"response"];
                                                           if ([responseArray count] != 0) {
                                                               kDataSource.userObject.name = [responseArray objectForKey:@"name"];
+                                                              kDataSource.userObject.about = [responseArray objectForKey:@"about"];
+                                                              
+                                                              kDataSource.userObject.numFollowers = [responseArray objectForKey:@"numFollowers"];
+                                                              kDataSource.userObject.numFollowing = [responseArray objectForKey:@"numFollowing"];
+                                                              kDataSource.userObject.numPosts = [responseArray objectForKey:@"numPosts"];
+                                                              kDataSource.userObject.numLikesReceived = [responseArray objectForKey:@"numLikesReceived"];
                                                               kDataSource.userObject.userID = [responseArray objectForKey:@"id"];
                                                               kDataSource.userObject.authorAvatar = [[[responseArray objectForKey:@"avatar"] objectForKey:@"large"] objectForKey:@"cache"];
                                                               NSLog(@"disqus账户信息:%@,%@,%@", kDataSource.userObject.name, kDataSource.userObject.authorAvatar,kDataSource.userObject.userID);
@@ -266,25 +273,25 @@
     return YES;
 }
 
-#pragma mark GHSidebarSearchViewControllerDelegate
-- (void)searchResultsForText:(NSString *)text withScope:(NSString *)scope callback:(SearchResultsBlock)callback {
-	callback(@[@"现代战争4", @"MC4", @"HOC"]);
-}
-
-- (void)searchResult:(id)result selectedAtIndexPath:(NSIndexPath *)indexPath {
-	NSLog(@"Selected Search Result - result: %@ indexPath: %@", result, indexPath);
-}
-
-- (UITableViewCell *)searchResultCellForEntry:(id)entry atIndexPath:(NSIndexPath *)indexPath inTableView:(UITableView *)tableView {
-	static NSString* identifier = @"GHSearchMenuCell";
-	GHMenuCell* cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-	if (!cell) {
-		cell = [[GHMenuCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-	}
-	cell.textLabel.text = (NSString *)entry;
-	cell.imageView.image = [UIImage imageNamed:@"home.png"];
-	return cell;
-}
+//#pragma mark GHSidebarSearchViewControllerDelegate
+//- (void)searchResultsForText:(NSString *)text withScope:(NSString *)scope callback:(SearchResultsBlock)callback {
+//	callback(@[@"现代战争4", @"MC4", @"HOC"]);
+//}
+//
+//- (void)searchResult:(id)result selectedAtIndexPath:(NSIndexPath *)indexPath {
+//	NSLog(@"Selected Search Result - result: %@ indexPath: %@", result, indexPath);
+//}
+//
+//- (UITableViewCell *)searchResultCellForEntry:(id)entry atIndexPath:(NSIndexPath *)indexPath inTableView:(UITableView *)tableView {
+//	static NSString* identifier = @"GHSearchMenuCell";
+//	GHMenuCell* cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+//	if (!cell) {
+//		cell = [[GHMenuCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+//	}
+//	cell.textLabel.text = (NSString *)entry;
+//	cell.imageView.image = [UIImage imageNamed:@"home.png"];
+//	return cell;
+//}
 
 #pragma mark AlertViewDelegate
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {

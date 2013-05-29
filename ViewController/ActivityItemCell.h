@@ -17,13 +17,15 @@
     UILabel *dateLabel;
     UILabel *articleLabel;//文章标题
     UILabel *creatorLabel;
+    
+    UIButton *personalButton;
 }
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *imageType;
 @property (nonatomic, strong) UIImageView *imageCreator;
 
-
+@property (nonatomic, strong) UIButton *personalButton;
 @property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) UILabel *articleLabel;
 @property (nonatomic, strong) UILabel *creatorLabel;

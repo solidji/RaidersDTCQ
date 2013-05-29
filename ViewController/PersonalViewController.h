@@ -39,6 +39,8 @@ typedef void (^PersonalRevealBlock)();
     PullToRefreshTableView *pullToRefreshTableView;
     UILabel *followingLabel;
     UILabel *followerLabel;
+    UIImageView *avatarImage;
+    
 @private
 	PersonalRevealBlock _revealBlock;
 }
@@ -57,6 +59,7 @@ typedef void (^PersonalRevealBlock)();
 @property (nonatomic, retain) IADisquser *iaDisquser;
 @property (nonatomic, strong) UILabel *followingLabel;
 @property (nonatomic, strong) UILabel *followerLabel;
+@property (nonatomic, strong) UIImageView *avatarImage;
 
 - (id)initWithTitle:(NSString *)title withUser:(NSNumber *)userID withRevealBlock:(PersonalRevealBlock)revealBlock;
 

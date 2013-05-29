@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "IADisqusUser.h"
 #import "AFOAuth2Client.h"
+#import "GHMenuViewController.h"
 
 @interface AppDataSouce : NSObject
 {
@@ -17,7 +18,7 @@
 
 + (AppDataSouce *)shareInstance;
 
-
+@property (nonatomic, retain) GHMenuViewController      *menuController;
 @property (nonatomic, retain) IADisqusUser              *userObject;
 @property (nonatomic, retain) AFOAuthCredential       *credentialObject;
 

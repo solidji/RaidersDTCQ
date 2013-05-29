@@ -213,7 +213,7 @@
                                   IADisqusComment *aDisqusComment = [[IADisqusComment alloc] init];
                                   
                                   aDisqusComment.authorName = [[commentDictionary objectForKey:@"author"] objectForKey:@"name"];
-                                  aDisqusComment.authorAvatar = [[[[commentDictionary objectForKey:@"author"] objectForKey:@"avatar"] objectForKey:@"small"] objectForKey:@"cache"];
+                                  aDisqusComment.authorAvatar = [[[[commentDictionary objectForKey:@"author"] objectForKey:@"avatar"] objectForKey:@"large"] objectForKey:@"cache"];
 
                                   aDisqusComment.likes = [commentDictionary objectForKey:@"likes"];
                                   aDisqusComment.rawMessage = [commentDictionary objectForKey:@"raw_message"];

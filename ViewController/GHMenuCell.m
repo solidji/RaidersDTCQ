@@ -27,9 +27,9 @@ NSString const *kSidebarCellImageKey = @"CellImage";
 //        self.selectedBackgroundView = bgView;
         //self.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Gray.png"]];
 		// 设置背景
-        UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-        [bgImage setImage: [UIImage imageNamed:@"gray.png"]];
-        [self setBackgroundView:bgImage];
+        //UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+        //[bgImage setImage: [UIImage imageNamed:@"gray.png"]];
+        //[self setBackgroundView:bgImage];
         
         UIImageView *selectedbgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
         [selectedbgImage setImage: [UIImage imageNamed:@"Click-effect.png"]];
@@ -41,19 +41,22 @@ NSString const *kSidebarCellImageKey = @"CellImage";
 		self.textLabel.font = [UIFont fontWithName:@"Helvetica" size:([UIFont systemFontSize] * 1.2f)];
 		//self.textLabel.shadowOffset = CGSizeMake(0.0f, 1.0f);
 		//self.textLabel.shadowColor = [UIColor colorWithRed:(107.0f/255.0f) green:(107.0f/255.0f) blue:(107.0f/255.0f) alpha:1.0f];
-		self.textLabel.textColor = [UIColor colorWithRed:(43.0f/255.0f) green:(43.0f/255.0f) blue:(43.0f/255.0f) alpha:1.0f];
+		//self.textLabel.textColor = [UIColor colorWithRed:(43.0f/255.0f) green:(43.0f/255.0f) blue:(43.0f/255.0f) alpha:1.0f];
+        self.textLabel.textColor = [UIColor whiteColor];
         
         //增加上下分割线
 		UIView *topLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
-		topLine.backgroundColor = [UIColor colorWithRed:(188.0f/255.0f) green:(188.0f/255.0f) blue:(188.0f/255.0f) alpha:1.0f];
+		//topLine.backgroundColor = [UIColor colorWithRed:(188.0f/255.0f) green:(188.0f/255.0f) blue:(188.0f/255.0f) alpha:1.0f];
+        topLine.backgroundColor = [UIColor colorWithRed:(77.0f/255.0f) green:(84.0f/255.0f) blue:(94.0f/255.0f) alpha:1.0f];
 		[self.textLabel.superview addSubview:topLine];
 		
-		UIView *topLine2 = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 1.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
-		topLine2.backgroundColor = [UIColor colorWithRed:(238.0f/255.0f) green:(238.0f/255.0f) blue:(238.0f/255.0f) alpha:1.0f];
-		[self.textLabel.superview addSubview:topLine2];
+//		UIView *topLine2 = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 1.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
+//		topLine2.backgroundColor = [UIColor colorWithRed:(238.0f/255.0f) green:(238.0f/255.0f) blue:(238.0f/255.0f) alpha:1.0f];
+//		[self.textLabel.superview addSubview:topLine2];
 		
 		UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 43.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
-		bottomLine.backgroundColor = [UIColor colorWithRed:(149.0f/255.0f) green:(149.0f/255.0f) blue:(149.0f/255.0f) alpha:1.0f];
+		//bottomLine.backgroundColor = [UIColor colorWithRed:(149.0f/255.0f) green:(149.0f/255.0f) blue:(149.0f/255.0f) alpha:1.0f];
+        bottomLine.backgroundColor = [UIColor colorWithRed:(28.0f/255.0f) green:(29.0f/255.0f) blue:(31.0f/255.0f) alpha:1.0f];
 		[self.textLabel.superview addSubview:bottomLine];
 	}
 	return self;

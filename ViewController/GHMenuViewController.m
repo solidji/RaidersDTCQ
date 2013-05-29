@@ -14,6 +14,7 @@
 #import "GlobalConfigure.h"
 #import "UIImageView+AFNetworking.h"//为了头像
 #import "ActivityViewController.h"
+#import "PersonalViewController.h"
 
 #pragma mark -
 #pragma mark Implementation
@@ -111,10 +112,11 @@
 	cell.textLabel.text = info[kSidebarCellTextKey];
 	cell.imageView.image = [UIImage imageNamed:info[kSidebarCellImageKey]];
     
-    NSMutableString *image = info[kSidebarCellImageKey];
-    NSMutableString* imageName=[NSMutableString stringWithString:image];
-    [imageName insertString:@"-white" atIndex:(image.length-4)];
-    cell.imageView.highlightedImage = [UIImage imageNamed:imageName];
+    //这段是给侧边栏按钮图标添加按下效果
+//    NSMutableString *image = info[kSidebarCellImageKey];
+//    NSMutableString* imageName=[NSMutableString stringWithString:image];
+//    [imageName insertString:@"-white" atIndex:(image.length-4)];
+//    cell.imageView.highlightedImage = [UIImage imageNamed:imageName];
     
     return cell;
 }
@@ -149,6 +151,12 @@
             UIImageView *avatarImage=[[UIImageView alloc] initWithFrame:CGRectMake(6, 6, 32, 32)];
             [avatarImage setImageWithURL:[NSURL URLWithString:kDataSource.userObject.authorAvatar]
                         placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
+            
+            avatarImage.layer.masksToBounds = YES;
+            [avatarImage setBackgroundColor:[UIColor clearColor]];
+            [avatarImage.layer setBorderColor: [[UIColor whiteColor] CGColor]];
+            [avatarImage.layer setBorderWidth: 2.0];
+            avatarImage.layer.cornerRadius = 16.0f;//avatarImage.image.size.width / 2;等于宽度一般就正好是圆形            
             [headerView addSubview:avatarImage];
 
         }
@@ -157,8 +165,8 @@
     
 	NSObject *headerText = _headers[section];    
     
-    UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
-    [bgImage setImage: [UIImage imageNamed:@"Title-Red.png"]];
+    //UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
+    //[bgImage setImage: [UIImage imageNamed:@"Title-Red.png"]];
 
 	UIView *headerView = nil;
 	if (headerText != [NSNull null]) {
@@ -170,7 +178,8 @@
 //			(id)[UIColor colorWithRed:(57.0f/255.0f) green:(64.0f/255.0f) blue:(82.0f/255.0f) alpha:1.0f].CGColor,
 //		];
 //		[headerView.layer insertSublayer:gradient atIndex:0];
-		[headerView addSubview:bgImage];
+		//[headerView addSubview:bgImage];
+        headerView.backgroundColor = [UIColor colorWithRed:(59.0f/255.0f) green:(68.0f/255.0f) blue:(77.0f/255.0f) alpha:1.0f];
 		UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(12.0f, 0.0f,[UIScreen mainScreen].bounds.size.height, 22.0f)];//CGRectInset
 		textLabel.text = (NSString *) headerText;
 		textLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:([UIFont systemFontSize] * 1.0f)];
@@ -212,9 +221,14 @@
     //[((ActivityViewController *)(_sidebarVC.contentViewController reloadData) performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
 //    UIWindow *window = [UIApplication sharedApplication].keyWindow;
 //    UIViewController *rootViewController = window.rootViewController;
-    UINavigationController *root = (UINavigationController *)_sidebarVC.contentViewController;
-    ActivityViewController *act = (ActivityViewController *)[root.viewControllers objectAtIndex:0];
+    UINavigationController *activityView = (UINavigationController *)_controllers[0][0];//_sidebarVC.contentViewController;
+    ActivityViewController *act = (ActivityViewController *)[activityView.viewControllers objectAtIndex:0];
     [act performSelectorOnMainThread:@selector(getArticles) withObject:nil waitUntilDone:NO];
+    
+    UINavigationController *personalView = (UINavigationController *)_controllers[1][0];
+    PersonalViewController *per = (PersonalViewController *)[personalView.viewControllers objectAtIndex:0];
+    per.dUser.userID = kDataSource.userObject.userID;
+    [per performSelectorOnMainThread:@selector(getArticles) withObject:nil waitUntilDone:NO];
     NSLog(@"menuTableView reloadTable");
 }
 
