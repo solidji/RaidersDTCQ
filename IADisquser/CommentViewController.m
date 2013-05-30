@@ -17,6 +17,7 @@
 #import "RSSParser.h"
 #import "RSSItem.h"
 #import "SVWebViewController.h"
+#import "YIPopupTextView.h"
 
 @interface CommentViewController ()
 - (void)disMiss;
@@ -40,8 +41,8 @@
         hasNext = false;
         
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        leftButton.frame = CGRectMake(0, 0, 45, 33);
-        [leftButton setBackgroundImage:[UIImage imageNamed:@"menu.png"] forState:UIControlStateNormal];
+        leftButton.frame = CGRectMake(0, 0, 20, 20);
+        [leftButton setBackgroundImage:[UIImage imageNamed:@"lift.png"] forState:UIControlStateNormal];
         [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setShowsTouchWhenHighlighted:YES];
@@ -54,18 +55,18 @@
     alerViewManager = [[AlerViewManager alloc] init];
     ifNeedFristLoading = YES;
 
-    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self
-                                                                                 action:@selector(handlePanGesture:)];
-    //panGesture.delegate = self;
-    panGesture.cancelsTouchesInView = NO;
-    [self.view addGestureRecognizer:panGesture];
-    
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self
-                                                                                       action:@selector(handleSwipeGesture:)];
-    swipeGesture.delegate = self;
-    [swipeGesture setDirection:(UISwipeGestureRecognizerDirectionRight)];
-    swipeGesture.cancelsTouchesInView = NO;
-    [self.view addGestureRecognizer:swipeGesture];
+//    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self
+//                                                                                 action:@selector(handlePanGesture:)];
+//    //panGesture.delegate = self;
+//    panGesture.cancelsTouchesInView = NO;
+//    [self.view addGestureRecognizer:panGesture];
+//    
+//    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+//                                                                                       action:@selector(handleSwipeGesture:)];
+//    swipeGesture.delegate = self;
+//    [swipeGesture setDirection:(UISwipeGestureRecognizerDirectionRight)];
+//    swipeGesture.cancelsTouchesInView = NO;
+//    [self.view addGestureRecognizer:swipeGesture];
     
     return self;
 }
@@ -133,10 +134,47 @@
 }
 
 #pragma mark -
+#pragma mark YIPopupTextViewDelegate
+
+- (void)popupTextView:(YIPopupTextView *)textView willDismissWithText:(NSString *)text cancelled:(BOOL)cancelled
+{
+    NSLog(@"will dismiss: cancelled=%d",cancelled);
+    self.textView = text;
+    NSLog(@"textView:%@",self.textView);
+}
+
+- (void)popupTextView:(YIPopupTextView *)textView didDismissWithText:(NSString *)text cancelled:(BOOL)cancelled
+{
+    NSLog(@"did dismiss: cancelled=%d",cancelled);
+}
+
+#pragma mark -
 #pragma mark - UITableViewDelegate
 
 //某一行被选中,由ViewController来实现push详细页面
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    // NOTE: maxCount = 0 to hide count
+    // YIPopupTextView* popupTextView = [[YIPopupTextView alloc] initWithPlaceHolder:@"input here" maxCount:1000];
+    YIPopupTextView* popupTextView = [[YIPopupTextView alloc] initWithPlaceHolder:@"赞一个!"
+                                                                         maxCount:1000
+                                                                      buttonStyle:YIPopupTextViewButtonStyleLeftCancelRightDone
+                                                                  tintsDoneButton:YES];
+    popupTextView.delegate = self;
+    popupTextView.caretShiftGestureEnabled = YES;   // default = NO
+    popupTextView.text = self.textView;
+    //    popupTextView.editable = NO;                  // set editable=NO to show without keyboard
+    [popupTextView showInView:self.view];
+    
+    //
+    // NOTE:
+    // You can add your custom-button after calling -showInView:
+    // (it's better to add on either superview or superview.superview)
+    // https://github.com/inamiy/YIPopupTextView/issues/3
+    //
+    // [popupTextView.superview addSubview:customButton];
+    //
+    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];//反选
 //    ArticleItem *aComment = [self.comments objectAtIndex:indexPath.row];
 //    SVWebViewController *viewController = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];

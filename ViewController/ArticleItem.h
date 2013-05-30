@@ -19,6 +19,7 @@
     NSURL    *_strArticleIconURL;       //文章缩略图url
     NSString *_strDescription;          //文章描述
     NSString *_strContent;              //文章正文
+    NSNumber *commentCount;             //文章评论数
     
     NSString *_strCreator;              //文章作者
     NSURL    *_strIconURL;              //作者头像url
@@ -35,6 +36,7 @@
 @property (nonatomic, copy) NSString *description;
 @property (nonatomic, copy) NSString *content;
 @property (nonatomic, strong) NSNumber *userID;
+@property (nonatomic, strong) NSNumber *commentCount;
 
 - (BOOL)isEqual:(id)anObject;
 

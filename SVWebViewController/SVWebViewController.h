@@ -11,8 +11,9 @@
 #import "SVModalWebViewController.h"
 #import "ArticleItem.h"
 #import "AlerViewManager.h"
+#import "YIPopupTextView.h"
 
-@interface SVWebViewController : UIViewController<UIGestureRecognizerDelegate>
+@interface SVWebViewController : UIViewController<UIGestureRecognizerDelegate,YIPopupTextViewDelegate>
 
 - (id)initWithAddress:(NSString*)urlString;
 - (id)initWithURL:(NSURL*)URL;

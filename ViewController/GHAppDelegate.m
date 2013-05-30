@@ -15,6 +15,7 @@
 #import "ArticleListViewController.h"
 #import "iVersion.h"//StoreKit framework.
 #import "APService.h"
+#import <ShareSDK/ShareSDK.h>
 #import "SettingViewController.h"
 #import "PersonalViewController.h"
 #import "ActivityViewController.h"
@@ -51,6 +52,17 @@
 
 #pragma mark UIApplicationDelegate
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    //ShareSDK
+    [ShareSDK registerApp:@"10aa36d1da8"];
+    //添加新浪微博应用
+    [ShareSDK connectSinaWeiboWithAppKey:@"2637205812"
+                               appSecret:@"ae6be1db170fb3eed6115a97120a2a99"
+                             redirectUri:@"http://www.appgame.com"];
+    
+    //添加腾讯微博应用
+    [ShareSDK connectTencentWeiboWithAppKey:@"100629026"
+                                  appSecret:@"a1088785803ba0c969a693ccdaae4e5a" redirectUri:@"http://www.appgame.com"];
     
     // jpush
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
@@ -453,6 +465,25 @@
     NSLog(@"收到消息\ndate:%@\ntitle:%@\ncontent:%@", [dateFormatter stringFromDate:[NSDate date]],title,content);
 }
 
+#pragma mark -
+#pragma mark - sharesdk
+- (BOOL)application:(UIApplication *)application
+      handleOpenURL:(NSURL *)url
+{
+    return [ShareSDK handleOpenURL:url
+                        wxDelegate:nil];
+}
+
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation
+{
+    return [ShareSDK handleOpenURL:url
+                 sourceApplication:sourceApplication
+                        annotation:annotation
+                        wxDelegate:nil];
+}
 
 #pragma mark -
 #pragma mark - userAlerts

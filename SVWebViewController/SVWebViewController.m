@@ -9,6 +9,10 @@
 #import "SVWebViewController.h"
 #import "IADisquser.h"
 #import "CommentViewController.h"
+#import "AFHTTPClient.h"
+#import "AFXMLRequestOperation.h"
+#import <ShareSDK/ShareSDK.h>
+#import "YIPopupTextView.h"
 
 @interface SVWebViewController () <UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
 @property (nonatomic, strong, readonly) UIBarButtonItem *popBarButtonItem;
@@ -21,7 +25,7 @@
 @property (nonatomic, strong, readonly) UIBarButtonItem *actionBarButtonItem;
 @property (nonatomic, strong, readonly) UIActionSheet *pageActionSheet;
 
-
+@property (strong, nonatomic) NSString *textView;
 @property (nonatomic, strong) UIWebView *mainWebView;
 @property (nonatomic, strong) NSURL *URL;
 @property (nonatomic) BOOL isHide;
@@ -42,6 +46,8 @@
 - (void)reloadClicked:(UIBarButtonItem *)sender;
 - (void)stopClicked:(UIBarButtonItem *)sender;
 - (void)actionButtonClicked:(UIBarButtonItem *)sender;
+- (void)goCommentClicked:(UIButton *)sender;
+- (void)goTextViewClicked:(UIButton *)sender;
 
 @end
 
@@ -50,16 +56,22 @@
 
 @synthesize availableActions;
 
-@synthesize URL, mainWebView, isHide;
+@synthesize URL, mainWebView, isHide, textView;
 @synthesize popBarButtonItem, favoriteBarButton, favoriteBarButtonItem, backBarButtonItem, forwardBarButtonItem, refreshBarButtonItem, stopBarButtonItem, actionBarButtonItem, pageActionSheet;
 
 #pragma mark - setters and getters
 - (UIBarButtonItem *)popBarButtonItem {
     
     if (!popBarButtonItem) {
-        popBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"lift.png"] style:UIBarButtonItemStylePlain target:self action:@selector(goPopClicked:)];
+        //popBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"lift.png"] style:UIBarButtonItemStylePlain target:self action:@selector(goTextViewClicked:)];
+        //[rightButton setTitle:@"1000评论" forState:UIControlStateNormal];// 添加文字
+        //[rightButton.titleLabel setFont:[UIFont boldSystemFontOfSize:12.0f]];
+        //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+        popBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"留言..." style:UIBarButtonItemStylePlain target:self action:@selector(goTextViewClicked:)];
+        //[popBarButtonItem.title sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12.0] constrainedToSize:CGSizeMake(18.0f*6,20.0f)];
         popBarButtonItem.imageInsets = UIEdgeInsetsMake(2.0f, 0.0f, -2.0f, 0.0f);
-		popBarButtonItem.width = 18.0f;
+		popBarButtonItem.width = 18.0f*6;
     }
     return popBarButtonItem;
 }
@@ -172,16 +184,46 @@
                                                                                  action:@selector(handlePanGesture:)];
     //panGesture.delegate = self;
     panGesture.cancelsTouchesInView = NO;
-    [self.view addGestureRecognizer:panGesture];
+    //[self.view addGestureRecognizer:panGesture];
     
     UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                                                                        action:@selector(handleSwipeGesture:)];
     swipeGesture.delegate = self;
     [swipeGesture setDirection:(UISwipeGestureRecognizerDirectionRight)];
     swipeGesture.cancelsTouchesInView = NO;
-    [self.view addGestureRecognizer:swipeGesture];
+    //[self.view addGestureRecognizer:swipeGesture];
     
     //[panGesture requireGestureRecognizerToFail:swipeGesture];
+    
+    UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    leftButton.frame = CGRectMake(0, 0, 20, 20);
+    [leftButton setBackgroundImage:[UIImage imageNamed:@"lift.png"] forState:UIControlStateNormal];
+    [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    [leftButton setShowsTouchWhenHighlighted:YES];
+    [leftButton addTarget:self action:@selector(goPopClicked:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIBarButtonItem *temporaryLeftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
+    temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
+    self.navigationItem.leftBarButtonItem = temporaryLeftBarButtonItem;
+    
+    UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    rightButton.frame = CGRectMake(0, 0, 20, 20);
+    [rightButton setBackgroundImage:[UIImage imageNamed:@"Comment.png"] forState:UIControlStateNormal];
+    [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    [rightButton setShowsTouchWhenHighlighted:YES];
+    [rightButton addTarget:self action:@selector(goCommentClicked:) forControlEvents:UIControlEventTouchUpInside];
+    //[rightButton setTitle:@"1000评论" forState:UIControlStateNormal];// 添加文字
+    //[rightButton.titleLabel setFont:[UIFont boldSystemFontOfSize:12.0f]];
+    //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+    
+    UIBarButtonItem *temporaryRightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+    temporaryRightBarButtonItem.style = UIBarButtonItemStylePlain;
+    self.navigationItem.rightBarButtonItem = temporaryRightBarButtonItem;
+    
+    self.title = @"任玩堂";
     
     return self;
 }
@@ -346,11 +388,13 @@
 	
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         //[self.navigationController.navigationBar setAlpha:0.0f];
-        [self.navigationController setNavigationBarHidden:YES animated:YES];
+        //[self.navigationController setNavigationBarHidden:YES animated:YES];
         [self.navigationController setToolbarHidden:NO animated:animated];
         
         if ([[[UIDevice currentDevice] systemVersion] floatValue] > 4.9) {
             //IOS5
+            [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
+            
             if ([self.navigationController.toolbar respondsToSelector:@selector(setBackgroundImage:forToolbarPosition:barMetrics:)]) {
                 [self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"fot.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
             }
@@ -501,13 +545,112 @@
     if (inType == UIWebViewNavigationTypeLinkClicked) {
         //[[UIApplication sharedApplication] openURL:[inRequest URL]];
         //NSLog(@"host:%@\npath:%@",[[inRequest URL] host],[[inRequest URL] path]);
-        //if ([[[inRequest URL] host] rangeOfString:@".appgame.com"].location != NSNotFound) {
-        if (self.htmlString != nil) {
+        if ([[[inRequest URL] host] rangeOfString:@".appgame.com"].location != NSNotFound) {
+        //if (self.htmlString != nil) {
             NSLog(@"站内页面");
-            SVWebViewController *viewController = [[SVWebViewController alloc] initWithURL:[inRequest URL]];
-            [self.navigationController pushViewController:viewController animated:YES];
-            return NO;
+            AFHTTPClient *jsonapiClient = [AFHTTPClient clientWithBaseURL:[inRequest URL]];
+            
+            NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
+                                        @"get_posts", @"json",
+                                        nil];
+            
+            [jsonapiClient getPath:@""
+                        parameters:parameters
+                           success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                               
+                               __block NSString *jsonString = operation.responseString;
+                               
+                               //过滤掉w3tc缓存附加在json数据后面的
+                               /*
+                                <!-- W3 Total Cache: Page cache debug info:
+                                Engine:             memcached
+                                Cache key:          4e14f98a5d7a178df9c7d3251ace098d
+                                Caching:            enabled
+                                Status:             not cached
+                                Creation Time:      2.143s
+                                Header info:
+                                X-Powered-By:        PHP/5.4.14-1~precise+1
+                                X-W3TC-Minify:       On
+                                Last-Modified:       Sun, 12 May 2013 16:17:48 GMT
+                                Vary:
+                                X-Pingback:           http://www.appgame.com/xmlrpc.php
+                                Content-Type:         application/json; charset=UTF-8
+                                -->
+                                */
+                               NSError *error;
+                               //(.|\\s)*或([\\s\\S]*)可以匹配包括换行在内的任意字符
+                               NSRegularExpression *regexW3tc = [NSRegularExpression
+                                                                 regularExpressionWithPattern:@"<!-- W3 Total Cache:([\\s\\S]*)-->"
+                                                                 options:NSRegularExpressionCaseInsensitive
+                                                                 error:&error];
+                               [regexW3tc enumerateMatchesInString:jsonString
+                                                           options:0
+                                                             range:NSMakeRange(0, jsonString.length)
+                                                        usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                                                            jsonString = [jsonString stringByReplacingOccurrencesOfString:[jsonString substringWithRange:result.range] withString:@""];
+                                                        }];
+                               
+                               jsonString = [jsonString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                               
+                               NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+                               // fetch the json response to a dictionary
+                               NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+                               // pass it to the block
+                               // check the code (success is 0)
+                               NSString *code = [responseDictionary objectForKey:@"status"];
+                               
+                               if (![code isEqualToString:@"ok"]) {   // there's an error
+                                   NSLog(@"获取文章json异常:%@",inRequest.URL);
+                               }else {
+                                   ArticleItem *aArticle = [[ArticleItem alloc] init];
+                                   aArticle.articleURL = inRequest.URL;
+                                   aArticle.title = [[responseDictionary objectForKey:@"post"] objectForKey:@"title"];
+                                   aArticle.creator = [[[responseDictionary objectForKey:@"post"] objectForKey:@"author"] objectForKey:@"nickname"];
+                                   
+                                   aArticle.articleIconURL = [NSURL URLWithString:[[[responseDictionary objectForKey:@"post"] objectForKey:@"thumbnail"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                                   
+                                   aArticle.description = [[responseDictionary objectForKey:@"post"] objectForKey:@"excerpt"];
+                                   
+                                   aArticle.content = [[responseDictionary objectForKey:@"post"] objectForKey:@"content"];
+                                   NSDateFormatter *df = [[NSDateFormatter alloc] init];
+                                   NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+                                   [df setLocale:locale];
+                                   [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+                                   
+                                   aArticle.pubDate = [df dateFromString:[[[responseDictionary objectForKey:@"post"] objectForKey:@"date"] stringByReplacingOccurrencesOfString:@"T" withString:@" "]];
+                                   
+                                   if (aArticle.content != nil) {
+                                       NSString *htmlFilePath = [[NSBundle mainBundle] pathForResource:@"appgame" ofType:@"html"];
+                                       NSString *htmlString = [NSString stringWithContentsOfFile:htmlFilePath encoding:NSUTF8StringEncoding error:nil];
+                                       NSString *contentHtml = @"";
+                                       NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                                       [dateFormatter setDateFormat:@"YYYY-MM-dd HH:mm"];
+                                       contentHtml = [contentHtml stringByAppendingFormat:htmlString,
+                                                      aArticle.title, aArticle.creator, [dateFormatter stringFromDate:aArticle.pubDate]];
+                                       contentHtml = [contentHtml stringByReplacingOccurrencesOfString:@"<!--content-->" withString:aArticle.content];
+                                       aArticle.content = contentHtml;
+                                       
+                                       SVWebViewController *viewController = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];
+                                       
+                                       //NSLog(@"didSelectArticle:%@",aArticle.content);
+                                       [self.navigationController pushViewController:viewController animated:YES];
+                                   }
+                               }
+                           }
+                           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                               // pass error to the block
+                               NSLog(@"获取文章json失败:%@",error);
+                           }];
+            
+            
+//            SVWebViewController *viewController = [[SVWebViewController alloc] initWithURL:[inRequest URL]];
+//            [self.navigationController pushViewController:viewController animated:YES];
+        }else if([[[inRequest URL] host] rangeOfString:@"itunes.apple.com"].location != NSNotFound){
+            NSLog(@"站外链接:%@",inRequest.URL);
+            //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"itms-apps://phobos.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=%@", @"586743861"]]];
+            [[UIApplication sharedApplication] openURL:inRequest.URL];
         }
+        return NO;
     }
     return YES;
 }
@@ -530,10 +673,48 @@
     [self updateToolbarItems];
 }
 
+#pragma mark -
+#pragma mark YIPopupTextViewDelegate
+
+- (void)popupTextView:(YIPopupTextView *)textView willDismissWithText:(NSString *)text cancelled:(BOOL)cancelled
+{
+    NSLog(@"will dismiss: cancelled=%d",cancelled);
+    self.textView = text;
+    NSLog(@"textView:%@",self.textView);
+}
+
+- (void)popupTextView:(YIPopupTextView *)textView didDismissWithText:(NSString *)text cancelled:(BOOL)cancelled
+{
+    NSLog(@"did dismiss: cancelled=%d",cancelled);
+}
+
 #pragma mark - Target actions
 
 - (void)goPopClicked:(UIBarButtonItem *)sender {
     [[self navigationController] popViewControllerAnimated:YES];
+}
+
+- (void)goTextViewClicked:(UIBarButtonItem *)sender {
+    // NOTE: maxCount = 0 to hide count
+    // YIPopupTextView* popupTextView = [[YIPopupTextView alloc] initWithPlaceHolder:@"input here" maxCount:1000];
+    YIPopupTextView* popupTextView = [[YIPopupTextView alloc] initWithPlaceHolder:@"很给力!"
+                                                                         maxCount:1000
+                                                                      buttonStyle:YIPopupTextViewButtonStyleLeftCancelRightDone
+                                                                  tintsDoneButton:YES];
+    popupTextView.delegate = self;
+    popupTextView.caretShiftGestureEnabled = YES;   // default = NO
+    popupTextView.text = self.textView;
+    //    popupTextView.editable = NO;                  // set editable=NO to show without keyboard
+    [popupTextView showInView:self.view];
+    
+    //
+    // NOTE:
+    // You can add your custom-button after calling -showInView:
+    // (it's better to add on either superview or superview.superview)
+    // https://github.com/inamiy/YIPopupTextView/issues/3
+    //
+    // [popupTextView.superview addSubview:customButton];
+    //
 }
 
 - (void)goFavoriteClicked:(UIBarButtonItem *)sender {
@@ -583,6 +764,12 @@
 	[self updateToolbarItems];
 }
 
+- (void)goCommentClicked:(id)sender {
+    
+    CommentViewController *viewController = [[CommentViewController alloc] initWithTitle:self.htmlString.title withUrl:[self.htmlString.articleURL absoluteString] threadID:[NSNumber numberWithInteger:-1]];
+    
+    [self.navigationController pushViewController:viewController animated:YES];
+}
 - (void)actionButtonClicked:(id)sender {
     
     if(pageActionSheet)
@@ -596,9 +783,84 @@
     //IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];//path
     //CommentViewController *viewController = [[CommentViewController alloc] initWithTitle:self.htmlString.title withUrl:self.htmlString.articleURL.absoluteString];
     
-    CommentViewController *viewController = [[CommentViewController alloc] initWithTitle:self.htmlString.title withUrl:[self.htmlString.articleURL absoluteString] threadID:[NSNumber numberWithInteger:-1]];
+    ArticleItem *aArticleItem = (ArticleItem*)self.htmlString;
+	NSString *shareString =  [NSString stringWithFormat:@"%@\r\n%@\r\n---任玩堂", aArticleItem.title, aArticleItem.articleURL];
     
-    [self.navigationController pushViewController:viewController animated:YES];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        id<ISSContainer> container = [ShareSDK container];
+        [container setIPadContainerWithView:self.navigationItem.rightBarButtonItem.customView arrowDirect:UIPopoverArrowDirectionUp];
+        NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"logoshare" ofType:@"jpg"];
+        //构造分享内容
+        id<ISSContent> publishContent = [ShareSDK content:shareString
+                                           defaultContent:@"默认分享内容,没内容时显示"
+                                                    image:[ShareSDK imageWithPath:imagePath]
+                                                    title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
+        
+        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, ShareTypeSMS, ShareTypeAirPrint, ShareTypeCopy, nil];
+        [ShareSDK showShareActionSheet:container shareList:shareList
+                               content:publishContent
+                         statusBarTips:YES
+                           authOptions:[ShareSDK authOptionsWithAutoAuth:YES
+                                                           allowCallback:NO
+                                                           authViewStyle:SSAuthViewStyleModal
+                                                            viewDelegate:nil
+                                                 authManagerViewDelegate:nil]
+                          shareOptions:[ShareSDK defaultShareOptionsWithTitle:@"分享"
+                                                              oneKeyShareList:shareList
+                                                               qqButtonHidden:YES
+                                                        wxSessionButtonHidden:YES
+                                                       wxTimelineButtonHidden:YES
+                                                         showKeyboardOnAppear:NO
+                                                            shareViewDelegate:nil
+                                                          friendsViewDelegate:nil
+                                                        picViewerViewDelegate:nil]
+                                result:^(ShareType type, SSPublishContentState state,
+                                         id<ISSStatusInfo> statusInfo, id<ICMErrorInfo> error, BOOL end) {
+                                    if (state == SSPublishContentStateSuccess)
+                                    {
+                                        NSLog(@"分享成功");
+                                    }
+                                    else if (state == SSPublishContentStateFail) {
+                                        NSLog(@"分享失败,错误码:%d,错误描述:%@", [error errorCode], [error errorDescription]);
+                                    } }];
+        
+        //[self.pageActionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
+    }else {
+        NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"logoshare" ofType:@"jpg"];
+        //构造分享内容
+        id<ISSContent> publishContent = [ShareSDK content:shareString
+                                           defaultContent:@"默认分享内容,没内容时显示"
+                                                    image:[ShareSDK imageWithPath:imagePath]
+                                                    title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
+        
+        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, ShareTypeSMS, ShareTypeAirPrint, ShareTypeCopy, nil];
+        [ShareSDK showShareActionSheet:nil shareList:shareList
+                               content:publishContent
+                         statusBarTips:YES
+                           authOptions:[ShareSDK authOptionsWithAutoAuth:YES
+                                                           allowCallback:NO
+                                                           authViewStyle:SSAuthViewStyleModal
+                                                            viewDelegate:nil
+                                                 authManagerViewDelegate:nil]
+                          shareOptions:[ShareSDK defaultShareOptionsWithTitle:@"分享"
+                                                              oneKeyShareList:shareList
+                                                               qqButtonHidden:YES
+                                                        wxSessionButtonHidden:YES
+                                                       wxTimelineButtonHidden:YES
+                                                         showKeyboardOnAppear:NO
+                                                            shareViewDelegate:nil
+                                                          friendsViewDelegate:nil
+                                                        picViewerViewDelegate:nil]
+                                result:^(ShareType type, SSPublishContentState state,
+                                         id<ISSStatusInfo> statusInfo, id<ICMErrorInfo> error, BOOL end) {
+                                    if (state == SSPublishContentStateSuccess)
+                                    {
+                                        NSLog(@"分享成功");
+                                    }
+                                    else if (state == SSPublishContentStateFail) {
+                                        NSLog(@"分享失败,错误码:%d,错误描述:%@", [error errorCode], [error errorDescription]);
+                                    } }];
+    }
 }
 
 - (void)doneButtonClicked:(id)sender {

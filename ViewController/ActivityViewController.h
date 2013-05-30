@@ -35,6 +35,7 @@ typedef void (^ActivityRevealBlock)();
     BOOL ifLoging;//是否已登录
     IADisqusUser *dUser;//个人页面的用户
     TableHeaderView *headerView;
+    UIImageView *bgImage;
     
     PullToRefreshTableView *pullToRefreshTableView;
     UIImageView *avatarImage;
@@ -46,6 +47,7 @@ typedef void (^ActivityRevealBlock)();
 //@property (nonatomic, copy) NSString *webURL;
 @property (nonatomic, strong) IADisqusUser *dUser;
 @property (nonatomic, strong) TableHeaderView *headerView;
+@property (nonatomic, strong) UIImageView *bgImage;
 
 @property (nonatomic, strong) PullToRefreshTableView *pullToRefreshTableView;
 @property (strong, nonatomic) NSMutableArray *following;

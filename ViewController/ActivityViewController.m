@@ -35,7 +35,7 @@
 
 @implementation ActivityViewController
 
-@synthesize headerView;
+@synthesize headerView,bgImage;
 @synthesize pullToRefreshTableView,dUser,avatarImage;
 @synthesize following,follower,active,post;
 
@@ -77,7 +77,7 @@
     self.post = [[NSMutableArray alloc] init];
     start = 0;
     receiveMember = 0;
-    avatarImage=[[UIImageView alloc] initWithFrame:CGRectMake(18, 128-53, 53, 53)];
+    avatarImage=[[UIImageView alloc] initWithFrame:CGRectMake(18, 120-53, 53, 53)];
     [avatarImage.layer setMasksToBounds:YES];
     [avatarImage.layer setOpaque:NO];
     [avatarImage setBackgroundColor:[UIColor clearColor]];
@@ -99,17 +99,14 @@
     [self.view addSubview:pullToRefreshTableView];
     
     //添加ZG平行图
-    //UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(-(640-320)/2, -(960-320)/2, 320, 480)];
-    //UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.height, 320.0f)];
-    UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 160)];
-    //UIImageView *avatarImage=[[UIImageView alloc] initWithFrame:CGRectMake(32, 180, 92, 92)];
-    
+    bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 160)];
     [bgImage setImage: [UIImage imageNamed:@"ZGAppGame.png"]];
-    //[headView addSubview:bgImage];
-    //[avatarImage setImageWithURL:[NSURL URLWithString:kDataSource.userObject.authorAvatar]
-    //            placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
-    //[headView addSubview:avatarImage];
-    [pullToRefreshTableView addParallelViewWithUIView:bgImage withDisplayRadio:0.8 headerViewStyle:ZGScrollViewStyleDefault];
+    
+//    UIImageView *bImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 160)];
+//    [bImage setImage: [UIImage imageNamed:@"ZGAppGame.png"]];
+//    pullToRefreshTableView.tableHeaderView = bImage;
+    
+    [pullToRefreshTableView addParallelViewWithUIView:bgImage withDisplayRadio:0.75 headerViewStyle:ZGScrollViewStyleDefault];    
     //By default, displayRadio is 0.5
     //By default, cutOffAtMax is set to NO
     //Set cutOffAtMax to YES to stop the scrolling when it hits the top.
@@ -158,12 +155,12 @@
     if (section == 0) {
         headerText = @"动态";
     }
-    UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
-    [bgImage setImage: [UIImage imageNamed:@"CellHeader.png"]];
+    UIImageView *cellHeadImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
+    [cellHeadImage setImage: [UIImage imageNamed:@"CellHeader.png"]];
     UIView *sectionView = nil;
     if (headerText != [NSNull null]) {
         sectionView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.height, 22.0f)];
-        //[sectionView addSubview:bgImage];
+        //[sectionView addSubview:cellHeadImage];
         sectionView.backgroundColor = [UIColor colorWithRed:(227.0f/255.0f) green:(222.0f/255.0f) blue:(216.0f/255.0f) alpha:1.0f];
         UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0f, 0.0f,[UIScreen mainScreen].bounds.size.height, 22.0f)];
         textLabel.text = (NSString *) headerText;
@@ -489,10 +486,36 @@
 
 #pragma mark -
 #pragma mark Scroll View Delegate
+//-(void)setBackImageFrame:(CGFloat)height originalY:(CGFloat)y
+//{
+//    [bgImage setFrame:CGRectMake(0, y, 320, height)];
+//    
+//    //控制一下计算图片高度的次数，防止不必要的计算
+//    if(_preHeight != height){
+//        //截取图片的中间部分显示
+//        CGRect rect = CGRectMake(0, 0, _backImage.size.width, _backImage.size.height);
+//        float heightLimit =height*2;
+//        if(_backImage.size.width > 640 && _backImage.size.height > heightLimit){
+//            rect   = CGRectMake(0, (_backImage.size.height/(_backImage.size.width/640) - heightLimit)/2, _backImage.size.width, heightLimit);
+//        }else if(_backImage.size.height > 300){
+//            rect  = CGRectMake(0, (_backImage.size.height- heightLimit)/2, _backImage.size.width, heightLimit);
+//        }
+//        
+//        CGImageRef  cgImage  = CGImageCreateWithImageInRect([_backImage CGImage], rect);
+//        [_backImageView setImage:[UIImage imageWithCGImage:cgImage]];
+//        CGImageRelease(cgImage);
+//    }
+//    _preHeight = height;
+//}
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     [pullToRefreshTableView tableViewDidDragging];
+//    if(scrollView.contentOffset.y < 0){
+//        [self setBackImageFrame:120 - scrollView.contentOffset.y originalY:0];
+//    }else {
+//        [self setBackImageFrame:120 originalY:(0-scrollView.contentOffset.y)];
+//    }
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
@@ -527,7 +550,7 @@
     //[[self indicator] startAnimating];
     //[self.pullToRefreshTableView setAlpha:0.5];
     //[pullToRefreshTableView setHidden:YES];
-    //[alerViewManager showMessage:@"正在加载数据" inView:self.view];
+    [alerViewManager showMessage:@"正在加载数据" inView:self.view];
     
     IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];
     
@@ -587,7 +610,7 @@
                              }
                              [active removeAllObjects];
                              active = articleAct;
-                             //[alerViewManager dismissMessageView:self.view];
+                             [alerViewManager dismissMessageView:self.view];
                              // reload the table
                              [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
                          }
@@ -597,7 +620,7 @@
                                 {
                                     [pullToRefreshTableView setHidden:NO];
                                 }
-                                //[alerViewManager dismissMessageView:self.view];
+                                [alerViewManager dismissMessageView:self.view];
                                 //[alerViewManager showOnlyMessage:@"请求数据失败" inView:self.view];
                                 
                                 [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];

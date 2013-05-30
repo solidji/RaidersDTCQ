@@ -11,8 +11,9 @@
 #import <MessageUI/MessageUI.h>
 #import "PullToRefreshTableView.h"
 #import "AlerViewManager.h"
+#import "YIPopupTextView.h"
 
-@interface CommentViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate> {
+@interface CommentViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, YIPopupTextViewDelegate> {
     NSMutableArray *comments;//数据源
     //UIActivityIndicatorView *indicator;
     PullToRefreshTableView *pullToRefreshTableView;
@@ -25,8 +26,10 @@
     BOOL ifNeedFristLoading;
     BOOL hasNext;
     NSString *nextCursor;
+    NSString *textView;
 }
 
+@property (strong, nonatomic) NSString *textView;
 @property (nonatomic, copy) NSString *webURL, *nextCursor;
 @property (nonatomic, copy) NSNumber *thread;
 @property (nonatomic, strong) PullToRefreshTableView * pullToRefreshTableView;

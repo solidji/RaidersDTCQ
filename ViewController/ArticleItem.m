@@ -20,6 +20,7 @@
 @synthesize content = _strContent;
 @synthesize userID = _strUserID;
 @synthesize articleIconURL = _strArticleIconURL;
+@synthesize commentCount = _strCommentCount;
 
 - (BOOL)isEqual:(id)anObject {
     if (![anObject isKindOfClass:[ArticleItem class]]) return NO;
@@ -41,6 +42,7 @@
         self.content = [coder decodeObjectForKey:@"content"];
         self.userID = [coder decodeObjectForKey:@"userID"];
         self.articleIconURL = [coder decodeObjectForKey:@"articleIconURL"];
+        self.commentCount = [coder decodeObjectForKey:@"commentCount"];
     }
     return self;
 }
@@ -57,5 +59,6 @@
     [coder encodeObject:self.content forKey:@"content"];
     [coder encodeObject:self.userID forKey:@"userID"];
     [coder encodeObject:self.articleIconURL forKey:@"articleIconURL"];
+    [coder encodeObject:self.commentCount forKey:@"commentCount"];
 }
 @end
