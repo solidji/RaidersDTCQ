@@ -197,9 +197,11 @@
     NSString *disqusUsername = [standardDefaults stringForKey:kUsername];
     NSString *disqusPassword = [standardDefaults stringForKey:kPassword];
 //    disqusUsername = @"jw@appgame.com";
-//    disqusPassword = @"12161127";    
-    disqusUsername = @"appgame";
-    disqusPassword = @"kiueo_0903xerw3";
+//    disqusPassword = @"12161127";
+    if (disqusUsername == nil || disqusPassword == nil) {
+        disqusUsername = @"appgame";
+        disqusPassword = @"kiueo_0903xerw3";
+    }
     
     IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];
     [iaDisquser loginWithUsername:disqusUsername password:disqusPassword

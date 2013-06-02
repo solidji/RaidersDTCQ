@@ -78,4 +78,7 @@ typedef void (^DisqusResponses)(NSDictionary *);
 + (void)getThreadIdWithLink:(NSString *)link success:(DisqusGetThreadIdSuccess)successBlock fail:(DisqusFail)failBlock;
 + (void)postComment:(IADisqusComment *)comment success:(DisqusPostCommentSuccess)successBlock fail:(DisqusFail)failBlock;
 
+- (void)postComment:(NSDictionary *)parameters success:(DisqusResponses)successBlock fail:(DisqusFail)failBlock;
+- (void)reportComment:(NSDictionary *)parameters success:(DisqusResponses)successBlock fail:(DisqusFail)failBlock;
+
 @end

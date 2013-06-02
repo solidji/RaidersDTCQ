@@ -50,13 +50,15 @@
     [super viewWillAppear:animated];
     //self.navigationController.navigationBar.tintColor = [UIColor redColor];//[UIColor colorWithRed:187.0/255.0 green:18.0/255.0 blue:30.0/255.0 alpha:1.0000];
     UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    leftButton.frame = CGRectMake(0, 0, 45, 33);
-    [leftButton setBackgroundImage:[UIImage imageNamed:@"menu.png"] forState:UIControlStateNormal];
+    leftButton.frame = CGRectMake(0, 0, 50, 26);
+    [leftButton setBackgroundImage:[UIImage imageNamed:@"Return.png"] forState:UIControlStateNormal];
     //[leftButton setBackgroundColor:[UIColor redColor]];
     [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [leftButton setShowsTouchWhenHighlighted:YES];
     [leftButton addTarget:self action:@selector(onBack) forControlEvents:UIControlEventTouchUpInside];
+    [leftButton setTitle:@" 设置" forState:UIControlStateNormal];
+    [leftButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11]];
     
     UIBarButtonItem *temporaryLeftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
     temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
@@ -81,9 +83,11 @@
     [self loading:YES];
     LoginInfo *info = [[LoginInfo alloc] init];
     [self.root fetchValueUsingBindingsIntoObject:info];
-    [self performSelector:@selector(loginCompleted:) withObject:info afterDelay:2];
+    //[self performSelector:@selector(loginCompleted:) withObject:info afterDelay:2];
     
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    [standardDefaults setValue:info.login forKey:kUsername];//记住账号密码,下次直接用此账号登录
+    [standardDefaults setValue:info.password forKey:kPassword];
     self.iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];
     [self.iaDisquser loginWithUsername:info.login password:info.password
                           success:^(AFOAuthCredential *credential) {

@@ -8,14 +8,18 @@
 
 #import "SVWebViewController.h"
 #import "IADisquser.h"
+#import "IADisqusConfig.h"
 #import "CommentViewController.h"
 #import "AFHTTPClient.h"
 #import "AFXMLRequestOperation.h"
 #import <ShareSDK/ShareSDK.h>
 #import "YIPopupTextView.h"
+#import "AppDataSouce.h"
+#import "GlobalConfigure.h"
 
 @interface SVWebViewController () <UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
 @property (nonatomic, strong, readonly) UIBarButtonItem *popBarButtonItem;
+@property (nonatomic, strong, readonly) UIBarButtonItem *likeButtonItem;
 @property (nonatomic, strong, readonly) UIButton *favoriteBarButton;
 @property (nonatomic, strong, readonly) UIBarButtonItem *favoriteBarButtonItem;
 @property (nonatomic, strong, readonly) UIBarButtonItem *backBarButtonItem;
@@ -57,23 +61,36 @@
 @synthesize availableActions;
 
 @synthesize URL, mainWebView, isHide, textView;
-@synthesize popBarButtonItem, favoriteBarButton, favoriteBarButtonItem, backBarButtonItem, forwardBarButtonItem, refreshBarButtonItem, stopBarButtonItem, actionBarButtonItem, pageActionSheet;
+@synthesize popBarButtonItem,likeButtonItem, favoriteBarButton, favoriteBarButtonItem, backBarButtonItem, forwardBarButtonItem, refreshBarButtonItem, stopBarButtonItem, actionBarButtonItem, pageActionSheet;
 
 #pragma mark - setters and getters
 - (UIBarButtonItem *)popBarButtonItem {
     
     if (!popBarButtonItem) {
-        //popBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"lift.png"] style:UIBarButtonItemStylePlain target:self action:@selector(goTextViewClicked:)];
+        popBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Message-Box-Short.png"] style:UIBarButtonItemStylePlain target:self action:@selector(goTextViewClicked:)];
+       // [popBarButtonItem setTitle:@"说点什么吧..."];
         //[rightButton setTitle:@"1000评论" forState:UIControlStateNormal];// 添加文字
         //[rightButton.titleLabel setFont:[UIFont boldSystemFontOfSize:12.0f]];
         //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-        popBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"留言..." style:UIBarButtonItemStylePlain target:self action:@selector(goTextViewClicked:)];
-        //[popBarButtonItem.title sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12.0] constrainedToSize:CGSizeMake(18.0f*6,20.0f)];
+        //popBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"留言..." style:UIBarButtonItemStylePlain target:self action:@selector(goTextViewClicked:)];
+        //popBarButtonItem.image = [UIImage imageNamed:@"Message-Box-Short.png"];
+        //[popBarButtonItem.title sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12.0] constrainedToSize:CGSizeMake(166.0f,33.0f)];
+
         popBarButtonItem.imageInsets = UIEdgeInsetsMake(2.0f, 0.0f, -2.0f, 0.0f);
-		popBarButtonItem.width = 18.0f*6;
+		popBarButtonItem.width = 166.0f;
     }
     return popBarButtonItem;
+}
+
+- (UIBarButtonItem *)likeButtonItem {
+    
+    if (!likeButtonItem) {
+        likeButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Praise.png"] style:UIBarButtonItemStylePlain target:self action:@selector(goTextViewClicked:)];
+        likeButtonItem.imageInsets = UIEdgeInsetsMake(2.0f, 0.0f, -2.0f, 0.0f);
+		likeButtonItem.width = 18.0f;
+    }
+    return likeButtonItem;
 }
 
 - (UIBarButtonItem *)favoriteBarButtonItem {
@@ -196,20 +213,22 @@
     //[panGesture requireGestureRecognizerToFail:swipeGesture];
     
     UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    leftButton.frame = CGRectMake(0, 0, 20, 20);
-    [leftButton setBackgroundImage:[UIImage imageNamed:@"lift.png"] forState:UIControlStateNormal];
+    leftButton.frame = CGRectMake(0, 0, 50, 26);
+    [leftButton setBackgroundImage:[UIImage imageNamed:@"Return.png"] forState:UIControlStateNormal];
     [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [leftButton setShowsTouchWhenHighlighted:YES];
     [leftButton addTarget:self action:@selector(goPopClicked:) forControlEvents:UIControlEventTouchUpInside];
+    [leftButton setTitle:@" 后退" forState:UIControlStateNormal];
+    [leftButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11]];
     
     UIBarButtonItem *temporaryLeftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
     temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
     self.navigationItem.leftBarButtonItem = temporaryLeftBarButtonItem;
     
     UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    rightButton.frame = CGRectMake(0, 0, 20, 20);
-    [rightButton setBackgroundImage:[UIImage imageNamed:@"Comment.png"] forState:UIControlStateNormal];
+    rightButton.frame = CGRectMake(0, 0, 35, 26);
+    [rightButton setBackgroundImage:[UIImage imageNamed:@"Comment-Right.png"] forState:UIControlStateNormal];
     [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [rightButton setShowsTouchWhenHighlighted:YES];
@@ -348,7 +367,7 @@
     favoriteBarButton = [UIButton buttonWithType:UIButtonTypeCustom];
     favoriteBarButton.frame = CGRectMake(5+(20+72)*2, 10, 20, 20);
     
-    [favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Favorites-hollow.png"] forState:UIControlStateNormal];
+    [favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Collection-Hollow.png"] forState:UIControlStateNormal];
     [favoriteBarButton addTarget:self action:@selector(goFavoriteClicked:) forControlEvents:UIControlEventTouchUpInside];
     
     //从standardDefaults中读取收藏列表
@@ -359,9 +378,9 @@
     self.articles = [NSMutableArray arrayWithArray:udData];
     //如果收藏列表里已经有,表示已经收藏
     if ([self.articles containsObject:self.htmlString]) {
-        [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Favorited.png"] forState:UIControlStateNormal];
+        [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Collection-Solid.png"] forState:UIControlStateNormal];
     }else {//没有收藏
-        [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Favorites-hollow.png"] forState:UIControlStateNormal];
+        [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Collection-Hollow.png"] forState:UIControlStateNormal];
     }
     [self updateToolbarItems];
     self.view.backgroundColor = [UIColor colorWithRed:234.0/255 green:234.0/255 blue:234.0/255 alpha:1.0];
@@ -371,6 +390,7 @@
     [super viewDidUnload];
     mainWebView = nil;
     popBarButtonItem = nil;
+    likeButtonItem = nil;
     favoriteBarButton = nil;
     favoriteBarButtonItem = nil;
     backBarButtonItem = nil;
@@ -427,6 +447,7 @@
 
 - (void)updateToolbarItems {
     self.popBarButtonItem.enabled = YES;
+    self.likeButtonItem.enabled = YES;
     self.favoriteBarButtonItem.enabled = YES;
     self.favoriteBarButton.enabled = YES;
     [self.favoriteBarButton setShowsTouchWhenHighlighted:YES];
@@ -477,7 +498,7 @@
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:toolbar];
     }
     
-    else {
+    else {//iphone
         NSArray *items;
         
         if(self.availableActions == 0) {
@@ -503,13 +524,13 @@
                          flexibleSpace,
                          nil];
             }
-        } else {
+        } else {//有分享按钮到这里
             if (self.htmlString != nil) {
                 items = [NSArray arrayWithObjects:
                          fixedSpace,
                          self.popBarButtonItem,
                          flexibleSpace,
-                         fixedSpaceItem,
+                         self.likeButtonItem,
                          flexibleSpace,
                          self.favoriteBarButtonItem,
                          flexibleSpace,
@@ -681,6 +702,40 @@
     NSLog(@"will dismiss: cancelled=%d",cancelled);
     self.textView = text;
     NSLog(@"textView:%@",self.textView);
+    if (!cancelled) {
+        IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];
+        [IADisquser getThreadIdWithLink:self.URL.absoluteString
+                                success:^(NSNumber *threadID) {
+                                    NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                kDataSource.credentialObject.accessToken, @"access_token",
+                                                                //DISQUS_API_SECRET, @"api_secret",
+                                                                DISQUS_API_PUBLIC,@"api_key",
+                                                                //dUser.userID, @"user",
+                                                                self.textView,@"message",
+                                                                threadID,@"thread",
+                                                                nil];
+                                    //create the post
+                                    [iaDisquser postComment:parameters
+                                                         success:^(NSDictionary *responseDictionary){
+                                                             // check the code (success is 0)
+                                                             NSNumber *code = [responseDictionary objectForKey:@"code"];
+                                                             
+                                                             if ([code integerValue] != 0) {   // there's an error
+                                                                 NSLog(@"评论发表异常");
+                                                             }else {
+                                                                 NSArray *responseArray = [responseDictionary objectForKey:@"response"];
+                                                                 if ([responseArray count] != 0) {
+                                                                     NSLog(@"成功发表评论:%@,%@,%@",self.URL.absoluteString, threadID, self.textView);
+                                                                 }
+                                                             }
+                                                         }
+                                                            fail:^(NSError *error) {
+                                                                NSLog(@"发表评论失败:%@",error);
+                                                            }];
+                                } fail:^(NSError *error) {
+                                    NSLog(@"发表评论失败:%@",error);
+                                }];
+    }
 }
 
 - (void)popupTextView:(YIPopupTextView *)textView didDismissWithText:(NSString *)text cancelled:(BOOL)cancelled
@@ -728,12 +783,12 @@
     //如果收藏列表里已经有,表示已经收藏,则取消收藏
     if ([self.articles containsObject:self.htmlString]) {
         [self.articles removeObject:self.htmlString];
-        [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Favorites-hollow.png"] forState:UIControlStateNormal];
+        [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Collection-Hollow.png"] forState:UIControlStateNormal];
         [self updateToolbarItems];
         [self.alerViewManager showOnlyMessage:@"取消收藏" inView:self.view];
     }else {//没有收藏,添加
         [self.articles addObject:self.htmlString];
-        [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Favorited.png"] forState:UIControlStateNormal];
+        [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Collection-Solid.png"] forState:UIControlStateNormal];
         [self updateToolbarItems];
         [self.alerViewManager showOnlyMessage:@"收藏成功" inView:self.view];
         
@@ -768,6 +823,9 @@
     
     CommentViewController *viewController = [[CommentViewController alloc] initWithTitle:self.htmlString.title withUrl:[self.htmlString.articleURL absoluteString] threadID:[NSNumber numberWithInteger:-1]];
     
+//    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"正文" style:UIBarButtonItemStyleBordered target:nil action:nil];
+//    [self.navigationItem setBackBarButtonItem:backItem];
+
     [self.navigationController pushViewController:viewController animated:YES];
 }
 - (void)actionButtonClicked:(id)sender {

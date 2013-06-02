@@ -84,7 +84,7 @@
     
     followingLabel = [[UILabel alloc] init];
     followerLabel = [[UILabel alloc] init];
-    avatarImage=[[UIImageView alloc] initWithFrame:CGRectMake(18, 128-53, 53, 53)];
+    avatarImage=[[UIImageView alloc] initWithFrame:CGRectMake(18, 120-53, 53, 53)];
     [avatarImage.layer setMasksToBounds:YES];
     [avatarImage.layer setOpaque:NO];
     [avatarImage setBackgroundColor:[UIColor clearColor]];
@@ -115,9 +115,9 @@
     
     //添加ZG平行图
     //UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(-(640-320)/2, -(960-320)/2, 320, 480)];
-    UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 160)];
-    [bgImage setImage: [UIImage imageNamed:@"ZGAppGame.png"]];
-    [self.pullToRefreshTableView addParallelViewWithUIView:bgImage withDisplayRadio:0.8 headerViewStyle:ZGScrollViewStyleDefault];
+    UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 320)];
+    [bgImage setImage: [UIImage imageNamed:@"ZGAppGame2.png"]];
+    [self.pullToRefreshTableView addParallelViewWithUIView:bgImage withDisplayRadio:0.375 headerViewStyle:ZGScrollViewStyleCutOffAtMax];
     //By default, displayRadio is 0.5
     //By default, cutOffAtMax is set to NO
     //Set cutOffAtMax to YES to stop the scrolling when it hits the top.
@@ -380,17 +380,19 @@
     [followingLabel setLineBreakMode:NSLineBreakByTruncatingTail];
     [followingLabel setNumberOfLines:1];
     followingLabel.text = [[NSString alloc] initWithString:[NSString stringWithFormat:@"关注:%d  粉丝:%d   简介:%@",[dUser.numFollowing intValue], [dUser.numFollowers intValue], dUser.about]];
-    [followingLabel setFrame:CGRectMake(80.0, 108.0, 320.0-80.0, 20.0)];
+    [followingLabel setFrame:CGRectMake(80.0, 100.0, 320.0-80.0, 20.0)];
     
-    [followerLabel setTextColor:[UIColor colorWithRed:(0.0/255.0) green:(0.0/255.0) blue:(0.0/255.0) alpha:0.3]];
-    [followerLabel setFont:[UIFont fontWithName:@"Helvetica" size:([UIFont systemFontSize] * 0.8f)]];
+    [followerLabel setTextColor:[UIColor colorWithRed:(0.0/255.0) green:(0.0/255.0) blue:(0.0/255.0) alpha:0.5]];
+    [followerLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:([UIFont systemFontSize] * 0.8f)]];
+    [followerLabel setTextColor:[UIColor blackColor]];
     [followerLabel setBackgroundColor:[UIColor clearColor]];
     [followerLabel setLineBreakMode:NSLineBreakByTruncatingTail];
     [followerLabel setNumberOfLines:1];
-    followerLabel.text = [[NSString alloc] initWithString:[NSString stringWithFormat:@"粉丝:%d",[dUser.numFollowers intValue]]];
-    [followerLabel setFrame:CGRectMake(110.0, 108.0, 30.0, 20.0)];
     
-    UIView *bg = [[UIView alloc] initWithFrame:CGRectMake(0, 128-20.0, 320.0, 20.0)];
+    followerLabel.text = [[NSString alloc] initWithString:[NSString stringWithFormat:@"粉丝:%d",[dUser.numFollowers intValue]]];
+    [followerLabel setFrame:CGRectMake(110.0, 100.0, 30.0, 20.0)];
+    
+    UIView *bg = [[UIView alloc] initWithFrame:CGRectMake(0, 120-20.0, 320.0, 20.0)];
     bg.backgroundColor = [UIColor colorWithRed:(255.0/255.0) green:(255.0/255.0) blue:(255.0/255.0) alpha:0.3];
     [pullToRefreshTableView addSubview:bg];
     [pullToRefreshTableView addSubview:avatarImage];

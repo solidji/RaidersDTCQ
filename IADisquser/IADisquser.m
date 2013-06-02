@@ -363,6 +363,40 @@
                    }];
 }
 
+- (void)postComment:(NSDictionary *)parameters success:(DisqusResponses)successBlock fail:(DisqusFail)failBlock{
+    
+    AFHTTPClient *disqusClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:DISQUS_BASE_URL]];
+    [disqusClient setParameterEncoding:AFFormURLParameterEncoding];
+    
+    [disqusClient postPath:@"posts/create.json"
+                parameters:parameters
+                   success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                       // fetch the json response to a dictionary
+                       NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+                        successBlock(responseDictionary);
+                   }
+                   failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                       failBlock(error);
+                   }];
+}
+
+- (void)reportComment:(NSDictionary *)parameters success:(DisqusResponses)successBlock fail:(DisqusFail)failBlock{
+    
+    AFHTTPClient *disqusClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:DISQUS_BASE_URL]];
+    [disqusClient setParameterEncoding:AFFormURLParameterEncoding];
+    
+    [disqusClient postPath:@"posts/report.json"
+                parameters:parameters
+                   success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                       // fetch the json response to a dictionary
+                       NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+                       successBlock(responseDictionary);
+                   }
+                   failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                       failBlock(error);
+                   }];
+}
+
 #pragma mark - get top discussions
 + (void)getTopDiscussions:(NSDictionary *)parameters success:(DisqusFetchCommentsSuccess)successBlock fail:(DisqusFail)failBlock {
     // make a http client for disqus

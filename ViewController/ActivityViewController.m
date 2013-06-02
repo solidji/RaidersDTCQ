@@ -21,6 +21,7 @@
 #import "SVWebViewController.h"
 #import "CommentViewController.h"
 #import "PersonalViewController.h"
+#import "LoginController.h"
 
 #import "GlobalConfigure.h"
 #import "AppDataSouce.h"
@@ -31,6 +32,7 @@
 @interface ActivityViewController ()
 - (void)revealSidebar;
 - (void)didTapButton:(id)sender;
+- (void)goLoginClicked:(id)sender;
 @end
 
 @implementation ActivityViewController
@@ -58,6 +60,22 @@
         UIBarButtonItem *temporaryLeftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
         temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
         self.navigationItem.leftBarButtonItem = temporaryLeftBarButtonItem;
+        
+        UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        rightButton.frame = CGRectMake(0, 0, 45, 33);
+        //[rightButton setBackgroundImage:[UIImage imageNamed:@"Comment-Right.png"] forState:UIControlStateNormal];
+        [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+        [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+        [rightButton setShowsTouchWhenHighlighted:YES];
+        [rightButton addTarget:self action:@selector(goLoginClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [rightButton setTitle:@"登录" forState:UIControlStateNormal];// 添加文字
+        [rightButton.titleLabel setFont:[UIFont boldSystemFontOfSize:12.0f]];
+        [rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+        
+        UIBarButtonItem *temporaryRightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+        temporaryRightBarButtonItem.style = UIBarButtonItemStylePlain;
+        self.navigationItem.rightBarButtonItem = temporaryRightBarButtonItem;
     }
     alerViewManager = [[AlerViewManager alloc] init];
     ifNeedFristLoading = YES;
@@ -77,13 +95,13 @@
     self.post = [[NSMutableArray alloc] init];
     start = 0;
     receiveMember = 0;
-    avatarImage=[[UIImageView alloc] initWithFrame:CGRectMake(18, 120-53, 53, 53)];
+    avatarImage=[[UIImageView alloc] initWithFrame:CGRectMake(18, 120-60, 60, 60)];
     [avatarImage.layer setMasksToBounds:YES];
     [avatarImage.layer setOpaque:NO];
     [avatarImage setBackgroundColor:[UIColor clearColor]];
     [avatarImage.layer setBorderColor: [[UIColor whiteColor] CGColor]];
     [avatarImage.layer setBorderWidth: 2.0];
-    [avatarImage.layer setCornerRadius:26.0];
+    [avatarImage.layer setCornerRadius:30.0];
     
     // #添加列表
     [pullToRefreshTableView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
@@ -99,14 +117,14 @@
     [self.view addSubview:pullToRefreshTableView];
     
     //添加ZG平行图
-    bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 160)];
-    [bgImage setImage: [UIImage imageNamed:@"ZGAppGame.png"]];
+    bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 320)];
+    [bgImage setImage: [UIImage imageNamed:@"ZGAppGame1.png"]];
     
 //    UIImageView *bImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 160)];
 //    [bImage setImage: [UIImage imageNamed:@"ZGAppGame.png"]];
 //    pullToRefreshTableView.tableHeaderView = bImage;
     
-    [pullToRefreshTableView addParallelViewWithUIView:bgImage withDisplayRadio:0.75 headerViewStyle:ZGScrollViewStyleDefault];    
+    [pullToRefreshTableView addParallelViewWithUIView:bgImage withDisplayRadio:0.375 headerViewStyle:ZGScrollViewStyleCutOffAtMax];    
     //By default, displayRadio is 0.5
     //By default, cutOffAtMax is set to NO
     //Set cutOffAtMax to YES to stop the scrolling when it hits the top.
@@ -409,12 +427,32 @@
         [[self navigationController] popViewControllerAnimated:YES];
     };
     ArticleItem *aArticle = [self.active objectAtIndex:indexPath.row];
-    PersonalViewController *viewController = [[PersonalViewController alloc] initWithTitle:aArticle.title
+    PersonalViewController *viewController = [[PersonalViewController alloc] initWithTitle:aArticle.creator
                                                                                   withUser:aArticle.userID withRevealBlock:revealBlock];
     
     //NSLog(@"didSelectArticle:%@",aArticle.content);
     [self.navigationController pushViewController:viewController animated:YES];
     [pullToRefreshTableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)goLoginClicked:(id)sender{
+
+    //NSString *htmlFilePath = [[NSBundle mainBundle] pathForResource:@"loginform" ofType:@"json"];
+    NSString *jsonString = [[NSBundle mainBundle] pathForResource:@"loginform" ofType:@"json"];
+    jsonString = [jsonString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    //NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *jsonParsingError = nil;
+    
+    //NSDictionary *jsonRoot = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonParsingError];
+    //NSData *jsonData = [NSData dataWithContentsOfFile:filePath];
+        
+    if (jsonParsingError!=nil)
+        NSLog(@"Parsing error: %@", jsonParsingError.localizedDescription);
+    
+    //[NSKeyedUnarchiver unarchiveObjectWithData:data];
+    //[NSKeyedUnarchiver unarchiveObjectWithFile:@"loginform.json"];
+    LoginController *viewController = [[LoginController alloc] initWithCoder:[NSKeyedUnarchiver unarchiveObjectWithFile:@"loginform.json"]];
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 #pragma mark -
@@ -583,7 +621,8 @@
                                          //articleItem.title = [[followingDic objectForKey:@"object"] objectForKey:@"raw_message"];
                                          articleItem.title = [[[followingDic objectForKey:@"object"] objectForKey:@"thread"] objectForKey:@"title"];
                                          articleItem.category = [followingDic objectForKey:@"type"];
-                                         if ([followingDic objectForKey:@"parent"] != nil) {
+                                         NSDictionary *value = [[followingDic objectForKey:@"object"] objectForKey:@"parent"];
+                                         if ((NSNull *)value != [NSNull null]) {
                                              articleItem.category = @"reply";
                                          }
                                          
@@ -602,7 +641,7 @@
                                          
                                          //[dateFormatter stringFromDate:aArticle.pubDate];
                                          
-                                         NSLog(@"disqus动态列表:%@,%@", articleItem.title, articleItem.creator);
+                                         NSLog(@"disqus动态列表:%@,%@,%@", articleItem.title, articleItem.creator,articleItem.category);
                                          
                                          [articleAct addObject:articleItem];
                                      }

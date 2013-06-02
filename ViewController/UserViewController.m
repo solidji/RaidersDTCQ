@@ -45,12 +45,14 @@
         _revealBlock = [revealBlock copy];
         
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        leftButton.frame = CGRectMake(0, 0, 45, 33);
-        [leftButton setBackgroundImage:[UIImage imageNamed:@"menu.png"] forState:UIControlStateNormal];
+        leftButton.frame = CGRectMake(0, 0, 50, 26);
+        [leftButton setBackgroundImage:[UIImage imageNamed:@"Return.png"] forState:UIControlStateNormal];
         [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setShowsTouchWhenHighlighted:YES];
         [leftButton addTarget:self action:@selector(revealSidebar) forControlEvents:UIControlEventTouchUpInside];
+        [leftButton setTitle:@" 个人" forState:UIControlStateNormal];
+        [leftButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11]];
         
         UIBarButtonItem *temporaryLeftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
         temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
@@ -98,18 +100,18 @@
     
         
     //添加ZG平行图
-    UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 160)];
+    UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 320)];
     
-    [bgImage setImage: [UIImage imageNamed:@"ZGAppGame.png"]];
+    [bgImage setImage: [UIImage imageNamed:@"ZGAppGame3.png"]];
     
     //增加竖直分割线
-    UIView *verticalLine1 = [[UIView alloc] initWithFrame:CGRectMake(24.0f, 98.0f, 1.0f, 62.0f)];
+    UIView *verticalLine1 = [[UIView alloc] initWithFrame:CGRectMake(24.0f, 178.0f, 1.0f, 320.0f-178.0f)];
     verticalLine1.backgroundColor = [UIColor whiteColor];
     [bgImage addSubview:verticalLine1];
-    UIView *verticalLine2 = [[UIView alloc] initWithFrame:CGRectMake(25.0f, 98.0f, 1.0f, 62.0f)];
+    UIView *verticalLine2 = [[UIView alloc] initWithFrame:CGRectMake(25.0f, 178.0f, 1.0f, 320.0f-178.0f)];
     verticalLine2.backgroundColor = [UIColor whiteColor];
     [bgImage addSubview:verticalLine2];
-    UIView *verticalLine3 = [[UIView alloc] initWithFrame:CGRectMake(26.0f, 98.0f, 1.0f, 62.0f)];
+    UIView *verticalLine3 = [[UIView alloc] initWithFrame:CGRectMake(26.0f, 178.0f, 1.0f, 320.0f-178.0f)];
     verticalLine3.backgroundColor = [UIColor whiteColor];
     [bgImage addSubview:verticalLine3];
 
@@ -117,7 +119,7 @@
     //[avatarImage setImageWithURL:[NSURL URLWithString:kDataSource.userObject.authorAvatar]
     //            placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
     //[headView addSubview:avatarImage];
-    [pullToRefreshTableView addParallelViewWithUIView:bgImage withDisplayRadio:0.6 headerViewStyle:ZGScrollViewStyleDefault];
+    [pullToRefreshTableView addParallelViewWithUIView:bgImage withDisplayRadio:0.3 headerViewStyle:ZGScrollViewStyleCutOffAtMax];
     //By default, displayRadio is 0.5
     //By default, cutOffAtMax is set to NO
     //Set cutOffAtMax to YES to stop the scrolling when it hits the top.
@@ -524,10 +526,10 @@
                                          //articleItem.title = [[followingDic objectForKey:@"object"] objectForKey:@"raw_message"];
                                          articleItem.title = [[[followingDic objectForKey:@"object"] objectForKey:@"thread"] objectForKey:@"title"];
                                          articleItem.category = [followingDic objectForKey:@"type"];
-                                         if ([followingDic objectForKey:@"parent"] != nil) {
+                                         NSDictionary *value = [[followingDic objectForKey:@"object"] objectForKey:@"parent"];
+                                         if ((NSNull *)value != [NSNull null]) {
                                              articleItem.category = @"reply";
                                          }
-                                         
                                          articleItem.creator = [[[followingDic objectForKey:@"object"] objectForKey:@"author"] objectForKey:@"name"];
                                          articleItem.userID = [[[followingDic objectForKey:@"object"] objectForKey:@"author"] objectForKey:@"id"];
                                          

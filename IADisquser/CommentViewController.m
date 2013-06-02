@@ -18,15 +18,20 @@
 #import "RSSItem.h"
 #import "SVWebViewController.h"
 #import "YIPopupTextView.h"
+#import "AppDataSouce.h"
+#import "GlobalConfigure.h"
 
 @interface CommentViewController ()
 - (void)disMiss;
 - (void)getComments;
+@property (nonatomic, copy) NSNumber *commentID;
+@property (nonatomic, strong, readonly) UIBarButtonItem *popBarButtonItem;
+- (void)goTextViewClicked:(UIButton *)sender;
 @end
 
 @implementation CommentViewController
 
-@synthesize comments,pullToRefreshTableView,webURL,nextCursor,thread;
+@synthesize comments,pullToRefreshTableView,webURL,nextCursor,thread,textView,popBarButtonItem,commentID;
 
 //- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 - (id)initWithTitle:(NSString *)title withUrl:(NSString *)url  threadID:(NSNumber *)threadID
@@ -39,14 +44,22 @@
         self.thread = [[NSNumber alloc] initWithInteger:[threadID integerValue]];
         self.nextCursor = nil;
         hasNext = false;
+        self.popBarButtonItem.enabled = YES;
+        NSArray *items;
+        items = [NSArray arrayWithObjects:
+                 self.popBarButtonItem,
+                 nil];
+        self.toolbarItems = items;
         
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        leftButton.frame = CGRectMake(0, 0, 20, 20);
-        [leftButton setBackgroundImage:[UIImage imageNamed:@"lift.png"] forState:UIControlStateNormal];
+        leftButton.frame = CGRectMake(0, 0, 50, 26);
+        [leftButton setBackgroundImage:[UIImage imageNamed:@"Return.png"] forState:UIControlStateNormal];
         [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setShowsTouchWhenHighlighted:YES];
         [leftButton addTarget:self action:@selector(disMiss) forControlEvents:UIControlEventTouchUpInside];
+        [leftButton setTitle:@" 正文" forState:UIControlStateNormal];
+        [leftButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11]];
         
         UIBarButtonItem *temporaryLeftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
         temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
@@ -73,6 +86,17 @@
 
 - (void)disMiss {
     [[self navigationController] popViewControllerAnimated:YES];
+}
+
+- (UIBarButtonItem *)popBarButtonItem {
+    
+    if (!popBarButtonItem) {
+        popBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Message-Box-long.png"] style:UIBarButtonItemStylePlain target:self action:@selector(goTextViewClicked:)];
+
+        popBarButtonItem.imageInsets = UIEdgeInsetsMake(2.0f, 0.0f, -2.0f, 0.0f);
+		popBarButtonItem.width = 300.0f;
+    }
+    return popBarButtonItem;
 }
 
 - (void)viewDidLoad
@@ -114,10 +138,18 @@
     
     //self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     [self.navigationController.navigationBar setTranslucent:NO];
+        [self.navigationController setToolbarHidden:NO animated:animated];
     
     if ([[[UIDevice currentDevice] systemVersion] floatValue] > 4.9) {
         //IOS5
         [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
+        
+        if ([self.navigationController.toolbar respondsToSelector:@selector(setBackgroundImage:forToolbarPosition:barMetrics:)]) {
+            [self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"fot.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+        }
+    }else {//IOS4
+        
+        [self.navigationController.toolbar insertSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fot.png"]] atIndex:0];
     }
     //[self.navigationController setNavigationBarHidden:YES animated:YES];
 }
@@ -133,14 +165,85 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)goTextViewClicked:(UIBarButtonItem *)sender {
+    // NOTE: maxCount = 0 to hide count
+    // YIPopupTextView* popupTextView = [[YIPopupTextView alloc] initWithPlaceHolder:@"input here" maxCount:1000];
+    YIPopupTextView* popupTextView = [[YIPopupTextView alloc] initWithPlaceHolder:@"赞一个!"
+                                                                         maxCount:1000
+                                                                      buttonStyle:YIPopupTextViewButtonStyleLeftCancelRightDone
+                                                                  tintsDoneButton:YES];
+    popupTextView.delegate = self;
+    popupTextView.caretShiftGestureEnabled = YES;   // default = NO
+    popupTextView.text = self.textView;
+    popupTextView.tag = 101;
+    //    popupTextView.editable = NO;                  // set editable=NO to show without keyboard
+    [popupTextView showInView:self.view];
+    
+    //
+    // NOTE:
+    // You can add your custom-button after calling -showInView:
+    // (it's better to add on either superview or superview.superview)
+    // https://github.com/inamiy/YIPopupTextView/issues/3
+    //
+    // [popupTextView.superview addSubview:customButton];
+    //
+}
+
 #pragma mark -
 #pragma mark YIPopupTextViewDelegate
 
-- (void)popupTextView:(YIPopupTextView *)textView willDismissWithText:(NSString *)text cancelled:(BOOL)cancelled
+- (void)popupTextView:(YIPopupTextView *)yitextView willDismissWithText:(NSString *)text cancelled:(BOOL)cancelled
 {
     NSLog(@"will dismiss: cancelled=%d",cancelled);
     self.textView = text;
     NSLog(@"textView:%@",self.textView);
+    if (!cancelled) {
+        IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];
+        NSDictionary *parameters;
+        if (yitextView.tag == 102) {
+            parameters = [NSDictionary dictionaryWithObjectsAndKeys:
+                                        kDataSource.credentialObject.accessToken, @"access_token",
+                                        //DISQUS_API_SECRET, @"api_secret",
+                                        DISQUS_API_PUBLIC,@"api_key",
+                                        //dUser.userID, @"user",
+                                        self.textView,@"message",
+                                        self.commentID,@"parent",
+                                        nil];
+        }else if(yitextView.tag == 101) {
+        parameters = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    kDataSource.credentialObject.accessToken, @"access_token",
+                                    //DISQUS_API_SECRET, @"api_secret",
+                                    DISQUS_API_PUBLIC,@"api_key",
+                                    //dUser.userID, @"user",
+                                    self.textView,@"message",
+                                    self.thread,@"thread",
+                                    nil];
+        }
+        
+        //create the post
+        [iaDisquser postComment:parameters
+                        success:^(NSDictionary *responseDictionary){
+                            // check the code (success is 0)
+                            NSNumber *code = [responseDictionary objectForKey:@"code"];
+                            
+                            if ([code integerValue] != 0) {   // there's an error
+                                NSLog(@"评论发表异常");
+                            }else {
+                                NSArray *responseArray = [responseDictionary objectForKey:@"response"];
+                                if ([responseArray count] != 0) {
+                                    NSLog(@"成功发表评论:%@,%@", thread, self.textView);
+                                }
+                                //自动刷新评论,不过测试有延迟
+//                                [comments removeAllObjects];
+//                                start = 0;
+//                                self.nextCursor = nil;
+//                                [self performSelectorOnMainThread:@selector(getComments) withObject:nil waitUntilDone:NO];
+                            }
+                        }
+                           fail:^(NSError *error) {
+                               NSLog(@"发表评论失败:%@",error);
+                           }];
+    }
 }
 
 - (void)popupTextView:(YIPopupTextView *)textView didDismissWithText:(NSString *)text cancelled:(BOOL)cancelled
@@ -153,7 +256,8 @@
 
 //某一行被选中,由ViewController来实现push详细页面
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    IADisqusComment *aComment = [self.comments objectAtIndex:indexPath.row];
+    self.commentID = aComment.commentID;
     // NOTE: maxCount = 0 to hide count
     // YIPopupTextView* popupTextView = [[YIPopupTextView alloc] initWithPlaceHolder:@"input here" maxCount:1000];
     YIPopupTextView* popupTextView = [[YIPopupTextView alloc] initWithPlaceHolder:@"赞一个!"
@@ -163,6 +267,7 @@
     popupTextView.delegate = self;
     popupTextView.caretShiftGestureEnabled = YES;   // default = NO
     popupTextView.text = self.textView;
+    popupTextView.tag = 102;
     //    popupTextView.editable = NO;                  // set editable=NO to show without keyboard
     [popupTextView showInView:self.view];
     
@@ -195,7 +300,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if ([comments count] == 0) {
-        //  本方法是为了在数据未空时，让“下拉刷新”视图可直接显示，比较直观
+        //  本方法是为了在数据为空时，让“下拉刷新”视图可直接显示，比较直观
         tableView.contentInset = UIEdgeInsetsMake(k_STATE_VIEW_HEIGHT, 0, 0, 0);
     }
     return [comments count];
@@ -438,10 +543,10 @@
                                       if (receiveMember > 0) {
                                           for (IADisqusComment *aComment in _comments){
                                               //IADisqusComment *aComment = (IADisqusComment *)[_comments objectAtIndex:0];
-                                              NSLog(@"comment:%@\n%@\n%@\n%@\n%@\n%@\n%@\n",aComment.authorName,aComment.authorAvatar,aComment.likes,aComment.rawMessage,aComment.commentID,aComment.parentID,aComment.mediaURL);
+                                              NSLog(@"comment:%@\n%@\n%@\n%@\n%@\n%@\n%@\n",aComment.authorName,aComment.authorAvatar,aComment.likes,aComment.rawMessage,aComment.commentID,aComment.parentID,aComment.threadID);
                                               // get the array of comments, reverse it (oldest comment on top)
                                               //self.comments = [[_comments reverseObjectEnumerator] allObjects];
-                                              
+                                              self.thread = [[NSNumber alloc] initWithInteger:[aComment.threadID integerValue]];
                                               // start activity indicator
                                               //[[self indicator] stopAnimating];
                                               //[self.tableView setAlpha:1.0];

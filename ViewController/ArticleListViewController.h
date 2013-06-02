@@ -13,10 +13,12 @@
 #import "AlerViewManager.h"
 
 typedef void (^MyRevealBlock)();
-@interface ArticleListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate> {
+@interface ArticleListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, ScrollPageDataSource> {
     NSMutableArray *articles;//数据源
+    NSMutableArray *promos;//促销数据源
     //UIActivityIndicatorView *indicator;
     PullToRefreshTableView *pullToRefreshTableView;
+    TableHeaderView *headerView;
     
     AlerViewManager *alerViewManager;
     NSString *webURL;
@@ -29,7 +31,8 @@ typedef void (^MyRevealBlock)();
 
 @property (nonatomic, copy) NSString *webURL;
 @property (nonatomic, strong) PullToRefreshTableView * pullToRefreshTableView;
-@property (strong, nonatomic) NSMutableArray *articles;
+@property (nonatomic, strong) TableHeaderView *headerView;
+@property (strong, nonatomic) NSMutableArray *articles,*promos;
 
 - (id)initWithTitle:(NSString *)title withUrl:(NSString *)url withRevealBlock:(MyRevealBlock)revealBlock;
 

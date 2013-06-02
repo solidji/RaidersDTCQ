@@ -51,7 +51,7 @@
         [imageView setBackgroundColor:[UIColor clearColor]];
         [imageView.layer setBorderColor: [[UIColor whiteColor] CGColor]];
         [imageView.layer setBorderWidth: 2.0];
-        [imageView.layer setCornerRadius:23.0];
+        [imageView.layer setCornerRadius:25.0];
         [self.contentView addSubview:imageView];
         
         imageCreator = [[UIImageView alloc] init];
@@ -130,7 +130,7 @@
     [creatorLabel setFrame:CGRectMake(145.0, 40.0, 320.0-145.0, 14.0)];
     [dateLabel setFrame:CGRectMake(145.0, 56.0, 320.0-145.0, 14.0)];
     
-    [imageView setFrame:CGRectMake(17.0, 17.0, 46.0, 46.0)];
+    [imageView setFrame:CGRectMake(15.0, 15.0, 50.0, 50.0)];
     [imageType setFrame:CGRectMake(72.5, 32.0, 15.0, 15.0)];
     [imageCreator setFrame:CGRectMake(105.0, 40.0, 32.0, 32.0)];
     [personalButton setFrame:CGRectMake(105.0, 40.0, 320.0-105.0, 40.0)];

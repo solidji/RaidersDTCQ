@@ -22,11 +22,12 @@
 @interface ArticleListViewController ()
 - (void)revealSidebar;
 - (void)getArticles;
+- (void)getPromos;
 @end
 
 @implementation ArticleListViewController
 
-@synthesize articles,pullToRefreshTableView,webURL;
+@synthesize articles,pullToRefreshTableView,webURL,promos,headerView;
 
 #pragma mark - View lifecycle
 - (id)initWithTitle:(NSString *)title withUrl:(NSString *)url withRevealBlock:(MyRevealBlock)revealBlock {
@@ -58,6 +59,7 @@
     
     self.view.backgroundColor = [UIColor colorWithRed:237.0f/255 green:237.0f/255 blue:237.0f/255 alpha:1.0];
     articles = [[NSMutableArray alloc] init];
+    promos = [[NSMutableArray alloc] init];
     start = 0;
     receiveMember = 0;
     //    pullToRefreshTableView = [[PullToRefreshTableView alloc] initWithFrame:CGRectMake(0, 0, 320, [[UIScreen mainScreen] bounds].size.height)];
@@ -81,7 +83,14 @@
     //UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(getarticles)];
     //[self.navigationItem setRightBarButtonItem:refresh];
     
+    // #添加推广头HeaderView
+    headerView = [[TableHeaderView alloc] initWithFrame: CGRectMake(0, 0, 320, 120) withDataSource: self withPageControlType:@"type"];
+    //[self.view addSubview:headerView];
+    pullToRefreshTableView.tableHeaderView = headerView;
+    
     // get array of articles
+    // 开启后台线程获取数据源
+    [self performSelectorInBackground:@selector(getPromos) withObject:nil];
     [self getArticles];
 }
 
@@ -197,8 +206,10 @@
             case k_RETURN_REFRESH:
             {
                 [articles removeAllObjects];
+                [promos removeAllObjects];
                 start = 0;
                 [self performSelectorOnMainThread:@selector(getArticles) withObject:nil waitUntilDone:NO];
+                [self performSelectorOnMainThread:@selector(getPromos) withObject:nil waitUntilDone:NO];
                 break;
             }
             case k_RETURN_LOADMORE:
@@ -261,9 +272,186 @@
     //[self loadImagesForOnscreenRows];
 }
 
+#pragma mark -
+#pragma mark Scroll Page View Delegate
+
+- (void)resetPromoPage
+{
+    //TableHeaderView *header = (TableHeaderView *)pullToRefreshTableView.tableHeaderView;
+    [headerView resetPage];
+}
+
+
+- (void)reloadPromoPage:(NSInteger)page
+{
+    //TableHeaderView *header = (TableHeaderView *)pullToRefreshTableView.tableHeaderView;
+    [headerView reloadPage:page];
+}
+
+//有多少页
+- (int)numberOfPages
+{
+    if ([self.promos count] == 0) {
+        return 1;
+    }
+    return MIN(5, [self.promos count]);
+}
+
+//每页的图片
+- (UIImageView *)imageAtIndex:(int)index
+{
+    NSLog(@"index == %d",index);
+    
+    if([self.promos count] > index)
+    {
+        ArticleItem *aArticle = [self.promos objectAtIndex:index];
+        //return  [UIImage imageWithContentsOfFile:object.iconURL];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 120.0f)];
+        [imageView setImageWithURL:aArticle.iconURL
+                  placeholderImage:[UIImage imageNamed:@"tableHeadHolder.png"]];
+        
+        /*异步加回调
+         NSURL *url = [NSURL URLWithString:@图片的绝对路径"];
+         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0];
+         [imageView setImageWithURLRequest:request placeholderImage:nil
+         success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+         NSLog(@"图片下载成功！do something");
+         } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+         NSLog(@图片下载成功！do something"");
+         }];""*/
+        return imageView;
+    }else {
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 120.0f)];
+        imageView.image = [UIImage imageNamed:@"tableHeadHolder.png"];
+    }
+    
+    return nil;
+}
+
+//需要下载
+- (void)pageImageNeedDownlod:(NSInteger)index
+{
+    if(index < [self.promos count])
+    {
+        //ArticleItem *aArticle = [self.articles objectAtIndex:index];
+        [self reloadPromoPage:index];
+        //[self startImageDownload:object withType:ImageDownloaderTypePromoImage forIndexPath:[NSIndexPath indexPathForRow:index inSection:5]];
+    }
+}
+
+//被点击
+- (void)pageDidSelceted:(NSInteger)index
+{
+    ArticleItem *aArticle = [self.promos objectAtIndex:index];
+    
+    if (aArticle.content != nil) {
+        SVWebViewController *viewController = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];
+        [self.navigationController pushViewController:viewController animated:YES];
+    }else {
+        SVWebViewController *viewController = [[SVWebViewController alloc] initWithURL:aArticle.articleURL];
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
+    
+    //NSLog(@"didSelectArticle:%@",aArticle.content);
+    
+    //[pullToRefreshTableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
 #pragma mark - Class Methods
 - (void)revealSidebar {
 	_revealBlock();
+}
+
+- (void)getPromos {
+    NSMutableArray *article = [NSMutableArray array];
+    NSString *urlString =  [NSString stringWithFormat:@"http://gl.appgame.com/focus.rss"];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [RSSParser parseRSSFeedForRequest:request success:^(NSArray *feedItems) {
+        
+        //you get an array of RSSItem
+        receiveMember = [feedItems count];
+        if (receiveMember > 0) {
+            for (RSSItem *feedItem in feedItems) {
+                ArticleItem *articleItem = [[ArticleItem alloc] init];
+                articleItem.title = feedItem.title;
+                articleItem.description = feedItem.itemDescription;
+                articleItem.creator = feedItem.author;
+                articleItem.pubDate = feedItem.pubDate;
+                articleItem.content = feedItem.content;
+                articleItem.articleURL = feedItem.link;
+                
+                if ([feedItem imagesFromItemDescription].count != 0) {
+                    NSMutableString *iconURL = [NSMutableString stringWithString:[[feedItem imagesFromItemDescription] objectAtIndex:0]];
+                    
+                    //中文URL编码
+                    articleItem.iconURL = [NSURL URLWithString:[iconURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                }
+                else
+                {
+                    articleItem.iconURL = [NSURL URLWithString:@"IconPlaceholder.png"];
+                }
+                
+                //过滤掉description里的缩略图与content里的android与winphone图片
+                NSError *error;
+                
+                NSRegularExpression *regexThumbnail = [NSRegularExpression
+                                                       regularExpressionWithPattern:@"(<div><img).*(https?)\\S*(png|jpg|jpeg|gif).*(<div.*</div>)*.*(</div>)"
+                                                       options:NSRegularExpressionCaseInsensitive
+                                                       error:&error];
+                if (feedItem.itemDescription != nil) {
+                    [regexThumbnail enumerateMatchesInString:feedItem.itemDescription
+                                                     options:0
+                                                       range:NSMakeRange(0, feedItem.itemDescription.length)
+                                                  usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                                                      //[imagesURLStringArray addObject:[feedItem.itemDescription substringWithRange:result.range]];
+                                                      articleItem.description = [articleItem.description stringByReplacingOccurrencesOfString:[feedItem.itemDescription substringWithRange:result.range] withString:@""];
+                                                      
+                                                      articleItem.content = [articleItem.content stringByReplacingOccurrencesOfString:[feedItem.itemDescription substringWithRange:result.range] withString:@""];
+                                                      
+                                                      //NSLog(@"des:%@,%@",articleItem.description,[feedItem.itemDescription substringWithRange:result.range]);
+                                                  }];
+                }
+                NSRegularExpression *regexAndroid = [NSRegularExpression
+                                                     regularExpressionWithPattern:@"(<div.*\\n*.*)(www\\.appgame\\.com/source/html5/images/appgame-download-android-s2\\.png|www\\.appgame\\.com/source/html5/images/appgame-download-wphone\\.png).*\\n*.*(<div.*\\n*.*</div>)*.*\\n*.*(</div>)"
+                                                     options:NSRegularExpressionCaseInsensitive
+                                                     error:&error];
+                if (feedItem.content != nil) {
+                    [regexAndroid enumerateMatchesInString:feedItem.content
+                                                   options:0
+                                                     range:NSMakeRange(0, feedItem.content.length)
+                                                usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                                                    articleItem.content = [articleItem.content stringByReplacingOccurrencesOfString:[feedItem.content substringWithRange:result.range] withString:@""];
+                                                    
+                                                    NSLog(@"content:%@,%@",articleItem.content,[feedItem.content substringWithRange:result.range]);
+                                                }];
+                }
+                //return [NSArray arrayWithArray:imagesURLStringArray];
+                if (articleItem.content != nil) {
+                    NSString *htmlFilePath = [[NSBundle mainBundle] pathForResource:@"appgame" ofType:@"html"];
+                    NSString *htmlString = [NSString stringWithContentsOfFile:htmlFilePath encoding:NSUTF8StringEncoding error:nil];
+                    NSString *contentHtml = @"";
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    [dateFormatter setDateFormat:@"YYYY-MM-dd HH:mm"];
+                    contentHtml = [contentHtml stringByAppendingFormat:htmlString,
+                                   articleItem.title, @" ", [dateFormatter stringFromDate:articleItem.pubDate]];
+                    contentHtml = [contentHtml stringByReplacingOccurrencesOfString:@"<!--content-->" withString:articleItem.content];
+                    articleItem.content = contentHtml;
+                }
+                [article addObject:articleItem];
+            }
+            [self.promos removeAllObjects];
+            for (ArticleItem *articleItem in article) {
+                [self.promos addObject:articleItem];
+            }
+        }
+        // reload the table
+        [self resetPromoPage];
+        
+    } failure:^(NSError *error) {
+        //something went wrong
+        NSLog(@"Failure: %@", error);
+    }];
 }
 
 - (void)getArticles {
