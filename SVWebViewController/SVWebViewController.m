@@ -17,10 +17,12 @@
 #import "AppDataSouce.h"
 #import "GlobalConfigure.h"
 
+CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
+CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
+
 @interface SVWebViewController () <UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
 @property (nonatomic, strong, readonly) UIBarButtonItem *popBarButtonItem;
 @property (nonatomic, strong, readonly) UIBarButtonItem *likeButtonItem;
-@property (nonatomic, strong, readonly) UIButton *favoriteBarButton;
 @property (nonatomic, strong, readonly) UIBarButtonItem *favoriteBarButtonItem;
 @property (nonatomic, strong, readonly) UIBarButtonItem *backBarButtonItem;
 @property (nonatomic, strong, readonly) UIBarButtonItem *forwardBarButtonItem;
@@ -28,6 +30,10 @@
 @property (nonatomic, strong, readonly) UIBarButtonItem *stopBarButtonItem;
 @property (nonatomic, strong, readonly) UIBarButtonItem *actionBarButtonItem;
 @property (nonatomic, strong, readonly) UIActionSheet *pageActionSheet;
+
+@property (nonatomic, strong, readonly) UIButton *favoriteBarButton;
+@property (nonatomic, strong, readonly) UIButton *textViewBarButton;
+@property (nonatomic, strong, readonly) UIButton *shareBarButton;
 
 @property (strong, nonatomic) NSString *textView;
 @property (nonatomic, strong) UIWebView *mainWebView;
@@ -44,24 +50,35 @@
 - (void)updateToolbarItems;
 
 - (void)goPopClicked:(UIBarButtonItem *)sender;
-- (void)goFavoriteClicked:(UIButton *)sender;
 - (void)goBackClicked:(UIBarButtonItem *)sender;
 - (void)goForwardClicked:(UIBarButtonItem *)sender;
 - (void)reloadClicked:(UIBarButtonItem *)sender;
 - (void)stopClicked:(UIBarButtonItem *)sender;
 - (void)actionButtonClicked:(UIBarButtonItem *)sender;
+
+- (void)goFavoriteClicked:(UIButton *)sender;
 - (void)goCommentClicked:(UIButton *)sender;
 - (void)goTextViewClicked:(UIButton *)sender;
+- (void)shareClicked:(UIButton *)sender;
 
 @end
 
+@interface SVWebViewController (PrivateMethods)
+-(void)hideGradientBackground:(UIView*)theView;
+-(UIWebView*) createWebViewForIndex:(NSUInteger)index;
+@end
 
 @implementation SVWebViewController
 
 @synthesize availableActions;
 
 @synthesize URL, mainWebView, isHide, textView;
-@synthesize popBarButtonItem,likeButtonItem, favoriteBarButton, favoriteBarButtonItem, backBarButtonItem, forwardBarButtonItem, refreshBarButtonItem, stopBarButtonItem, actionBarButtonItem, pageActionSheet;
+@synthesize popBarButtonItem,likeButtonItem, favoriteBarButtonItem, backBarButtonItem, forwardBarButtonItem, refreshBarButtonItem, stopBarButtonItem, actionBarButtonItem, pageActionSheet, favoriteBarButton, textViewBarButton, shareBarButton;
+
+@synthesize headerView, headerImageView, headerLabel;
+@synthesize footerView, footerImageView, footerLabel;
+@synthesize verticalSwipeScrollView, appData, startIndex;
+@synthesize previousPage, nextPage;
 
 #pragma mark - setters and getters
 - (UIBarButtonItem *)popBarButtonItem {
@@ -226,21 +243,21 @@
     temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
     self.navigationItem.leftBarButtonItem = temporaryLeftBarButtonItem;
     
-    UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    rightButton.frame = CGRectMake(0, 0, 35, 26);
-    [rightButton setBackgroundImage:[UIImage imageNamed:@"Comment-Right.png"] forState:UIControlStateNormal];
-    [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-    [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-    [rightButton setShowsTouchWhenHighlighted:YES];
-    [rightButton addTarget:self action:@selector(goCommentClicked:) forControlEvents:UIControlEventTouchUpInside];
-    //[rightButton setTitle:@"1000评论" forState:UIControlStateNormal];// 添加文字
-    //[rightButton.titleLabel setFont:[UIFont boldSystemFontOfSize:12.0f]];
-    //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    
-    UIBarButtonItem *temporaryRightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
-    temporaryRightBarButtonItem.style = UIBarButtonItemStylePlain;
-    self.navigationItem.rightBarButtonItem = temporaryRightBarButtonItem;
+//    UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    rightButton.frame = CGRectMake(0, 0, 35, 26);
+//    [rightButton setBackgroundImage:[UIImage imageNamed:@"Comment-Right.png"] forState:UIControlStateNormal];
+//    [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+//    [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+//    [rightButton setShowsTouchWhenHighlighted:YES];
+//    [rightButton addTarget:self action:@selector(goCommentClicked:) forControlEvents:UIControlEventTouchUpInside];
+//    //[rightButton setTitle:@"1000评论" forState:UIControlStateNormal];// 添加文字
+//    //[rightButton.titleLabel setFont:[UIFont boldSystemFontOfSize:12.0f]];
+//    //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//    //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+//    
+//    UIBarButtonItem *temporaryRightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+//    temporaryRightBarButtonItem.style = UIBarButtonItemStylePlain;
+//    self.navigationItem.rightBarButtonItem = temporaryRightBarButtonItem;
     
     self.title = @"任玩堂";
     
@@ -339,6 +356,94 @@
     return YES;
 }
 
+
+# pragma mark VerticalSwipeScrollViewDelegate
+
+- (void) rotateImageView:(UIImageView*)imageView angle:(CGFloat)angle
+{
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.2];
+    imageView.transform = CGAffineTransformMakeRotation(DegreesToRadians(angle));
+    [UIView commitAnimations];
+}
+
+-(void) headerLoadedInScrollView:(VerticalSwipeScrollView*)scrollView
+{
+    [self rotateImageView:headerImageView angle:0];
+}
+
+-(void) headerUnloadedInScrollView:(VerticalSwipeScrollView*)scrollView
+{
+    [self rotateImageView:headerImageView angle:180];
+}
+
+-(void) footerLoadedInScrollView:(VerticalSwipeScrollView*)scrollView
+{
+    [self rotateImageView:footerImageView angle:180];
+}
+
+-(void) footerUnloadedInScrollView:(VerticalSwipeScrollView*)scrollView
+{
+    [self rotateImageView:footerImageView angle:0];
+}
+
+-(UIView*) viewForScrollView:(VerticalSwipeScrollView*)scrollView atPage:(NSUInteger)page
+{
+    UIWebView* webView = nil;
+    
+    if (page < scrollView.currentPageIndex)
+        webView = previousPage;
+    else if (page > scrollView.currentPageIndex)
+        webView = nextPage;
+    
+    if (!webView)
+        webView = [self createWebViewForIndex:page];
+    
+    self.previousPage = page > 0 ? [self createWebViewForIndex:page-1] : nil;
+    self.nextPage = (page == (appData.count-1)) ? nil : [self createWebViewForIndex:page+1];
+    
+    self.navigationItem.title = [[[appData objectAtIndex:page] objectForKey:@"im:name"] objectForKey:@"label"];
+    if (page > 0)
+        headerLabel.text = [[[appData objectAtIndex:page-1] objectForKey:@"im:name"] objectForKey:@"label"];
+    if (page != appData.count-1)
+        footerLabel.text = [[[appData objectAtIndex:page+1] objectForKey:@"im:name"] objectForKey:@"label"];
+    
+    return webView;
+}
+
+-(NSUInteger) pageCount
+{
+    return appData.count;
+}
+
+-(UIWebView*) createWebViewForIndex:(NSUInteger)index
+{
+    UIWebView* webView = [[UIWebView alloc] initWithFrame:self.view.frame];
+    webView.opaque = NO;
+    [webView setBackgroundColor:[UIColor clearColor]];
+    [self hideGradientBackground:webView];
+    
+    NSString* htmlFile = [[[NSBundle mainBundle] bundlePath] stringByAppendingString:@"/DetailView.html"];
+    NSString* htmlString = [NSString stringWithContentsOfFile:htmlFile encoding:NSUTF8StringEncoding error:nil];
+    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!-- title -->" withString:[[[appData objectAtIndex:index] objectForKey:@"im:name"] objectForKey:@"label"]];
+    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!-- icon -->" withString:[[[[appData objectAtIndex:index] objectForKey:@"im:image"] objectAtIndex:0] objectForKey:@"label"]];
+    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!-- content -->" withString:[[[appData objectAtIndex:index] objectForKey:@"summary"] objectForKey:@"label"]];
+    [webView loadHTMLString:htmlString baseURL:nil];
+    
+    return webView;
+}
+
+- (void) hideGradientBackground:(UIView*)theView
+{
+    for (UIView * subview in theView.subviews)
+    {
+        if ([subview isKindOfClass:[UIImageView class]])
+            subview.hidden = YES;
+        
+        [self hideGradientBackground:subview];
+    }
+}
+
 #pragma mark - Memory management
 
 - (void)dealloc {
@@ -363,27 +468,13 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
     self.alerViewManager = [[AlerViewManager alloc] init];
-    // 按键背景图片 plain模式
-    favoriteBarButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    favoriteBarButton.frame = CGRectMake(5+(20+72)*2, 10, 20, 20);
-    
-    [favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Collection-Hollow.png"] forState:UIControlStateNormal];
-    [favoriteBarButton addTarget:self action:@selector(goFavoriteClicked:) forControlEvents:UIControlEventTouchUpInside];
-    
-    //从standardDefaults中读取收藏列表
-    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-    
-    NSData *udObject = [standardDefaults objectForKey:@"Favorites"];
-    NSArray *udData = [NSKeyedUnarchiver unarchiveObjectWithData:udObject];// reverseObjectEnumerator] allObjects];
-    self.articles = [NSMutableArray arrayWithArray:udData];
-    //如果收藏列表里已经有,表示已经收藏
-    if ([self.articles containsObject:self.htmlString]) {
-        [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Collection-Solid.png"] forState:UIControlStateNormal];
-    }else {//没有收藏
-        [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Collection-Hollow.png"] forState:UIControlStateNormal];
-    }
+
     [self updateToolbarItems];
     self.view.backgroundColor = [UIColor colorWithRed:234.0/255 green:234.0/255 blue:234.0/255 alpha:1.0];
+    
+    headerImageView.transform = CGAffineTransformMakeRotation(DegreesToRadians(180));
+    self.verticalSwipeScrollView = [[VerticalSwipeScrollView alloc] initWithFrame:self.view.frame headerView:headerView footerView:footerView startingAt:startIndex delegate:self];
+    [self.view addSubview:verticalSwipeScrollView];
 }
 
 - (void)viewDidUnload {
@@ -409,7 +500,7 @@
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         //[self.navigationController.navigationBar setAlpha:0.0f];
         //[self.navigationController setNavigationBarHidden:YES animated:YES];
-        [self.navigationController setToolbarHidden:NO animated:animated];
+        [self.navigationController setToolbarHidden:YES animated:animated];
         
         if ([[[UIDevice currentDevice] systemVersion] floatValue] > 4.9) {
             //IOS5
@@ -423,6 +514,40 @@
             [self.navigationController.toolbar insertSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fot.png"]] atIndex:0];
         }
     }
+    
+    //自定义toolbar按钮
+    textViewBarButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    textViewBarButton.frame =CGRectMake(15, 5, 210, 33);
+    [textViewBarButton setBackgroundImage:[UIImage imageNamed:@"Message-Box-in-long.png"] forState:UIControlStateNormal];
+    [textViewBarButton addTarget: self action: @selector(goTextViewClicked:) forControlEvents: UIControlEventTouchUpInside];
+    [self.navigationController.toolbar addSubview:textViewBarButton];
+    
+    shareBarButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    shareBarButton.frame =CGRectMake(320-20-20, 12, 20, 20);
+    [shareBarButton setBackgroundImage:[UIImage imageNamed:@"Praise.png"] forState:UIControlStateNormal];
+    [shareBarButton addTarget: self action: @selector(shareClicked:) forControlEvents: UIControlEventTouchUpInside];
+    [self.navigationController.toolbar addSubview:shareBarButton];
+    [self.navigationController.navigationBar addSubview:shareBarButton];
+    
+    favoriteBarButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    favoriteBarButton.frame = CGRectMake(15+210+15, 12, 20, 20);
+    [favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Collection-Hollow.png"] forState:UIControlStateNormal];
+    [favoriteBarButton addTarget:self action:@selector(goFavoriteClicked:) forControlEvents:UIControlEventTouchUpInside];
+    
+    //从standardDefaults中读取收藏列表
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    
+    NSData *udObject = [standardDefaults objectForKey:@"Favorites"];
+    NSArray *udData = [NSKeyedUnarchiver unarchiveObjectWithData:udObject];// reverseObjectEnumerator] allObjects];
+    self.articles = [NSMutableArray arrayWithArray:udData];
+    //如果收藏列表里已经有,表示已经收藏
+    if ([self.articles containsObject:self.htmlString]) {
+        [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Collection-Solid.png"] forState:UIControlStateNormal];
+    }else {//没有收藏
+        [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Collection-Hollow.png"] forState:UIControlStateNormal];
+    }
+    
+    [self.navigationController.toolbar addSubview:favoriteBarButton];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -433,6 +558,9 @@
         [self.navigationController setNavigationBarHidden:NO animated:YES];
         [self.navigationController setToolbarHidden:YES animated:animated];
     }
+    [textViewBarButton removeFromSuperview];
+    [shareBarButton removeFromSuperview];
+    [favoriteBarButton removeFromSuperview];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
@@ -553,7 +681,7 @@
             }
         }
         
-        self.toolbarItems = items;
+        //self.toolbarItems = items;
         //[self.navigationController.toolbar addSubview:favoriteBarButton];
     }
 }
@@ -749,7 +877,7 @@
     [[self navigationController] popViewControllerAnimated:YES];
 }
 
-- (void)goTextViewClicked:(UIBarButtonItem *)sender {
+- (void)goTextViewClicked:(UIButton *)sender {
     // NOTE: maxCount = 0 to hide count
     // YIPopupTextView* popupTextView = [[YIPopupTextView alloc] initWithPlaceHolder:@"input here" maxCount:1000];
     YIPopupTextView* popupTextView = [[YIPopupTextView alloc] initWithPlaceHolder:@"很给力!"
@@ -772,7 +900,7 @@
     //
 }
 
-- (void)goFavoriteClicked:(UIBarButtonItem *)sender {
+- (void)goFavoriteClicked:(UIButton *)sender {
     //从standardDefaults中读取收藏列表
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     
@@ -828,18 +956,8 @@
 
     [self.navigationController pushViewController:viewController animated:YES];
 }
-- (void)actionButtonClicked:(id)sender {
-    
-    if(pageActionSheet)
-        return;
-	
-//    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-//        [self.pageActionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
-//    else
-//        [self.pageActionSheet showFromToolbar:self.navigationController.toolbar];
-    
-    //IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];//path
-    //CommentViewController *viewController = [[CommentViewController alloc] initWithTitle:self.htmlString.title withUrl:self.htmlString.articleURL.absoluteString];
+
+- (void)shareClicked:(UIButton *)sender {
     
     ArticleItem *aArticleItem = (ArticleItem*)self.htmlString;
 	NSString *shareString =  [NSString stringWithFormat:@"%@\r\n%@\r\n---任玩堂", aArticleItem.title, aArticleItem.articleURL];
@@ -854,7 +972,7 @@
                                                     image:[ShareSDK imageWithPath:imagePath]
                                                     title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
         
-        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, ShareTypeSMS, ShareTypeAirPrint, ShareTypeCopy, nil];
+        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, ShareTypeSMS, ShareTypeAirPrint, nil];//ShareTypeCopy
         [ShareSDK showShareActionSheet:container shareList:shareList
                                content:publishContent
                          statusBarTips:YES
@@ -891,7 +1009,99 @@
                                                     image:[ShareSDK imageWithPath:imagePath]
                                                     title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
         
-        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, ShareTypeSMS, ShareTypeAirPrint, ShareTypeCopy, nil];
+        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, ShareTypeSMS, ShareTypeAirPrint, nil];//ShareTypeCopy
+        [ShareSDK showShareActionSheet:nil shareList:shareList
+                               content:publishContent
+                         statusBarTips:YES
+                           authOptions:[ShareSDK authOptionsWithAutoAuth:YES
+                                                           allowCallback:NO
+                                                           authViewStyle:SSAuthViewStyleModal
+                                                            viewDelegate:nil
+                                                 authManagerViewDelegate:nil]
+                          shareOptions:[ShareSDK defaultShareOptionsWithTitle:@"分享"
+                                                              oneKeyShareList:shareList
+                                                               qqButtonHidden:YES
+                                                        wxSessionButtonHidden:YES
+                                                       wxTimelineButtonHidden:YES
+                                                         showKeyboardOnAppear:NO
+                                                            shareViewDelegate:nil
+                                                          friendsViewDelegate:nil
+                                                        picViewerViewDelegate:nil]
+                                result:^(ShareType type, SSPublishContentState state,
+                                         id<ISSStatusInfo> statusInfo, id<ICMErrorInfo> error, BOOL end) {
+                                    if (state == SSPublishContentStateSuccess)
+                                    {
+                                        NSLog(@"分享成功");
+                                    }
+                                    else if (state == SSPublishContentStateFail) {
+                                        NSLog(@"分享失败,错误码:%d,错误描述:%@", [error errorCode], [error errorDescription]);
+                                    } }];
+    }
+}
+- (void)actionButtonClicked:(id)sender {
+    
+    if(pageActionSheet)
+        return;
+	
+//    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+//        [self.pageActionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
+//    else
+//        [self.pageActionSheet showFromToolbar:self.navigationController.toolbar];
+    
+    //IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];//path
+    //CommentViewController *viewController = [[CommentViewController alloc] initWithTitle:self.htmlString.title withUrl:self.htmlString.articleURL.absoluteString];
+    
+    ArticleItem *aArticleItem = (ArticleItem*)self.htmlString;
+	NSString *shareString =  [NSString stringWithFormat:@"%@\r\n%@\r\n---任玩堂", aArticleItem.title, aArticleItem.articleURL];
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        id<ISSContainer> container = [ShareSDK container];
+        [container setIPadContainerWithView:self.navigationItem.rightBarButtonItem.customView arrowDirect:UIPopoverArrowDirectionUp];
+        NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"logoshare" ofType:@"jpg"];
+        //构造分享内容
+        id<ISSContent> publishContent = [ShareSDK content:shareString
+                                           defaultContent:@"默认分享内容,没内容时显示"
+                                                    image:[ShareSDK imageWithPath:imagePath]
+                                                    title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
+        
+        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, ShareTypeSMS, ShareTypeAirPrint, nil];//ShareTypeCopy
+        [ShareSDK showShareActionSheet:container shareList:shareList
+                               content:publishContent
+                         statusBarTips:YES
+                           authOptions:[ShareSDK authOptionsWithAutoAuth:YES
+                                                           allowCallback:NO
+                                                           authViewStyle:SSAuthViewStyleModal
+                                                            viewDelegate:nil
+                                                 authManagerViewDelegate:nil]
+                          shareOptions:[ShareSDK defaultShareOptionsWithTitle:@"分享"
+                                                              oneKeyShareList:shareList
+                                                               qqButtonHidden:YES
+                                                        wxSessionButtonHidden:YES
+                                                       wxTimelineButtonHidden:YES
+                                                         showKeyboardOnAppear:NO
+                                                            shareViewDelegate:nil
+                                                          friendsViewDelegate:nil
+                                                        picViewerViewDelegate:nil]
+                                result:^(ShareType type, SSPublishContentState state,
+                                         id<ISSStatusInfo> statusInfo, id<ICMErrorInfo> error, BOOL end) {
+                                    if (state == SSPublishContentStateSuccess)
+                                    {
+                                        NSLog(@"分享成功");
+                                    }
+                                    else if (state == SSPublishContentStateFail) {
+                                        NSLog(@"分享失败,错误码:%d,错误描述:%@", [error errorCode], [error errorDescription]);
+                                    } }];
+        
+        //[self.pageActionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
+    }else {
+        NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"logoshare" ofType:@"jpg"];
+        //构造分享内容
+        id<ISSContent> publishContent = [ShareSDK content:shareString
+                                           defaultContent:@"默认分享内容,没内容时显示"
+                                                    image:[ShareSDK imageWithPath:imagePath]
+                                                    title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
+        
+        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, ShareTypeSMS, ShareTypeAirPrint, nil];//ShareTypeCopy
         [ShareSDK showShareActionSheet:nil shareList:shareList
                                content:publishContent
                          statusBarTips:YES

@@ -281,7 +281,7 @@
                 if ([aArticle.category isEqualToString:@"post"]) {
                     cell.imageType.image = [UIImage imageNamed:@"Leave-a-message.png"];
                 }else if ([aArticle.category isEqualToString:@"reply"]) {
-                    cell.imageType.image = [UIImage imageNamed:@"Share.png"];
+                    cell.imageType.image = [UIImage imageNamed:@"rep.png"];
                 }else if ([aArticle.category isEqualToString:@"thread_like"]) {
                     cell.imageType.image = [UIImage imageNamed:@"Favorite.png"];
                 }

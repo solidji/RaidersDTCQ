@@ -13,6 +13,8 @@
 #import "GHSidebarSearchViewController.h"
 #import "GHSidebarSearchViewControllerDelegate.h"
 #import "ArticleListViewController.h"
+#import "HomeViewController.h"
+#import "HomeScrollView.h"
 #import "iVersion.h"//StoreKit framework.
 #import "APService.h"
 #import <ShareSDK/ShareSDK.h>
@@ -25,6 +27,7 @@
 #import "IADisqusUser.h"
 #import "IADisquser.h"
 #import "IADisqusConfig.h"
+#import "Globle.h"
 
 
 
@@ -53,16 +56,21 @@
 #pragma mark UIApplicationDelegate
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    [Globle shareInstance].globleWidth = screenRect.size.width; //屏幕宽度
+    [Globle shareInstance].globleHeight = screenRect.size.height-20;  //屏幕高度（无顶栏）
+    [Globle shareInstance].globleAllHeight = screenRect.size.height;  //屏幕高度（有顶栏）
+    
     //ShareSDK
-    [ShareSDK registerApp:@"10aa36d1da8"];
+    [ShareSDK registerApp:@"47cac82fef6"];
     //添加新浪微博应用
-    [ShareSDK connectSinaWeiboWithAppKey:@"2637205812"
-                               appSecret:@"ae6be1db170fb3eed6115a97120a2a99"
+    [ShareSDK connectSinaWeiboWithAppKey:@"3505932130"
+                               appSecret:@"3d909b20ba5ef58078420f1f940f3765"
                              redirectUri:@"http://www.appgame.com"];
     
     //添加腾讯微博应用
-    [ShareSDK connectTencentWeiboWithAppKey:@"100629026"
-                                  appSecret:@"a1088785803ba0c969a693ccdaae4e5a" redirectUri:@"http://www.appgame.com"];
+    [ShareSDK connectTencentWeiboWithAppKey:@"801370579"
+                                  appSecret:@"e0f171e1c89d1b38bcbe54808ad5bbc7" redirectUri:@"http://www.appgame.com"];
     
     // jpush
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
@@ -106,7 +114,7 @@
     }
     
     //iVersion 更新检测
-    [iVersion sharedInstance].appStoreID = 573452997;
+    [iVersion sharedInstance].appStoreID = 659534801;
 
     
     //初始化
@@ -116,7 +124,7 @@
     UIColor *bgColor = [UIColor colorWithRed:(46.0f/255.0f) green:(51.0f/255.0f) blue:(57.0f/255.0f) alpha:1.0f];
 	self.revealController = [[GHRevealViewController alloc] initWithNibName:nil bundle:nil];
 	self.revealController.view.backgroundColor = bgColor;
-    //self.revealController.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Basemap.png"]];
+    //self.revealController.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background.png"]];
 
 	RevealBlock revealBlock = ^(){
 		[self.revealController toggleSidebar:!self.revealController.sidebarShowing 
@@ -129,14 +137,11 @@
 	];
 	NSArray *controllers = @[
 		@[//[NSNumber numberWithInt:-1]
-      [[UINavigationController alloc] initWithRootViewController:[[ActivityViewController alloc] initWithTitle:@"主页" withUser:nil withRevealBlock:revealBlock]],
-      [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"资讯" withUrl:@"http://www.appgame.com/feed?paged=%d" withRevealBlock:revealBlock]],
-      [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"热门" withUrl:@"http://gl.appgame.com/hot-games.html" withRevealBlock:revealBlock]],
-      [[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"收藏" withUrl:@"Favorites" withRevealBlock:revealBlock]],
+      [[UINavigationController alloc] initWithRootViewController:[[HomeScrollView alloc] initWithTitle:@"主页" withRevealBlock:revealBlock]],
+      //[[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"收藏" withUrl:@"Favorites" withRevealBlock:revealBlock]],
       
 		],
 		@[
-            [[UINavigationController alloc] initWithRootViewController:[[PersonalViewController alloc] initWithTitle:@"个人" withUser:nil withRevealBlock:revealBlock]],
             [[UINavigationController alloc] initWithRootViewController:[[SettingViewController alloc] initWithTitle:@"设置" withUrl:@"Setting" withRevealBlock:revealBlock]]
 		]
 	];
@@ -144,12 +149,9 @@
 	NSArray *cellInfos = @[
 		@[
 			@{kSidebarCellImageKey: @"Home.png", kSidebarCellTextKey: NSLocalizedString(@"主页", @"")},
-            @{kSidebarCellImageKey: @"Information.png", kSidebarCellTextKey: NSLocalizedString(@"资讯", @"")},
-            @{kSidebarCellImageKey: @"Hot.png", kSidebarCellTextKey: NSLocalizedString(@"热门", @"")},
-            @{kSidebarCellImageKey: @"Collection.png", kSidebarCellTextKey: NSLocalizedString(@"收藏", @"")}
+            //@{kSidebarCellImageKey: @"Collection.png", kSidebarCellTextKey: NSLocalizedString(@"收藏", @"")}
 		],
 		@[
-            @{kSidebarCellImageKey: @"Personal.png", kSidebarCellTextKey: NSLocalizedString(@"个人", @"")},
 			@{kSidebarCellImageKey: @"Set-up.png", kSidebarCellTextKey: NSLocalizedString(@"设置", @"")}
 		]
 	];
@@ -165,96 +167,12 @@
 		}];
 	}];
 	
-//	self.searchController = [[GHSidebarSearchViewController alloc] initWithSidebarViewController:self.revealController];
-//	self.searchController.view.backgroundColor = [UIColor clearColor];
-//    self.searchController.searchDelegate = self;
-//	self.searchController.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
-//	self.searchController.searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
-//	self.searchController.searchBar.backgroundImage = [UIImage imageNamed:@"searchBarBG.png"];
-//	self.searchController.searchBar.placeholder = NSLocalizedString(@"Search", @"");
-//	self.searchController.searchBar.tintColor = [UIColor colorWithRed:(58.0f/255.0f) green:(67.0f/255.0f) blue:(104.0f/255.0f) alpha:1.0f];
-//	for (UIView *subview in self.searchController.searchBar.subviews) {
-//		if ([subview isKindOfClass:[UITextField class]]) {
-//			UITextField *searchTextField = (UITextField *) subview;
-//			searchTextField.textColor = [UIColor colorWithRed:(154.0f/255.0f) green:(162.0f/255.0f) blue:(176.0f/255.0f) alpha:1.0f];
-//		}
-//	}
-//	[self.searchController.searchBar setSearchFieldBackgroundImage:[[UIImage imageNamed:@"searchTextBG.png"] 
-//																		resizableImageWithCapInsets:UIEdgeInsetsMake(16.0f, 17.0f, 16.0f, 17.0f)]	
-//														  forState:UIControlStateNormal];
-//	[self.searchController.searchBar setImage:[UIImage imageNamed:@"searchBarIcon.png"] 
-//							 forSearchBarIcon:UISearchBarIconSearch 
-//										state:UIControlStateNormal];
-	
 	self.menuController = [[GHMenuViewController alloc] initWithSidebarViewController:self.revealController 
 																		withSearchBar:self.searchController.searchBar 
 																		  withHeaders:headers 
 																	  withControllers:controllers 
 																		withCellInfos:cellInfos];
     kDataSource.menuController = self.menuController;
-    //检查并登录disqus
-    [standardDefaults setBool:NO forKey:kIfLogin];//每次重新登录
-    NSString *disqusUsername = [standardDefaults stringForKey:kUsername];
-    NSString *disqusPassword = [standardDefaults stringForKey:kPassword];
-//    disqusUsername = @"jw@appgame.com";
-//    disqusPassword = @"12161127";
-    if (disqusUsername == nil || disqusPassword == nil) {
-        disqusUsername = @"appgame";
-        disqusPassword = @"kiueo_0903xerw3";
-    }
-    
-    IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];
-    [iaDisquser loginWithUsername:disqusUsername password:disqusPassword
-                          success:^(AFOAuthCredential *credential) {
-                              kDataSource.credentialObject = credential;
-                              [standardDefaults setValue:credential.accessToken forKey:kAccessToken];
-                              [standardDefaults setBool:YES forKey:kIfLogin];
-                              
-                              // make the parameters dictionary
-                              NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                          kDataSource.credentialObject.accessToken, @"access_token",
-                                                          //DISQUS_API_SECRET, @"api_secret",
-                                                          DISQUS_API_PUBLIC,@"api_key",
-                                                          //@"", @"user",
-                                                          nil];
-                              
-                              // send the request
-                              [iaDisquser getUsersDetails:parameters
-                                                  success:^(NSDictionary *responseDictionary){
-                                                      // check the code (success is 0)
-                                                      NSNumber *code = [responseDictionary objectForKey:@"code"];
-                                                      
-                                                      if ([code integerValue] != 0) {   // there's an error
-                                                          NSLog(@"disqus账户信息异常");
-                                                      }else {
-                                                          NSDictionary *responseArray = [responseDictionary objectForKey:@"response"];
-                                                          if ([responseArray count] != 0) {
-                                                              kDataSource.userObject.name = [responseArray objectForKey:@"name"];
-                                                              kDataSource.userObject.about = [responseArray objectForKey:@"about"];
-                                                              
-                                                              kDataSource.userObject.numFollowers = [responseArray objectForKey:@"numFollowers"];
-                                                              kDataSource.userObject.numFollowing = [responseArray objectForKey:@"numFollowing"];
-                                                              kDataSource.userObject.numPosts = [responseArray objectForKey:@"numPosts"];
-                                                              kDataSource.userObject.numLikesReceived = [responseArray objectForKey:@"numLikesReceived"];
-                                                              kDataSource.userObject.userID = [responseArray objectForKey:@"id"];
-                                                              kDataSource.userObject.authorAvatar = [[[responseArray objectForKey:@"avatar"] objectForKey:@"large"] objectForKey:@"cache"];
-                                                              NSLog(@"disqus账户信息:%@,%@,%@", kDataSource.userObject.name, kDataSource.userObject.authorAvatar,kDataSource.userObject.userID);
-                                                              //                                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"欢迎回来" message:[NSString stringWithFormat: @"您好 %@", kDataSource.userObject.name] delegate:self cancelButtonTitle:@"好!" otherButtonTitles:nil];
-                                                              //                                                 [alert show];
-                                                              [self.menuController reloadTable];//刷新侧边栏头像
-                                                              
-                                                              [self performSelector:@selector(showWelcome) withObject:nil afterDelay:2.4];
-                                                          }
-                                                      }
-                                                  }
-                                                     fail:^(NSError *error) {
-                                                         NSLog(@"disqus账户信息获取失败:%@",error);
-                                                     }];
-                          }
-                             fail:^(NSError *error) {
-                                 NSLog(@"disqus账户登录失败:%@",error);
-                             }];
-    
     
     //处理程序通过推送通知来启动时的情况    
     NSDictionary *remoteNotif = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
@@ -316,7 +234,7 @@
             [standardDefaults setBool:YES forKey:kReviewTrollerDoneDefault];
             [standardDefaults synchronize];
             
-            NSString *appId = @"573452997";
+            NSString *appId = @"659534801";
             
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=%@", appId]]];
         }else {

@@ -51,6 +51,20 @@
 @synthesize backBarButtonItem, forwardBarButtonItem, refreshBarButtonItem, stopBarButtonItem, actionBarButtonItem, pageActionSheet;
 
 #pragma mark Memory Management
+- (id)initWithTitle:(NSString *)title withUrl:(NSString *)url {
+    if (self = [super initWithNibName:nil bundle:nil]) {
+		self.title = title;
+        self.webURL = [NSURL URLWithString:url];
+        self.URL = [NSURL URLWithString:url];
+        self.availableActions = SVWebViewControllerAvailableActionsOpenInSafari | SVWebViewControllerAvailableActionsMailLink | SVWebViewControllerAvailableActionsCopyLink;
+	}
+        
+    activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 32.0f, 32.0f)];
+    [activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
+    
+	return self;
+}
+
 - (id)initWithTitle:(NSString *)title withUrl:(NSString *)url withRevealBlock:(RevealBlock)revealBlock {
     if (self = [super initWithNibName:nil bundle:nil]) {
 		self.title = title;

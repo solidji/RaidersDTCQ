@@ -62,7 +62,7 @@
         _revealBlock = [revealBlock copy];
         
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        leftButton.frame = CGRectMake(0, 0, 45, 33);
+        leftButton.frame = CGRectMake(0, 0, 41, 28);
         [leftButton setBackgroundImage:[UIImage imageNamed:@"menu.png"] forState:UIControlStateNormal];
         [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -80,7 +80,7 @@
         root.grouped = YES;
         QSection *section = [[QSection alloc] init];
         //QLabelElement *label = [[QLabelElement alloc] initWithTitle:@"我的账号" Value:@"world!"];
-        [section addElement:[[QRootElement alloc] initWithJSONFile:@"loginform"]];
+        //[section addElement:[[QRootElement alloc] initWithJSONFile:@"loginform"]];
         //section.title = @"账号";
         section.headerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"settinglogo.png"]];
         //[section addElement:label];

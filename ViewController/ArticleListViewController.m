@@ -37,7 +37,7 @@
         _revealBlock = [revealBlock copy];
         
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        leftButton.frame = CGRectMake(0, 0, 45, 33);
+        leftButton.frame = CGRectMake(0, 0, 41, 28);
         [leftButton setBackgroundImage:[UIImage imageNamed:@"menu.png"] forState:UIControlStateNormal];
         [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -86,8 +86,9 @@
     // #添加推广头HeaderView
     headerView = [[TableHeaderView alloc] initWithFrame: CGRectMake(0, 0, 320, 120) withDataSource: self withPageControlType:@"type"];
     //[self.view addSubview:headerView];
-    pullToRefreshTableView.tableHeaderView = headerView;
-    
+    if (![self.webURL isEqual: @"Favorites"]){
+        pullToRefreshTableView.tableHeaderView = headerView;
+    }
     // get array of articles
     // 开启后台线程获取数据源
     [self performSelectorInBackground:@selector(getPromos) withObject:nil];

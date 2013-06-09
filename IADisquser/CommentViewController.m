@@ -25,13 +25,13 @@
 - (void)disMiss;
 - (void)getComments;
 @property (nonatomic, copy) NSNumber *commentID;
-@property (nonatomic, strong, readonly) UIBarButtonItem *popBarButtonItem;
+@property (nonatomic, strong, readonly) UIButton *textViewBarButton;
 - (void)goTextViewClicked:(UIButton *)sender;
 @end
 
 @implementation CommentViewController
 
-@synthesize comments,pullToRefreshTableView,webURL,nextCursor,thread,textView,popBarButtonItem,commentID;
+@synthesize comments,pullToRefreshTableView,webURL,nextCursor,thread,textView,textViewBarButton,commentID;
 
 //- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 - (id)initWithTitle:(NSString *)title withUrl:(NSString *)url  threadID:(NSNumber *)threadID
@@ -44,12 +44,6 @@
         self.thread = [[NSNumber alloc] initWithInteger:[threadID integerValue]];
         self.nextCursor = nil;
         hasNext = false;
-        self.popBarButtonItem.enabled = YES;
-        NSArray *items;
-        items = [NSArray arrayWithObjects:
-                 self.popBarButtonItem,
-                 nil];
-        self.toolbarItems = items;
         
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
         leftButton.frame = CGRectMake(0, 0, 50, 26);
@@ -86,17 +80,6 @@
 
 - (void)disMiss {
     [[self navigationController] popViewControllerAnimated:YES];
-}
-
-- (UIBarButtonItem *)popBarButtonItem {
-    
-    if (!popBarButtonItem) {
-        popBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Message-Box-long.png"] style:UIBarButtonItemStylePlain target:self action:@selector(goTextViewClicked:)];
-
-        popBarButtonItem.imageInsets = UIEdgeInsetsMake(2.0f, 0.0f, -2.0f, 0.0f);
-		popBarButtonItem.width = 300.0f;
-    }
-    return popBarButtonItem;
 }
 
 - (void)viewDidLoad
@@ -152,6 +135,24 @@
         [self.navigationController.toolbar insertSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fot.png"]] atIndex:0];
     }
     //[self.navigationController setNavigationBarHidden:YES animated:YES];
+    
+    //自定义toolbar按钮
+    textViewBarButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    textViewBarButton.frame =CGRectMake(10, 5, 300, 33);
+    [textViewBarButton setBackgroundImage:[UIImage imageNamed:@"Message-Box-long.png"] forState:UIControlStateNormal];
+    [textViewBarButton addTarget: self action: @selector(goTextViewClicked:) forControlEvents: UIControlEventTouchUpInside];
+    [self.navigationController.toolbar addSubview: textViewBarButton];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        //[self.navigationController.navigationBar setAlpha:1.0f];
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+        [self.navigationController setToolbarHidden:YES animated:animated];
+    }
+    [textViewBarButton removeFromSuperview];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {

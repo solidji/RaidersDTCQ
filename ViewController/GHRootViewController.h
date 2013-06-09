@@ -33,5 +33,5 @@ typedef void (^RevealBlock)();
 @property (nonatomic, readwrite) SVWebViewControllerAvailableActions availableActions;
 
 - (id)initWithTitle:(NSString *)title withUrl:(NSString *)url withRevealBlock:(RevealBlock)revealBlock;
-
+- (id)initWithTitle:(NSString *)title withUrl:(NSString *)url;
 @end

@@ -131,7 +131,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     
     if (section == 0) {
-        NSObject *headerText = kDataSource.userObject.name;
+        NSObject *headerText = @"刀塔英雄攻略";
         UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
         [bgImage setImage: [UIImage imageNamed:@"top.png"]];
         UIView *headerView = nil;
@@ -149,8 +149,10 @@
             [headerView addSubview:textLabel];
             
             UIImageView *avatarImage=[[UIImageView alloc] initWithFrame:CGRectMake(6, 6, 32, 32)];
-            [avatarImage setImageWithURL:[NSURL URLWithString:kDataSource.userObject.authorAvatar]
-                        placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
+            [avatarImage setImage:[UIImage imageNamed:@"Icon.png"]];
+
+            //[avatarImage setImageWithURL:[NSURL URLWithString:kDataSource.userObject.authorAvatar]
+              //          placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
             
             avatarImage.layer.masksToBounds = YES;
             [avatarImage setBackgroundColor:[UIColor clearColor]];

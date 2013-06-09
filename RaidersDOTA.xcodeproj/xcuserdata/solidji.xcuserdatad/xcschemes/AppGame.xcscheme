@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "DBA0154816D8AF89007B2AE5"
-               BuildableName = "&#20219;&#29609;&#22530;.app"
-               BlueprintName = "AppGame"
-               ReferencedContainer = "container:AppGame.xcodeproj">
+               BuildableName = "&#20992;&#22612;&#33521;&#38596;&#25915;&#30053;.app"
+               BlueprintName = "RaidersDOTA"
+               ReferencedContainer = "container:RaidersDOTA.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DBA0154816D8AF89007B2AE5"
-            BuildableName = "&#20219;&#29609;&#22530;.app"
-            BlueprintName = "AppGame"
-            ReferencedContainer = "container:AppGame.xcodeproj">
+            BuildableName = "&#20992;&#22612;&#33521;&#38596;&#25915;&#30053;.app"
+            BlueprintName = "RaidersDOTA"
+            ReferencedContainer = "container:RaidersDOTA.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -52,9 +52,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DBA0154816D8AF89007B2AE5"
-            BuildableName = "&#20219;&#29609;&#22530;.app"
-            BlueprintName = "AppGame"
-            ReferencedContainer = "container:AppGame.xcodeproj">
+            BuildableName = "&#20992;&#22612;&#33521;&#38596;&#25915;&#30053;.app"
+            BlueprintName = "RaidersDOTA"
+            ReferencedContainer = "container:RaidersDOTA.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -70,9 +70,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DBA0154816D8AF89007B2AE5"
-            BuildableName = "&#20219;&#29609;&#22530;.app"
-            BlueprintName = "AppGame"
-            ReferencedContainer = "container:AppGame.xcodeproj">
+            BuildableName = "&#20992;&#22612;&#33521;&#38596;&#25915;&#30053;.app"
+            BlueprintName = "RaidersDOTA"
+            ReferencedContainer = "container:RaidersDOTA.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
