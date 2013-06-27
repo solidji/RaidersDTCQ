@@ -10,6 +10,10 @@
 extern NSString const *kSidebarCellTextKey;
 extern NSString const *kSidebarCellImageKey;
 
-@interface GHMenuCell : UITableViewCell
+@interface GHMenuCell : UITableViewCell{
+    UILabel *tagLabel;
+}
+
+@property (nonatomic, strong) UILabel *tagLabel;
 
 @end

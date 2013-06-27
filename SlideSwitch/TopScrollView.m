@@ -58,7 +58,7 @@
 - (void)initWithNameButtons
 {
     shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 0, 59, 44)];
-    [shadowImageView setImage:[UIImage imageNamed:@"red_line_and_shadow.png"]];
+    [shadowImageView setImage:[UIImage imageNamed:@"yellow_line_and_shadow.png"]];
     [self addSubview:shadowImageView];
     
     for (int i = 0; i < [self.nameArray count]; i++) {

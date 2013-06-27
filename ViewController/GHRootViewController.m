@@ -87,6 +87,7 @@
         [leftButton addTarget:self action:@selector(revealSidebar) forControlEvents:UIControlEventTouchUpInside];
         [leftButton setTitle:@" 后退" forState:UIControlStateNormal];
         [leftButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11]];
+        leftButton.titleLabel.textColor = [UIColor yellowColor];
         
         UIBarButtonItem *temporaryLeftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
         temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
@@ -418,6 +419,11 @@
     //return toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown;
     return toInterfaceOrientation == UIInterfaceOrientationPortrait;
 
+}
+
+- (BOOL)shouldAutorotate
+{
+    return NO;
 }
 
 #pragma mark - Toolbar

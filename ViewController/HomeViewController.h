@@ -13,7 +13,7 @@
 #import "AlerViewManager.h"
 
 typedef void (^HomeRevealBlock)();
-@interface HomeViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate>{
+@interface HomeViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, UIGestureRecognizerDelegate>{
 
     NSMutableArray *comments;//数据源
     PullToRefreshTableView *pullToRefreshTableView;

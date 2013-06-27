@@ -37,14 +37,19 @@
     [self.quickDialogTableView deselectRowAtIndexPath:[self.quickDialogTableView indexPathForSelectedRow] animated:YES];
     
     self.quickDialogTableView.backgroundView = nil;
-    self.quickDialogTableView.backgroundColor = [UIColor colorWithRed:200.0/255.0 green:200.0/255.0 blue:200.0/255.0 alpha:1.0000];;
-
+    self.quickDialogTableView.backgroundColor = [UIColor colorWithRed:200.0/255.0 green:200.0/255.0 blue:200.0/255.0 alpha:1.0000];
+    //self.quickDialogTableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background.png"]];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+}
+
+- (BOOL)shouldAutorotate
+{
+    return NO;
 }
 
 - (void)didReceiveMemoryWarning

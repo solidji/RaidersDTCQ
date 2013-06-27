@@ -1,5 +1,5 @@
 //
-//  VerticalSwipeScrollView.h
+//  DetailViewController.h
 //  VerticalSwipeArticles
 //
 //  Created by Peter Boctor on 12/26/10.
@@ -25,36 +25,40 @@
 // THE SOFTWARE
 //
 
-@class VerticalSwipeScrollView;
-@protocol VerticalSwipeScrollViewDelegate<UIScrollViewDelegate>
--(UIView*) viewForScrollView:(VerticalSwipeScrollView*)scrollView atPage:(NSUInteger)page;
--(NSUInteger) pageCount;
-@optional
--(void) headerLoadedInScrollView:(VerticalSwipeScrollView*)scrollView;
--(void) headerUnloadedInScrollView:(VerticalSwipeScrollView*)scrollView;
--(void) footerLoadedInScrollView:(VerticalSwipeScrollView*)scrollView;
--(void) footerUnloadedInScrollView:(VerticalSwipeScrollView*)scrollView;
-@end
+#import "VerticalSwipeScrollView.h"
 
-@interface VerticalSwipeScrollView : UIScrollView <UIScrollViewDelegate>
+@interface DetailViewController : UIViewController <UIGestureRecognizerDelegate, VerticalSwipeScrollViewDelegate, UIWebViewDelegate>
 {
-    //__unsafe_unretained id <VerticalSwipeScrollViewDelegate,UIScrollViewDelegate> _externalDelegate;
     UIView* headerView;
+    UIImageView* headerImageView;
+    UILabel* headerLabel;
+
     UIView* footerView;
-
-    BOOL _headerLoaded;
-    BOOL _footerLoaded;
-
-    NSUInteger currentPageIndex;
-    UIView* currentPageView;
+    UIImageView* footerImageView;
+    UILabel* footerLabel;
+  
+    VerticalSwipeScrollView* verticalSwipeScrollView;
+    NSArray* appData;
+    NSUInteger startIndex, pageIndex;
+    UIWebView* previousPage;
+    UIWebView* nextPage;
+    UIWebView* currentPage;
 }
 
-@property (nonatomic, assign) id<VerticalSwipeScrollViewDelegate> externalDelegate;
 @property (nonatomic, retain) UIView* headerView;
+@property (nonatomic, retain) UIImageView* headerImageView;
+@property (nonatomic, retain) UILabel* headerLabel;
 @property (nonatomic, retain) UIView* footerView;
-@property (nonatomic) NSUInteger currentPageIndex;
-@property (nonatomic, retain) UIView* currentPageView;
+@property (nonatomic, retain) UIImageView* footerImageView;
+@property (nonatomic, retain) UILabel* footerLabel;
+@property (nonatomic, retain) VerticalSwipeScrollView* verticalSwipeScrollView;
+@property (nonatomic, retain) NSArray* appData;
+@property (nonatomic) NSUInteger startIndex, pageIndex;
+@property (nonatomic, retain) UIWebView* previousPage;
+@property (nonatomic, retain) UIWebView* nextPage;
+@property (nonatomic, retain) UIWebView* currentPage;
 
-- (id) initWithFrame:(CGRect)frame headerView:(UIView*)headerView footerView:(UIView*)footerView startingAt:(NSUInteger)pageIndex delegate:(id<VerticalSwipeScrollViewDelegate,UIScrollViewDelegate>)verticalSwipeDelegate;
+- (id)initWithTitle:(NSString *)title;
 
 @end
+

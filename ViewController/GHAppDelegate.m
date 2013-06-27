@@ -56,6 +56,20 @@
 #pragma mark UIApplicationDelegate
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+//    NSArray *familyNames =[[NSArray alloc]initWithArray:[UIFont familyNames]];
+//    NSArray *fontNames;
+//    NSInteger indFamily, indFont;
+//
+//    for(indFamily=0;indFamily<[familyNames count];++indFamily)
+//	{
+//        NSLog(@"Family name: %@", [familyNames objectAtIndex:indFamily]);
+//        fontNames =[[NSArray alloc]initWithArray:[UIFont fontNamesForFamilyName:[familyNames objectAtIndex:indFamily]]];
+//        for(indFont=0; indFont<[fontNames count]; ++indFont)
+//        {
+//            //NSLog(@"Font name: %@",[fontNames objectAtIndex:indFont]);
+//        }
+//	}
+    
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     [Globle shareInstance].globleWidth = screenRect.size.width; //屏幕宽度
     [Globle shareInstance].globleHeight = screenRect.size.height-20;  //屏幕高度（无顶栏）
@@ -121,10 +135,10 @@
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:NO];
 	
 	//UIColor *bgColor = [UIColor colorWithRed:(215.0f/255.0f) green:(215.0f/255.0f) blue:(215.0f/255.0f) alpha:1.0f];
-    UIColor *bgColor = [UIColor colorWithRed:(46.0f/255.0f) green:(51.0f/255.0f) blue:(57.0f/255.0f) alpha:1.0f];
+    //UIColor *bgColor = [UIColor colorWithRed:(46.0f/255.0f) green:(51.0f/255.0f) blue:(57.0f/255.0f) alpha:1.0f];
 	self.revealController = [[GHRevealViewController alloc] initWithNibName:nil bundle:nil];
-	self.revealController.view.backgroundColor = bgColor;
-    //self.revealController.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background.png"]];
+	//self.revealController.view.backgroundColor = bgColor;
+    self.revealController.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background.png"]];
 
 	RevealBlock revealBlock = ^(){
 		[self.revealController toggleSidebar:!self.revealController.sidebarShowing 
@@ -162,8 +176,8 @@
 			UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self.revealController 
 																						 action:@selector(dragContentView:)];
 			panGesture.cancelsTouchesInView = YES;
-			//[((UINavigationController *)obj2).navigationBar addGestureRecognizer:panGesture];
-            [((UINavigationController *)obj2).view addGestureRecognizer:panGesture];
+			[((UINavigationController *)obj2).navigationBar addGestureRecognizer:panGesture];
+            //[((UINavigationController *)obj2).view addGestureRecognizer:panGesture];
 		}];
 	}];
 	
@@ -203,6 +217,11 @@
     [UIView commitAnimations];
     
     return YES;
+}
+
+- (NSUInteger)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window
+{
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 //#pragma mark GHSidebarSearchViewControllerDelegate

@@ -17,6 +17,7 @@
 #import "ArticleItem.h"
 #import "ArticleItemCell.h"
 #import "SVWebViewController.h"
+#import "DetailViewController.h"
 #import "HomeViewController.h"
 
 #define POSITIONID (int)scrollView.contentOffset.x/320
@@ -142,6 +143,16 @@ static CGFloat ImageWidth  = 320.0;
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;//只支持这一个方向(正常的方向)
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -195,12 +206,12 @@ static CGFloat ImageWidth  = 320.0;
 //    self.imgProfile = [[UIImageView alloc] initWithImage:image];
 //    self.imgProfile.frame             = CGRectMake(0, 0, ImageWidth, ImageHeight);
 //    [self.view addSubview:self.imgProfile];
-    bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 190)];
+    bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ImageWidth, ImageHeight)];
     [bgImage setImage: [UIImage imageNamed:@"ZGAppGame.png"]];
     [self.RootScrollView addSubview:bgImage];
     
     UIButton *newsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    newsButton.frame = CGRectMake(15, 190+10, 50, 66);
+    newsButton.frame = CGRectMake(15, ImageHeight+10, 50, 66);
     [newsButton setBackgroundImage:[UIImage imageNamed:@"ka-1.png"] forState:UIControlStateNormal];
     [newsButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [newsButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -208,15 +219,15 @@ static CGFloat ImageWidth  = 320.0;
     [newsButton addTarget:self action:@selector(goHomeView:) forControlEvents:UIControlEventTouchUpInside];
     newsButton.tag = 2001;
     [self.RootScrollView addSubview:newsButton];
-    UILabel *newsLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 190+10+66, 50, 15)];
+    UILabel *newsLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, ImageHeight+10+66, 50, 15)];
     newsLabel.text = @"最新资讯";
     newsLabel.textColor = [UIColor yellowColor];
-    [newsLabel setFont:[UIFont fontWithName:@"MarkerFelt-Wide" size:12.0]];
+    [newsLabel setFont:[UIFont fontWithName:@"DFPHaiBaoW12" size:12.0]];
     newsLabel.backgroundColor = [UIColor clearColor];
     [self.RootScrollView addSubview:newsLabel];
         
     UIButton *basicButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    basicButton.frame = CGRectMake(15+80, 190+10, 50, 66);
+    basicButton.frame = CGRectMake(15+80, ImageHeight+10, 50, 66);
     [basicButton setBackgroundImage:[UIImage imageNamed:@"ka-2.png"] forState:UIControlStateNormal];
     [basicButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [basicButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -224,15 +235,15 @@ static CGFloat ImageWidth  = 320.0;
     [basicButton addTarget:self action:@selector(goHomeView:) forControlEvents:UIControlEventTouchUpInside];
     basicButton.tag = 2002;
     [self.RootScrollView addSubview:basicButton];
-    UILabel *basicLabel = [[UILabel alloc] initWithFrame:CGRectMake(15+80, 190+10+66, 50, 15)];
+    UILabel *basicLabel = [[UILabel alloc] initWithFrame:CGRectMake(15+80, ImageHeight+10+66, 50, 15)];
     basicLabel.text = @"基础指引";
     basicLabel.textColor = [UIColor yellowColor];
-    [basicLabel setFont:[UIFont fontWithName:@"MarkerFelt-Wide" size:12.0]];
+    [basicLabel setFont:[UIFont fontWithName:@"DFPHaiBaoW12" size:12.0]];
     basicLabel.backgroundColor = [UIColor clearColor];
     [self.RootScrollView addSubview:basicLabel];
         
     UIButton *fbButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    fbButton.frame = CGRectMake(15+80*2, 190+10, 50, 66);
+    fbButton.frame = CGRectMake(15+80*2, ImageHeight+10, 50, 66);
     [fbButton setBackgroundImage:[UIImage imageNamed:@"ka-3.png"] forState:UIControlStateNormal];
     [fbButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [fbButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -240,15 +251,15 @@ static CGFloat ImageWidth  = 320.0;
     [fbButton addTarget:self action:@selector(goHomeView:) forControlEvents:UIControlEventTouchUpInside];
     fbButton.tag = 2003;
     [self.RootScrollView addSubview:fbButton];
-    UILabel *fbLabel = [[UILabel alloc] initWithFrame:CGRectMake(15+80*2, 190+10+66, 50, 15)];
+    UILabel *fbLabel = [[UILabel alloc] initWithFrame:CGRectMake(15+80*2, ImageHeight+10+66, 50, 15)];
     fbLabel.text = @"副本通关";
     fbLabel.textColor = [UIColor yellowColor];
-    [fbLabel setFont:[UIFont fontWithName:@"MarkerFelt-Wide" size:12.0]];
+    [fbLabel setFont:[UIFont fontWithName:@"DFPHaiBaoW12" size:12.0]];
     fbLabel.backgroundColor = [UIColor clearColor];
     [self.RootScrollView addSubview:fbLabel];
     
     UIButton *dropButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    dropButton.frame = CGRectMake(15+80*3, 190+10, 50, 66);
+    dropButton.frame = CGRectMake(15+80*3, ImageHeight+10, 50, 66);
     [dropButton setBackgroundImage:[UIImage imageNamed:@"ka-4.png"] forState:UIControlStateNormal];
     [dropButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [dropButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -256,15 +267,15 @@ static CGFloat ImageWidth  = 320.0;
     [dropButton addTarget:self action:@selector(goHomeView:) forControlEvents:UIControlEventTouchUpInside];
     dropButton.tag = 2004;
     [self.RootScrollView addSubview:dropButton];
-    UILabel *dropLabel = [[UILabel alloc] initWithFrame:CGRectMake(15+80*3, 190+10+66, 50, 15)];
+    UILabel *dropLabel = [[UILabel alloc] initWithFrame:CGRectMake(15+80*3, ImageHeight+10+66, 50, 15)];
     dropLabel.text = @"合成掉落";
     dropLabel.textColor = [UIColor yellowColor];
-    [dropLabel setFont:[UIFont fontWithName:@"MarkerFelt-Wide" size:12.0]];
+    [dropLabel setFont:[UIFont fontWithName:@"DFPHaiBaoW12" size:12.0]];
     dropLabel.backgroundColor = [UIColor clearColor];
     [self.RootScrollView addSubview:dropLabel];
         
     UIButton *vedioButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    vedioButton.frame = CGRectMake(15, 190+10+100, 50, 66);
+    vedioButton.frame = CGRectMake(15, ImageHeight+10+100, 50, 66);
     [vedioButton setBackgroundImage:[UIImage imageNamed:@"ka-5.png"] forState:UIControlStateNormal];
     [vedioButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [vedioButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -272,15 +283,15 @@ static CGFloat ImageWidth  = 320.0;
     [vedioButton addTarget:self action:@selector(goHomeView:) forControlEvents:UIControlEventTouchUpInside];
     vedioButton.tag = 2005;
     [self.RootScrollView addSubview:vedioButton];
-    UILabel *vedioLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 290+10+66, 50, 15)];
+    UILabel *vedioLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, ImageHeight+110+66, 50, 15)];
     vedioLabel.text = @"精彩视频";
     vedioLabel.textColor = [UIColor yellowColor];
-    [vedioLabel setFont:[UIFont fontWithName:@"MarkerFelt-Wide" size:12.0]];
+    [vedioLabel setFont:[UIFont fontWithName:@"DFPHaiBaoW12" size:12.0]];
     vedioLabel.backgroundColor = [UIColor clearColor];
     [self.RootScrollView addSubview:vedioLabel];
         
     UIButton *equipButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    equipButton.frame = CGRectMake(15+80, 190+10+100, 50, 66);
+    equipButton.frame = CGRectMake(15+80, ImageHeight+10+100, 50, 66);
     [equipButton setBackgroundImage:[UIImage imageNamed:@"ka-6.png"] forState:UIControlStateNormal];
     [equipButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [equipButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -288,15 +299,15 @@ static CGFloat ImageWidth  = 320.0;
     [equipButton addTarget:self action:@selector(goHomeView:) forControlEvents:UIControlEventTouchUpInside];
     equipButton.tag = 2006;
     [self.RootScrollView addSubview:equipButton];
-    UILabel *equipLabel = [[UILabel alloc] initWithFrame:CGRectMake(15+80, 290+10+66, 50, 15)];
+    UILabel *equipLabel = [[UILabel alloc] initWithFrame:CGRectMake(15+80, ImageHeight+110+66, 50, 15)];
     equipLabel.text = @"英雄装备";
     equipLabel.textColor = [UIColor yellowColor];
-    [equipLabel setFont:[UIFont fontWithName:@"MarkerFelt-Wide" size:12.0]];
+    [equipLabel setFont:[UIFont fontWithName:@"DFPHaiBaoW12" size:12.0]];
     equipLabel.backgroundColor = [UIColor clearColor];
     [self.RootScrollView addSubview:equipLabel];
         
     UIButton *heroButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    heroButton.frame = CGRectMake(15+80*2, 190+10+100, 50, 66);
+    heroButton.frame = CGRectMake(15+80*2, ImageHeight+10+100, 50, 66);
     [heroButton setBackgroundImage:[UIImage imageNamed:@"ka-7.png"] forState:UIControlStateNormal];
     [heroButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [heroButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -304,15 +315,15 @@ static CGFloat ImageWidth  = 320.0;
     [heroButton addTarget:self action:@selector(goHomeView:) forControlEvents:UIControlEventTouchUpInside];
     heroButton.tag = 2007;
     [self.RootScrollView addSubview:heroButton];
-    UILabel *heroLabel = [[UILabel alloc] initWithFrame:CGRectMake(15+80*2, 290+10+66, 50, 15)];
+    UILabel *heroLabel = [[UILabel alloc] initWithFrame:CGRectMake(15+80*2, ImageHeight+110+66, 50, 15)];
     heroLabel.text = @"英雄专题";
     heroLabel.textColor = [UIColor yellowColor];
-    [heroLabel setFont:[UIFont fontWithName:@"MarkerFelt-Wide" size:12.0]];
+    [heroLabel setFont:[UIFont fontWithName:@"DFPHaiBaoW12" size:12.0]];
     heroLabel.backgroundColor = [UIColor clearColor];
     [self.RootScrollView addSubview:heroLabel];
         
     UIButton *advanceButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    advanceButton.frame = CGRectMake(15+80*3, 190+10+100, 50, 66);
+    advanceButton.frame = CGRectMake(15+80*3, ImageHeight+10+100, 50, 66);
     [advanceButton setBackgroundImage:[UIImage imageNamed:@"ka-8.png"] forState:UIControlStateNormal];
     [advanceButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [advanceButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -320,32 +331,32 @@ static CGFloat ImageWidth  = 320.0;
     [advanceButton addTarget:self action:@selector(goHomeView:) forControlEvents:UIControlEventTouchUpInside];
     advanceButton.tag = 2008;
     [self.RootScrollView addSubview:advanceButton];
-    UILabel *advanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(15+80*3, 290+10+66, 50, 15)];
+    UILabel *advanceLabel = [[UILabel alloc] initWithFrame:CGRectMake(15+80*3, ImageHeight+110+66, 50, 15)];
     advanceLabel.text = @"成长进阶";
     advanceLabel.textColor = [UIColor yellowColor];
-    [advanceLabel setFont:[UIFont fontWithName:@"MarkerFelt-Wide" size:12.0]];
+    [advanceLabel setFont:[UIFont fontWithName:@"DFPHaiBaoW12" size:12.0]];
     advanceLabel.backgroundColor = [UIColor clearColor];
     [self.RootScrollView addSubview:advanceLabel];
     
     //增加两横三竖分割线
-    UIView *topLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 290.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
+    UIView *topLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, ImageHeight+100, [UIScreen mainScreen].bounds.size.width, 1.0f)];
     topLine.backgroundColor = [UIColor colorWithRed:(18.0f/255.0f) green:(53.0f/255.0f) blue:(80.0f/255.0f) alpha:1.0f];
     [self.RootScrollView addSubview:topLine];
     
-    UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 390.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
+    UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, ImageHeight+200, [UIScreen mainScreen].bounds.size.width, 1.0f)];
     bottomLine.backgroundColor = [UIColor colorWithRed:(18.0f/255.0f) green:(53.0f/255.0f) blue:(80.0f/255.0f) alpha:1.0f];
     [self.RootScrollView addSubview:bottomLine];
     
-    UIView *leftLine = [[UIView alloc] initWithFrame:CGRectMake(80.0f, 190.0f, 1.0f, 200.0f)];
+    UIView *leftLine = [[UIView alloc] initWithFrame:CGRectMake(80.0f, ImageHeight, 1.0f, 200.0f)];
     leftLine.backgroundColor = [UIColor colorWithRed:(18.0f/255.0f) green:(53.0f/255.0f) blue:(80.0f/255.0f) alpha:1.0f];
     [self.RootScrollView addSubview:leftLine];
     
-    UIView *midLine = [[UIView alloc] initWithFrame:CGRectMake(80.0f*2, 190.0f, 1.0f, 200.0f)];
+    UIView *midLine = [[UIView alloc] initWithFrame:CGRectMake(80.0f*2, ImageHeight, 1.0f, 200.0f)];
     midLine.backgroundColor = [UIColor colorWithRed:(18.0f/255.0f) green:(53.0f/255.0f) blue:(80.0f/255.0f) alpha:1.0f];
     [self.RootScrollView addSubview:midLine];
 
     
-    UIView *rightLine = [[UIView alloc] initWithFrame:CGRectMake(80.0f*3, 190.0f, 1.0f, 200.0f)];
+    UIView *rightLine = [[UIView alloc] initWithFrame:CGRectMake(80.0f*3, ImageHeight, 1.0f, 200.0f)];
     rightLine.backgroundColor = [UIColor colorWithRed:(18.0f/255.0f) green:(53.0f/255.0f) blue:(80.0f/255.0f) alpha:1.0f];
     [self.RootScrollView addSubview:rightLine];
 
@@ -357,12 +368,13 @@ static CGFloat ImageWidth  = 320.0;
     
     pullToRefreshTableView = [[PullToRefreshTableView alloc] initWithFrame: CGRectMake(320, 0, 320, [Globle shareInstance].globleHeight-44-44) withType: withStateViews];
     
-    [self.pullToRefreshTableView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
+    //[self.pullToRefreshTableView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
     pullToRefreshTableView.delegate = self;
     pullToRefreshTableView.dataSource = self;
     pullToRefreshTableView.allowsSelection = YES;
     pullToRefreshTableView.backgroundColor = [UIColor clearColor];
-    pullToRefreshTableView.backgroundColor = [UIColor colorWithRed:248.0f/255.0f green:244.0f/255.0f blue:239.0f/255.0f alpha:1.0f];
+    //pullToRefreshTableView.backgroundColor = [UIColor colorWithRed:248.0f/255.0f green:244.0f/255.0f blue:239.0f/255.0f alpha:1.0f];
+    pullToRefreshTableView.backgroundColor = [UIColor colorWithRed:19.0f/255 green:47.0f/255 blue:69.0f/255 alpha:1.0];
     pullToRefreshTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     pullToRefreshTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [pullToRefreshTableView setHidden:NO];
@@ -381,34 +393,34 @@ static CGFloat ImageWidth  = 320.0;
         [bbsWebView goBack];
     }];
     UIImageView *twitterIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [twitterIcon setImage:[UIImage imageNamed:@"twitter"]];
+    [twitterIcon setImage:[UIImage imageNamed:@"Retreat"]];
     [twitterItem addSubview:twitterIcon];
     
     UIView *emailItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
     [emailItem setMenuActionWithBlock:^{
         [bbsWebView goForward];
     }];
-    UIImageView *emailIcon = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 30 , 30)];
-    [emailIcon setImage:[UIImage imageNamed:@"email"]];
+    UIImageView *emailIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    [emailIcon setImage:[UIImage imageNamed:@"Advance"]];
     [emailItem addSubview:emailIcon];
     
-    UIView *facebookItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [facebookItem setMenuActionWithBlock:^{
-        [bbsWebView stopLoading];
-    }];
-    UIImageView *facebookIcon = [[UIImageView alloc] initWithFrame:CGRectMake(2, 2, 35, 35)];
-    [facebookIcon setImage:[UIImage imageNamed:@"facebook"]];
-    [facebookItem addSubview:facebookIcon];
+//    UIView *facebookItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+//    [facebookItem setMenuActionWithBlock:^{
+//        [bbsWebView stopLoading];
+//    }];
+//    UIImageView *facebookIcon = [[UIImageView alloc] initWithFrame:CGRectMake(2, 2, 35, 35)];
+//    [facebookIcon setImage:[UIImage imageNamed:@"facebook"]];
+//    [facebookItem addSubview:facebookIcon];
     
     UIView *browserItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
     [browserItem setMenuActionWithBlock:^{
         [bbsWebView reload];
     }];
     UIImageView *browserIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [browserIcon setImage:[UIImage imageNamed:@"browser"]];
+    [browserIcon setImage:[UIImage imageNamed:@"Refresh"]];
     [browserItem addSubview:browserIcon];
     
-    self.sideMenu = [[HMSideMenu alloc] initWithItems:@[twitterItem, emailItem, facebookItem, browserItem]];
+    self.sideMenu = [[HMSideMenu alloc] initWithItems:@[twitterItem, emailItem, browserItem]];
     [self.sideMenu setItemSpacing:5.0f];
     [self.bbsWebView addSubview:self.sideMenu];
     [self.sideMenu open];
@@ -517,7 +529,7 @@ static CGFloat ImageWidth  = 320.0;
 - (void)initWithNameButtons
 {
     shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 0, 59, 44)];
-    [shadowImageView setImage:[UIImage imageNamed:@"red_line_and_shadow.png"]];
+    [shadowImageView setImage:[UIImage imageNamed:@"yellow_line_and_shadow.png"]];
     [self.TopScrollView addSubview:shadowImageView];
     
     for (int i = 0; i < [self.nameArray count]; i++) {
@@ -529,9 +541,13 @@ static CGFloat ImageWidth  = 320.0;
             button.selected = YES;
         }
         [button setTitle:[NSString stringWithFormat:@"%@",[self.nameArray objectAtIndex:i]] forState:UIControlStateNormal];
-        button.titleLabel.font = [UIFont systemFontOfSize:20.0];
-        [button setTitleColor:[Globle colorFromHexRGB:@"868686"] forState:UIControlStateNormal];
-        [button setTitleColor:[Globle colorFromHexRGB:@"bb0b15"] forState:UIControlStateSelected];
+        //button.titleLabel.font = [UIFont systemFontOfSize:20.0];
+        button.titleLabel.font = [UIFont fontWithName:@"DFPHaiBaoW12" size:20.0];
+        
+        //[button setTitleColor:[Globle colorFromHexRGB:@"868686"] forState:UIControlStateNormal];
+        //[button setTitleColor:[Globle colorFromHexRGB:@"bb0b15"] forState:UIControlStateSelected];
+        [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [button setTitleColor:[UIColor yellowColor] forState:UIControlStateSelected];
         [button addTarget:self action:@selector(selectNameButton:) forControlEvents:UIControlEventTouchUpInside];
         [self.TopScrollView addSubview:button];
     }
@@ -662,8 +678,10 @@ static CGFloat ImageWidth  = 320.0;
 
 //某一行被选中,由ViewController来实现push详细页面
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    ArticleItem *aComment = [self.comments objectAtIndex:indexPath.row];
-    SVWebViewController *viewController = [[SVWebViewController alloc] initWithHTMLString:aComment URL:aComment.articleURL];
+    
+    DetailViewController *viewController = [[DetailViewController alloc] initWithTitle:@"常见"];
+    viewController.appData = self.comments;
+    viewController.startIndex = indexPath.row;
 
     //NSLog(@"didSelectArticle:%@",aArticle.content);
     [self.navigationController pushViewController:viewController animated:YES];

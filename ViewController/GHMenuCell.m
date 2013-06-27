@@ -16,6 +16,7 @@ NSString const *kSidebarCellImageKey = @"CellImage";
 #pragma mark -
 #pragma mark Implementation
 @implementation GHMenuCell
+@synthesize tagLabel;
 
 #pragma mark Memory Management
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -27,22 +28,23 @@ NSString const *kSidebarCellImageKey = @"CellImage";
 //        self.selectedBackgroundView = bgView;
         //self.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Gray.png"]];
 		// 设置背景
-        //UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-        //[bgImage setImage: [UIImage imageNamed:@"gray.png"]];
-        //[self setBackgroundView:bgImage];
+        UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+        [bgImage setImage: [UIImage imageNamed:@"blue.png"]];
+        [self setBackgroundView:bgImage];
         
         UIImageView *selectedbgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
         [selectedbgImage setImage: [UIImage imageNamed:@"Click-effect.png"]];
         self.selectedBackgroundView = selectedbgImage;
-
 		
 		self.imageView.contentMode = UIViewContentModeCenter;
-		
-		self.textLabel.font = [UIFont fontWithName:@"Helvetica" size:([UIFont systemFontSize] * 1.2f)];
+        
+		tagLabel = [[UILabel alloc] init];
+		self.tagLabel.font = [UIFont fontWithName:@"Helvetica" size:([UIFont systemFontSize] * 1.2f)];
 		//self.textLabel.shadowOffset = CGSizeMake(0.0f, 1.0f);
 		//self.textLabel.shadowColor = [UIColor colorWithRed:(107.0f/255.0f) green:(107.0f/255.0f) blue:(107.0f/255.0f) alpha:1.0f];
 		//self.textLabel.textColor = [UIColor colorWithRed:(43.0f/255.0f) green:(43.0f/255.0f) blue:(43.0f/255.0f) alpha:1.0f];
-        self.textLabel.textColor = [UIColor whiteColor];
+        tagLabel.backgroundColor = [UIColor clearColor];
+        [self.contentView addSubview:tagLabel];
         
         //增加上下分割线
 		UIView *topLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
@@ -65,43 +67,44 @@ NSString const *kSidebarCellImageKey = @"CellImage";
 #pragma mark UIView
 - (void)layoutSubviews {
 	[super layoutSubviews];
-	self.textLabel.frame = CGRectMake(40.0f, 0.0f, 200.0f, 44.0f);
+	self.tagLabel.frame = CGRectMake(40.0f, 0.0f, 200.0f, 44.0f);
 	//self.imageView.frame = CGRectMake(0.0f, 0.0f, 52.0f, 44.0f);
     self.imageView.frame = CGRectMake(10.0f, 12.0f, 20.0f, 20.0f);
-    if([self.textLabel.text isEqualToString:@"个人"] || [self.textLabel.text isEqualToString:@"设置"])
+    if([self.tagLabel.text isEqualToString:@"个人"] || [self.tagLabel.text isEqualToString:@"设置"])
     {
-        self.textLabel.frame = CGRectMake(70.0f, 0.0f, 200.0f, 44.0f);
+        self.tagLabel.frame = CGRectMake(70.0f, 0.0f, 200.0f, 44.0f);
         self.imageView.frame = CGRectMake(40.0f, 12.0f, 20.0f, 20.0f);
     }
 }
 
-//- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
-//{
-//    [super setHighlighted:highlighted animated:animated];
-//
-//    if (highlighted) {
-////        NSString *imageName = [[NSString alloc] initWithFormat:@"%@-white.png", self.imageView];
-////        self.imageView.image = [UIImage imageNamed:imageName];
-//        [self.imageView setHighlighted:YES];
-////        UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-////        [bgImage setImage: [UIImage imageNamed:@"Click-effect.png"]];
-////        [self setSelectedBackgroundView:bgImage];
-//    }else {
-////        UIImageView *bgImage=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-////        [bgImage setImage: [UIImage imageNamed:@"Gray.png"]];
-////        [self setBackgroundView:bgImage];
-//        [self.imageView setHighlighted:NO];
-//    }
-//    [self setNeedsDisplay];
-//    //tableCellContent.ifSelected = highlighted;
-//}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated{
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated
+{
     [super setSelected:selected animated:animated];
-    if(selected) {
+
+    if (selected) {
+        self.tagLabel.textColor = [UIColor colorWithRed:(2.0f/255.0f) green:(46.0f/255.0f) blue:(77.0f/255.0f) alpha:1.0f];
         //[(UIButton *)self.accessoryView setHighlighted:NO];
         [self.imageView setHighlighted:YES];
+        //[self.textLabel setHighlighted:YES];
     }
+    else {
+        self.tagLabel.textColor = [UIColor whiteColor];
+    }
+}
+
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
+{
+    [super setHighlighted:highlighted animated:animated];
+    
+    if (highlighted) {
+        self.tagLabel.textColor = [UIColor colorWithRed:(2.0f/255.0f) green:(46.0f/255.0f) blue:(77.0f/255.0f) alpha:1.0f];
+        [self.imageView setHighlighted:YES];
+    }
+    else {
+        self.tagLabel.textColor = [UIColor whiteColor];
+        [self.imageView setHighlighted:NO];
+    }
+    [self setNeedsDisplay];
 }
 
 @end

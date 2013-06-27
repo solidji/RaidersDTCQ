@@ -15,6 +15,7 @@
 #import "RSSParser.h"
 #import "RSSItem.h"
 #import "SVWebViewController.h"
+#import "DetailViewController.h"
 
 #define CELL_CONTENT_WIDTH  320.0-65
 #define CELL_CONTENT_MARGIN 4.0
@@ -120,6 +121,11 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -132,9 +138,12 @@
 //某一行被选中,由ViewController来实现push详细页面
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    ArticleItem *aArticle = [self.articles objectAtIndex:indexPath.row];
-    SVWebViewController *viewController = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];
-    
+//    ArticleItem *aArticle = [self.articles objectAtIndex:indexPath.row];
+//    SVWebViewController *viewController = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];
+
+    DetailViewController *viewController = [[DetailViewController alloc] initWithTitle:self.title];
+    viewController.appData = self.articles;
+    viewController.startIndex = indexPath.row;
     //NSLog(@"didSelectArticle:%@",aArticle.content);
     [self.navigationController pushViewController:viewController animated:YES];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -346,7 +355,9 @@
     ArticleItem *aArticle = [self.promos objectAtIndex:index];
     
     if (aArticle.content != nil) {
-        SVWebViewController *viewController = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];
+        DetailViewController *viewController = [[DetailViewController alloc] initWithTitle:self.title];
+        viewController.appData = self.promos;
+        viewController.startIndex = index;
         [self.navigationController pushViewController:viewController animated:YES];
     }else {
         SVWebViewController *viewController = [[SVWebViewController alloc] initWithURL:aArticle.articleURL];

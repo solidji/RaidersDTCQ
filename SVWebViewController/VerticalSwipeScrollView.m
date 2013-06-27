@@ -32,111 +32,128 @@
 @end
 
 @implementation VerticalSwipeScrollView
-@synthesize externalDelegate, headerView, footerView, currentPageIndex, currentPageView;
-
+@synthesize headerView, footerView, currentPageIndex, currentPageView;
+@synthesize externalDelegate;
+//@dynamic externalDelegate;
 // Setup for when our view is setup in a NIB
-- (void)awakeFromNib
-{
-  self.contentSize = self.frame.size;
-  
-  [self showCurrentPage];
-}
+//- (void)awakeFromNib
+//{
+//  self.contentSize = self.frame.size;
+//  
+//  [self showCurrentPage];
+//}
 
 // Setup for default init method
-- (id)initWithFrame:(CGRect)frame
-{
-  self = [super initWithFrame:frame];
-  if (self)
-  {
-    [self showCurrentPage];
-    self.contentSize = self.frame.size;
-  }
-  return self;
-}
+//- (id)initWithFrame:(CGRect)frame
+//{
+//  self = [super initWithFrame:frame];
+//  if (self)
+//  {
+//    [self showCurrentPage];
+//    self.contentSize = self.frame.size;
+//  }
+//  return self;
+//}
 
 // Setup for init method with explicit values
 - (id) initWithFrame:(CGRect)frame headerView:(UIView*)theHeaderView footerView:(UIView*)theFooterView startingAt:(NSUInteger)pageIndex delegate:(id<VerticalSwipeScrollViewDelegate,UIScrollViewDelegate>)verticalSwipeDelegate
 {
-  self = [super initWithFrame:frame];
-  if (self)
-  {
-    self.alwaysBounceVertical = YES;
-    self.delegate = verticalSwipeDelegate;
-    self.currentPageIndex = pageIndex;
-    self.headerView = theHeaderView;
-    self.footerView = theFooterView;
-    self.contentSize = self.frame.size;
-  }
-  return self;
+    //self = [super initWithFrame:frame];
+    self = [super initWithFrame:CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height)];
+    if (self)
+    {
+        self.alwaysBounceVertical = YES;
+        self.externalDelegate = verticalSwipeDelegate;
+        self.delegate = self;
+        self.currentPageIndex = pageIndex;
+        self.headerView = theHeaderView;
+        self.footerView = theFooterView;
+        self.contentSize = self.frame.size;
+    
+        headerView.frame = CGRectMake(0, -headerView.frame.size.height, headerView.frame.size.width, headerView.frame.size.height);
+        [self addSubview:headerView];
+        
+        footerView.frame = CGRectMake(0, ([UIScreen mainScreen].bounds.size.height-44-20), footerView.frame.size.width, footerView.frame.size.height);
+        [self addSubview:footerView];
+        
+        // Hide the header if there is no previous page
+        headerView.hidden = currentPageIndex <= 0;
+        // Hide the footer if there is no next page
+        footerView.hidden = (currentPageIndex >= [externalDelegate pageCount]-1);
+        
+        [self showCurrentPage];
+    }
+    return self;
 }
 
 // We override setting the delegate and:
 // 1. make ourselves the delegate instead
 // 2. remember the actual delegate and properly forward messages to it
--(void) setDelegate:(id<VerticalSwipeScrollViewDelegate,UIScrollViewDelegate>)newDelegate
-{
-  if (newDelegate != (id<VerticalSwipeScrollViewDelegate,UIScrollViewDelegate>)self)
-    externalDelegate = newDelegate;
-  [super setDelegate:self];
-}
+//-(void) setDelegate:(id<VerticalSwipeScrollViewDelegate,UIScrollViewDelegate>)newDelegate
+//{
+//  if (newDelegate != (id<VerticalSwipeScrollViewDelegate,UIScrollViewDelegate>)self && newDelegate != nil)
+//    externalDelegate = newDelegate;
+//  [super setDelegate:self];
+//}
 
 // The header view is what appears when you pull the
 // scroll view down to get to the previous page
--(void) setHeaderView:(UIView*)newValue
-{
-  if (headerView != newValue)
-  {
-    // Standard setter code
-    [headerView removeFromSuperview];
-//    [headerView release];
-//    headerView = [newValue retain];
-
-      headerView = newValue;
-      
-    // Place the header above the scroll view
-    headerView.frame = CGRectMake(0, -headerView.frame.size.height, headerView.frame.size.width, headerView.frame.size.height);
-    [self addSubview:headerView];
-    
-    // Hide the header if there is no previous page
-    if (currentPageIndex <= 0)
-      headerView.hidden = YES;
-  }
-}
-
-// The footer view is what appears when you pull the
-// scroll view up to get to the next page
--(void) setFooterView:(UIView*)newValue
-{
-  if (footerView != newValue)
-  {
-    // Standard setter code
-    [footerView removeFromSuperview];
-//    [footerView release];
-//    footerView = [newValue retain];
-      footerView = newValue;
-
-    // Place the footer below the scroll view
-    footerView.frame = CGRectMake(0, self.frame.size.height, footerView.frame.size.width, footerView.frame.size.height);
-    [self addSubview:footerView];
-    
-    // Hide the footer if there is no next page
-    if (currentPageIndex == [externalDelegate pageCount]-1)
-      footerView.hidden = YES;
-  }
-}
+//-(void) setHeaderView:(UIView*)newValue
+//{
+//  if (headerView != newValue)
+//  {
+//    // Standard setter code
+//    //[headerView removeFromSuperview];
+////    [headerView release];
+////    headerView = [newValue retain];
+//
+//      headerView = newValue;
+//      
+//    // Place the header above the scroll view
+////    headerView.frame = CGRectMake(0, -headerView.frame.size.height, headerView.frame.size.width, headerView.frame.size.height);
+////    [self addSubview:headerView];
+//    
+//    // Hide the header if there is no previous page
+//    if (currentPageIndex <= 0)
+//      headerView.hidden = YES;
+//  }
+//}
+//
+//// The footer view is what appears when you pull the
+//// scroll view up to get to the next page
+//-(void) setFooterView:(UIView*)newValue
+//{
+//  if (footerView != newValue)
+//  {
+//    // Standard setter code
+//    //[footerView removeFromSuperview];
+////    [footerView release];
+////    footerView = [newValue retain];
+//      footerView = newValue;
+//
+//    // Place the footer below the scroll view
+////    footerView.frame = CGRectMake(0, self.frame.size.height, footerView.frame.size.width, footerView.frame.size.height);
+////    [self addSubview:footerView];
+//    
+//    // Hide the footer if there is no next page
+//    if (currentPageIndex >= [externalDelegate pageCount]-1)
+//      footerView.hidden = YES;
+//  }
+//}
 
 // This accessor lets you setup the initial current page to a value other than 0
--(void) setCurrentPageIndex:(NSUInteger)newValue
-{
-  currentPageIndex = newValue;
-  
-  // Hide the header if there is no previous page
-  headerView.hidden = currentPageIndex <= 0;
-  // Hide the footer if there is no next page
-  footerView.hidden = (currentPageIndex == [externalDelegate pageCount]-1);
+//-(void) setCurrentPageIndex:(NSUInteger)newValue
+//{
+//  currentPageIndex = newValue;
+//  
+//  // Hide the header if there is no previous page
+//  headerView.hidden = currentPageIndex <= 0;
+//  // Hide the footer if there is no next page
+//  footerView.hidden = (currentPageIndex == [externalDelegate pageCount]-1);
+//
+//  [self showCurrentPage];
+//}
 
-  [self showCurrentPage];
-}
 
 // Ask the delegate for the current page and show it
 - (void) showCurrentPage
@@ -151,8 +168,8 @@
 // up/down to see the previous/next page.
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-  if ([externalDelegate respondsToSelector:@selector(scrollViewDidScroll:)])
-    [externalDelegate scrollViewDidScroll:scrollView];
+//  if ([externalDelegate respondsToSelector:@selector(scrollViewDidScroll:)])
+//    [externalDelegate scrollViewDidScroll:scrollView];
   
    // Everything we want to do is only applicable if the user is in the middle of dragging
   if (!scrollView.dragging) return;
@@ -171,7 +188,8 @@
       
       // The header has been loaded
       if ([externalDelegate respondsToSelector:@selector(headerLoadedInScrollView:)])
-        [externalDelegate performSelector:@selector(headerLoadedInScrollView:)];
+          [externalDelegate headerLoadedInScrollView:self];
+        //[externalDelegate performSelector:@selector(headerLoadedInScrollView:)];
       _headerLoaded = YES;
     }
     else // The user has pulled down less than the height of the header
@@ -181,7 +199,8 @@
       
       // The header has been unloaded
       if ([externalDelegate respondsToSelector:@selector(headerUnloadedInScrollView:)])
-        [externalDelegate performSelector:@selector(headerUnloadedInScrollView:)];
+          [externalDelegate headerUnloadedInScrollView:self];
+        //[externalDelegate performSelector:@selector(headerUnloadedInScrollView:)];
       _headerLoaded = NO;
     }
   }
@@ -198,7 +217,8 @@
       
       // The footer has been loaded
       if ([externalDelegate respondsToSelector:@selector(footerLoadedInScrollView:)])
-        [externalDelegate performSelector:@selector(footerLoadedInScrollView:)];
+          [externalDelegate footerLoadedInScrollView:self];
+        //[externalDelegate performSelector:@selector(footerLoadedInScrollView:)];
       _footerLoaded = YES;
     }
     else // The user has pulled up less than the height of the footer
@@ -208,7 +228,8 @@
       
       // The footer has been unloaded
       if ([externalDelegate respondsToSelector:@selector(footerUnloadedInScrollView:)])
-        [externalDelegate performSelector:@selector(footerUnloadedInScrollView:)];
+        [externalDelegate footerUnloadedInScrollView:self];
+        //[externalDelegate performSelector:@selector(footerUnloadedInScrollView:)];
       _footerLoaded = NO;
     }
   }
@@ -218,8 +239,8 @@
 // This where we start switching to the previous/next page
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-  if ([externalDelegate respondsToSelector:@selector(scrollViewDidEndDragging:willDecelerate:)])
-    [externalDelegate scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
+//  if ([externalDelegate respondsToSelector:@selector(scrollViewDidEndDragging:willDecelerate:)])
+//    [externalDelegate scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
   
   // If the header is loaded, then the user wants to go to the previous page
   if (_headerLoaded)
@@ -232,7 +253,7 @@
     [self addSubview:previousPage];
     
     // Start the page down animation
-    [UIView beginAnimations:nil context:(__bridge void *)previousPage];
+    [UIView beginAnimations:nil context:(__bridge void*)previousPage];
     [UIView setAnimationDuration:0.2];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(pageAnimationDidStop:finished:context:)];
@@ -257,7 +278,7 @@
     [self addSubview:nextPage];
     
     // Start the page u animation
-    [UIView beginAnimations:nil context:(__bridge void *)(nextPage)];
+    [UIView beginAnimations:nil context:(__bridge void*)nextPage];
     [UIView setAnimationDuration:0.2];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(pageAnimationDidStop:finished:context:)];
@@ -287,11 +308,13 @@
   
   // After we've switched pages, reset the header/footer loaded states
   if (_footerLoaded && [externalDelegate respondsToSelector:@selector(footerUnloadedInScrollView:)])
-    [externalDelegate performSelector:@selector(footerUnloadedInScrollView:)];
+      [externalDelegate footerUnloadedInScrollView:self];
+    //[externalDelegate performSelector:@selector(footerUnloadedInScrollView:)];
   _footerLoaded = NO;
 
   if (_headerLoaded && [externalDelegate respondsToSelector:@selector(headerUnloadedInScrollView:)])
-    [externalDelegate performSelector:@selector(headerUnloadedInScrollView:)];
+      [externalDelegate headerUnloadedInScrollView:self];
+    //[externalDelegate performSelector:@selector(headerUnloadedInScrollView:)];
   _headerLoaded = NO;
   
   // Force the header and footer views to their default states
@@ -307,57 +330,57 @@
 
 // Since we set ourselves to be out UIScrollViewDelegate, we forward
 // any UIScrollViewDelegate messages to the external delegate.
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-  if ([externalDelegate respondsToSelector:@selector(scrollViewWillBeginDragging:)])
-    [externalDelegate scrollViewWillBeginDragging:scrollView];
-}
-
-- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
-{
-  if ([externalDelegate respondsToSelector:@selector(scrollViewWillBeginDecelerating:)])
-    [externalDelegate scrollViewWillBeginDecelerating:scrollView];
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-  if ([externalDelegate respondsToSelector:@selector(scrollViewDidEndDecelerating:)])
-    [externalDelegate scrollViewDidEndDecelerating:scrollView];
-}
-
-- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
-{
-  if ([externalDelegate respondsToSelector:@selector(scrollViewDidEndScrollingAnimation:)])
-    [externalDelegate scrollViewDidEndScrollingAnimation:scrollView];
-}
-
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
-{
-  if ([externalDelegate respondsToSelector:@selector(viewForZoomingInScrollView:)])
-    return [externalDelegate viewForZoomingInScrollView:scrollView];
-  else
-    return nil;
-}
-
-- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale
-{
-  if ([externalDelegate respondsToSelector:@selector(scrollViewDidEndZooming:withView:atScale:)])
-    [externalDelegate scrollViewDidEndZooming:scrollView withView:view atScale:scale];
-}
-
-- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
-{
-  if ([externalDelegate respondsToSelector:@selector(scrollViewShouldScrollToTop:)])
-    return [externalDelegate scrollViewShouldScrollToTop:scrollView];
-  else
-    return YES;
-}
-
-- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView
-{
-  if ([externalDelegate respondsToSelector:@selector(scrollViewDidScrollToTop:)])
-    [externalDelegate scrollViewDidScrollToTop:scrollView];
-}
+//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+//{
+//  if ([externalDelegate respondsToSelector:@selector(scrollViewWillBeginDragging:)])
+//    [externalDelegate scrollViewWillBeginDragging:scrollView];
+//}
+//
+//- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
+//{
+//  if ([externalDelegate respondsToSelector:@selector(scrollViewWillBeginDecelerating:)])
+//    [externalDelegate scrollViewWillBeginDecelerating:scrollView];
+//}
+//
+//- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+//{
+//  if ([externalDelegate respondsToSelector:@selector(scrollViewDidEndDecelerating:)])
+//    [externalDelegate scrollViewDidEndDecelerating:scrollView];
+//}
+//
+//- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+//{
+//  if ([externalDelegate respondsToSelector:@selector(scrollViewDidEndScrollingAnimation:)])
+//    [externalDelegate scrollViewDidEndScrollingAnimation:scrollView];
+//}
+//
+//- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
+//{
+//  if ([externalDelegate respondsToSelector:@selector(viewForZoomingInScrollView:)])
+//    return [externalDelegate viewForZoomingInScrollView:scrollView];
+//  else
+//    return nil;
+//}
+//
+//- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale
+//{
+//  if ([externalDelegate respondsToSelector:@selector(scrollViewDidEndZooming:withView:atScale:)])
+//    [externalDelegate scrollViewDidEndZooming:scrollView withView:view atScale:scale];
+//}
+//
+//- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
+//{
+//  if ([externalDelegate respondsToSelector:@selector(scrollViewShouldScrollToTop:)])
+//    return [externalDelegate scrollViewShouldScrollToTop:scrollView];
+//  else
+//    return YES;
+//}
+//
+//- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView
+//{
+//  if ([externalDelegate respondsToSelector:@selector(scrollViewDidScrollToTop:)])
+//    [externalDelegate scrollViewDidScrollToTop:scrollView];
+//}
 
 
 @end

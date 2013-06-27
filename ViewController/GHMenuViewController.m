@@ -83,6 +83,11 @@
 		: YES;
 }
 
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
 #pragma mark UITableViewDataSource
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return _headers.count;
@@ -109,14 +114,14 @@
     //cell.imageView.image = info[kSidebarCellImageKey];
     //[cell.contentView addSubview:cellImg];
     
-	cell.textLabel.text = info[kSidebarCellTextKey];
+	cell.tagLabel.text = info[kSidebarCellTextKey];
 	cell.imageView.image = [UIImage imageNamed:info[kSidebarCellImageKey]];
     
     //这段是给侧边栏按钮图标添加按下效果
-//    NSMutableString *image = info[kSidebarCellImageKey];
-//    NSMutableString* imageName=[NSMutableString stringWithString:image];
-//    [imageName insertString:@"-white" atIndex:(image.length-4)];
-//    cell.imageView.highlightedImage = [UIImage imageNamed:imageName];
+    NSMutableString *image = info[kSidebarCellImageKey];
+    NSMutableString* imageName=[NSMutableString stringWithString:image];
+    [imageName insertString:@"-highlighted" atIndex:(image.length-4)];
+    cell.imageView.highlightedImage = [UIImage imageNamed:imageName];
     
     return cell;
 }
@@ -140,11 +145,11 @@
             [headerView addSubview:bgImage];
             UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(44.0f, 0.0f,[UIScreen mainScreen].bounds.size.height, 44.0f)];
             textLabel.text = (NSString *) headerText;
-            textLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:([UIFont systemFontSize] * 1.4f)];
+            textLabel.font = [UIFont fontWithName:@"DFPHaiBaoW12" size:([UIFont systemFontSize] * 1.4f)];
             //textLabel.shadowOffset = CGSizeMake(0.0f, 1.0f);
             //textLabel.shadowColor = [UIColor colorWithWhite:0.0f alpha:0.25f];
             //		textLabel.textColor = [UIColor colorWithRed:(125.0f/255.0f) green:(129.0f/255.0f) blue:(146.0f/255.0f) alpha:1.0f];
-            textLabel.textColor = [UIColor whiteColor];
+            textLabel.textColor = [UIColor yellowColor];
             textLabel.backgroundColor = [UIColor clearColor];
             [headerView addSubview:textLabel];
             
@@ -181,7 +186,8 @@
 //		];
 //		[headerView.layer insertSublayer:gradient atIndex:0];
 		//[headerView addSubview:bgImage];
-        headerView.backgroundColor = [UIColor colorWithRed:(59.0f/255.0f) green:(68.0f/255.0f) blue:(77.0f/255.0f) alpha:1.0f];
+        //headerView.backgroundColor = [UIColor colorWithRed:(59.0f/255.0f) green:(68.0f/255.0f) blue:(77.0f/255.0f) alpha:1.0f];
+        headerView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"CellHeader.png"]];
 		UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(12.0f, 0.0f,[UIScreen mainScreen].bounds.size.height, 22.0f)];//CGRectInset
 		textLabel.text = (NSString *) headerText;
 		textLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:([UIFont systemFontSize] * 1.0f)];

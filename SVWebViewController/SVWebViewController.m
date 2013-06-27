@@ -17,9 +17,6 @@
 #import "AppDataSouce.h"
 #import "GlobalConfigure.h"
 
-CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
-CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
-
 @interface SVWebViewController () <UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
 @property (nonatomic, strong, readonly) UIBarButtonItem *popBarButtonItem;
 @property (nonatomic, strong, readonly) UIBarButtonItem *likeButtonItem;
@@ -63,10 +60,6 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
 @end
 
-@interface SVWebViewController (PrivateMethods)
--(void)hideGradientBackground:(UIView*)theView;
--(UIWebView*) createWebViewForIndex:(NSUInteger)index;
-@end
 
 @implementation SVWebViewController
 
@@ -74,11 +67,6 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
 @synthesize URL, mainWebView, isHide, textView;
 @synthesize popBarButtonItem,likeButtonItem, favoriteBarButtonItem, backBarButtonItem, forwardBarButtonItem, refreshBarButtonItem, stopBarButtonItem, actionBarButtonItem, pageActionSheet, favoriteBarButton, textViewBarButton, shareBarButton;
-
-@synthesize headerView, headerImageView, headerLabel;
-@synthesize footerView, footerImageView, footerLabel;
-@synthesize verticalSwipeScrollView, appData, startIndex;
-@synthesize previousPage, nextPage;
 
 #pragma mark - setters and getters
 - (UIBarButtonItem *)popBarButtonItem {
@@ -221,11 +209,11 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     //[self.view addGestureRecognizer:panGesture];
     
     UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self
-                                                                                       action:@selector(handleSwipeGesture:)];
+                                                                                       action:@selector(goPopClicked:)];
     swipeGesture.delegate = self;
     [swipeGesture setDirection:(UISwipeGestureRecognizerDirectionRight)];
     swipeGesture.cancelsTouchesInView = NO;
-    //[self.view addGestureRecognizer:swipeGesture];
+    [self.view addGestureRecognizer:swipeGesture];
     
     //[panGesture requireGestureRecognizerToFail:swipeGesture];
     
@@ -238,26 +226,27 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     [leftButton addTarget:self action:@selector(goPopClicked:) forControlEvents:UIControlEventTouchUpInside];
     [leftButton setTitle:@" 后退" forState:UIControlStateNormal];
     [leftButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11]];
+    leftButton.titleLabel.textColor = [UIColor yellowColor];
     
     UIBarButtonItem *temporaryLeftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
     temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
     self.navigationItem.leftBarButtonItem = temporaryLeftBarButtonItem;
     
-//    UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    rightButton.frame = CGRectMake(0, 0, 35, 26);
-//    [rightButton setBackgroundImage:[UIImage imageNamed:@"Comment-Right.png"] forState:UIControlStateNormal];
-//    [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-//    [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-//    [rightButton setShowsTouchWhenHighlighted:YES];
-//    [rightButton addTarget:self action:@selector(goCommentClicked:) forControlEvents:UIControlEventTouchUpInside];
-//    //[rightButton setTitle:@"1000评论" forState:UIControlStateNormal];// 添加文字
-//    //[rightButton.titleLabel setFont:[UIFont boldSystemFontOfSize:12.0f]];
-//    //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//    //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-//    
-//    UIBarButtonItem *temporaryRightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
-//    temporaryRightBarButtonItem.style = UIBarButtonItemStylePlain;
-//    self.navigationItem.rightBarButtonItem = temporaryRightBarButtonItem;
+    UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    rightButton.frame = CGRectMake(0, 0, 41, 28);
+    [rightButton setBackgroundImage:[UIImage imageNamed:@"Share-right.png"] forState:UIControlStateNormal];
+    [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    [rightButton setShowsTouchWhenHighlighted:YES];
+    [rightButton addTarget:self action:@selector(shareClicked:) forControlEvents:UIControlEventTouchUpInside];
+    //[rightButton setTitle:@"1000评论" forState:UIControlStateNormal];// 添加文字
+    //[rightButton.titleLabel setFont:[UIFont boldSystemFontOfSize:12.0f]];
+    //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+    
+    UIBarButtonItem *temporaryRightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+    temporaryRightBarButtonItem.style = UIBarButtonItemStylePlain;
+    self.navigationItem.rightBarButtonItem = temporaryRightBarButtonItem;
     
     self.title = @"任玩堂";
     
@@ -356,94 +345,6 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     return YES;
 }
 
-
-# pragma mark VerticalSwipeScrollViewDelegate
-
-- (void) rotateImageView:(UIImageView*)imageView angle:(CGFloat)angle
-{
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:0.2];
-    imageView.transform = CGAffineTransformMakeRotation(DegreesToRadians(angle));
-    [UIView commitAnimations];
-}
-
--(void) headerLoadedInScrollView:(VerticalSwipeScrollView*)scrollView
-{
-    [self rotateImageView:headerImageView angle:0];
-}
-
--(void) headerUnloadedInScrollView:(VerticalSwipeScrollView*)scrollView
-{
-    [self rotateImageView:headerImageView angle:180];
-}
-
--(void) footerLoadedInScrollView:(VerticalSwipeScrollView*)scrollView
-{
-    [self rotateImageView:footerImageView angle:180];
-}
-
--(void) footerUnloadedInScrollView:(VerticalSwipeScrollView*)scrollView
-{
-    [self rotateImageView:footerImageView angle:0];
-}
-
--(UIView*) viewForScrollView:(VerticalSwipeScrollView*)scrollView atPage:(NSUInteger)page
-{
-    UIWebView* webView = nil;
-    
-    if (page < scrollView.currentPageIndex)
-        webView = previousPage;
-    else if (page > scrollView.currentPageIndex)
-        webView = nextPage;
-    
-    if (!webView)
-        webView = [self createWebViewForIndex:page];
-    
-    self.previousPage = page > 0 ? [self createWebViewForIndex:page-1] : nil;
-    self.nextPage = (page == (appData.count-1)) ? nil : [self createWebViewForIndex:page+1];
-    
-    self.navigationItem.title = [[[appData objectAtIndex:page] objectForKey:@"im:name"] objectForKey:@"label"];
-    if (page > 0)
-        headerLabel.text = [[[appData objectAtIndex:page-1] objectForKey:@"im:name"] objectForKey:@"label"];
-    if (page != appData.count-1)
-        footerLabel.text = [[[appData objectAtIndex:page+1] objectForKey:@"im:name"] objectForKey:@"label"];
-    
-    return webView;
-}
-
--(NSUInteger) pageCount
-{
-    return appData.count;
-}
-
--(UIWebView*) createWebViewForIndex:(NSUInteger)index
-{
-    UIWebView* webView = [[UIWebView alloc] initWithFrame:self.view.frame];
-    webView.opaque = NO;
-    [webView setBackgroundColor:[UIColor clearColor]];
-    [self hideGradientBackground:webView];
-    
-    NSString* htmlFile = [[[NSBundle mainBundle] bundlePath] stringByAppendingString:@"/DetailView.html"];
-    NSString* htmlString = [NSString stringWithContentsOfFile:htmlFile encoding:NSUTF8StringEncoding error:nil];
-    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!-- title -->" withString:[[[appData objectAtIndex:index] objectForKey:@"im:name"] objectForKey:@"label"]];
-    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!-- icon -->" withString:[[[[appData objectAtIndex:index] objectForKey:@"im:image"] objectAtIndex:0] objectForKey:@"label"]];
-    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!-- content -->" withString:[[[appData objectAtIndex:index] objectForKey:@"summary"] objectForKey:@"label"]];
-    [webView loadHTMLString:htmlString baseURL:nil];
-    
-    return webView;
-}
-
-- (void) hideGradientBackground:(UIView*)theView
-{
-    for (UIView * subview in theView.subviews)
-    {
-        if ([subview isKindOfClass:[UIImageView class]])
-            subview.hidden = YES;
-        
-        [self hideGradientBackground:subview];
-    }
-}
-
 #pragma mark - Memory management
 
 - (void)dealloc {
@@ -471,10 +372,6 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
     [self updateToolbarItems];
     self.view.backgroundColor = [UIColor colorWithRed:234.0/255 green:234.0/255 blue:234.0/255 alpha:1.0];
-    
-    headerImageView.transform = CGAffineTransformMakeRotation(DegreesToRadians(180));
-    self.verticalSwipeScrollView = [[VerticalSwipeScrollView alloc] initWithFrame:self.view.frame headerView:headerView footerView:footerView startingAt:startIndex delegate:self];
-    [self.view addSubview:verticalSwipeScrollView];
 }
 
 - (void)viewDidUnload {
@@ -527,7 +424,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     [shareBarButton setBackgroundImage:[UIImage imageNamed:@"Praise.png"] forState:UIControlStateNormal];
     [shareBarButton addTarget: self action: @selector(shareClicked:) forControlEvents: UIControlEventTouchUpInside];
     [self.navigationController.toolbar addSubview:shareBarButton];
-    [self.navigationController.navigationBar addSubview:shareBarButton];
+    //[self.navigationController.navigationBar addSubview:shareBarButton];
     
     favoriteBarButton = [UIButton buttonWithType:UIButtonTypeCustom];
     favoriteBarButton.frame = CGRectMake(15+210+15, 12, 20, 20);
@@ -569,6 +466,11 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
         return YES;
     
     return toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown;
+}
+
+- (BOOL)shouldAutorotate
+{
+    return NO;
 }
 
 #pragma mark - Toolbar

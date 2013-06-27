@@ -14,6 +14,7 @@
 #import "ArticleItem.h"
 #import "ArticleItemCell.h"
 #import "SVWebViewController.h"
+#import "DetailViewController.h"
 
 @interface HomeViewController ()
 - (void)revealSidebar;
@@ -40,6 +41,7 @@
         [leftButton addTarget:self action:@selector(goPopClicked:) forControlEvents:UIControlEventTouchUpInside];
         [leftButton setTitle:@" 后退" forState:UIControlStateNormal];
         [leftButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11]];
+        leftButton.titleLabel.textColor = [UIColor yellowColor];
         
         UIBarButtonItem *temporaryLeftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
         temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
@@ -55,8 +57,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //self.view.backgroundColor = [UIColor colorWithRed:237.0f/255 green:237.0f/255 blue:237.0f/255 alpha:1.0];
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background.png"]];    
+    self.view.backgroundColor = [UIColor colorWithRed:19.0f/255 green:47.0f/255 blue:69.0f/255 alpha:1.0];
+    //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background.png"]];
     
     comments = [[NSMutableArray alloc] init];
     start = 0;
@@ -69,11 +71,18 @@
     pullToRefreshTableView.dataSource = self;
     pullToRefreshTableView.allowsSelection = YES;
     pullToRefreshTableView.backgroundColor = [UIColor clearColor];
-    pullToRefreshTableView.backgroundColor = [UIColor colorWithRed:248.0f/255.0f green:244.0f/255.0f blue:239.0f/255.0f alpha:1.0f];
+    //pullToRefreshTableView.backgroundColor = [UIColor colorWithRed:248.0f/255.0f green:244.0f/255.0f blue:239.0f/255.0f alpha:1.0f];
     pullToRefreshTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     pullToRefreshTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [pullToRefreshTableView setHidden:NO];
     [self.view addSubview:pullToRefreshTableView];
+    
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                       action:@selector(goPopClicked:)];
+    swipeGesture.delegate = self;
+    [swipeGesture setDirection:(UISwipeGestureRecognizerDirectionRight)];
+    swipeGesture.cancelsTouchesInView = NO;
+    [self.view addGestureRecognizer:swipeGesture];
     
     // get array of articles
     [self getComments];
@@ -94,6 +103,16 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{    
+    return UIInterfaceOrientationMaskPortrait;//只支持这一个方向(正常的方向)    
 }
 
 - (void)didReceiveMemoryWarning
@@ -138,9 +157,10 @@
 
 //某一行被选中,由ViewController来实现push详细页面
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    ArticleItem *aComment = [self.comments objectAtIndex:indexPath.row];
-    SVWebViewController *viewController = [[SVWebViewController alloc] initWithHTMLString:aComment URL:aComment.articleURL];
-    
+    DetailViewController *viewController = [[DetailViewController alloc] initWithTitle:self.title];
+    viewController.appData = self.comments;
+    viewController.startIndex = indexPath.row;
+
     //NSLog(@"didSelectArticle:%@",aArticle.content);
     [self.navigationController pushViewController:viewController animated:YES];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];//反选

@@ -19,6 +19,7 @@
 #import "RSSParser.h"
 #import "RSSItem.h"
 #import "SVWebViewController.h"
+#import "DetailViewController.h"
 #import "CommentViewController.h"
 #import "PersonalViewController.h"
 #import "LoginController.h"
@@ -155,6 +156,11 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -216,9 +222,10 @@
     };
     
     if (indexPath.section == 0) {
-        ArticleItem *aArticle = [self.active objectAtIndex:indexPath.row];
-        SVWebViewController *viewController = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];
-        
+        //ArticleItem *aArticle = [self.active objectAtIndex:indexPath.row];
+        DetailViewController *viewController = [[DetailViewController alloc] initWithTitle:self.title];
+        viewController.appData = self.active;
+        viewController.startIndex = indexPath.row;
         //NSLog(@"didSelectArticle:%@",aArticle.content);
         [self.navigationController pushViewController:viewController animated:YES];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
