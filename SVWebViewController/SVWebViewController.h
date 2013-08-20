@@ -11,14 +11,15 @@
 #import "SVModalWebViewController.h"
 #import "ArticleItem.h"
 #import "AlerViewManager.h"
-#import "YIPopupTextView.h"
 
-@interface SVWebViewController : UIViewController<UIGestureRecognizerDelegate,YIPopupTextViewDelegate>
+@interface SVWebViewController : UIViewController<UIGestureRecognizerDelegate>{
+    UIWebView *mainWebView;
+}
 
 - (id)initWithAddress:(NSString*)urlString;
 - (id)initWithURL:(NSURL*)URL;
 - (id)initWithHTMLString:(ArticleItem*)htmlString URL:(NSURL*)pageURL;
 
 @property (nonatomic, readwrite) SVWebViewControllerAvailableActions availableActions;
-
+@property (nonatomic, strong) UIWebView *mainWebView;
 @end

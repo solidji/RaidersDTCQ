@@ -79,7 +79,7 @@
 //														  action:@selector(revealSidebar)];
         
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        leftButton.frame = CGRectMake(0, 0, 50, 26);
+        leftButton.frame = CGRectMake(0, 0, 21, 21);
         [leftButton setBackgroundImage:[UIImage imageNamed:@"Return.png"] forState:UIControlStateNormal];
         [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -537,6 +537,10 @@
 //    UIView *view = (UIView*)[self.view viewWithTag:108];
     [activityIndicator removeFromSuperview];
     //self.navigationItem.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    
+    [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitUserSelect='none';"];
+    // Disable callout
+    [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
     [self updateToolbarItems];
 }
 

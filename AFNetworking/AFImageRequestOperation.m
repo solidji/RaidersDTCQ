@@ -75,6 +75,8 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                                                       failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
     AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
+    //解决arc retain cyele的bug
+    //__weak AFImageRequestOperation *tempRequestOperation = requestOperation;
     [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
             UIImage *image = responseObject;
@@ -82,7 +84,7 @@ static dispatch_queue_t image_request_operation_processing_queue() {
                 dispatch_async(image_request_operation_processing_queue(), ^(void) {
                     UIImage *processedImage = imageProcessingBlock(image);
 
-                    dispatch_async(requestOperation.successCallbackQueue ?: dispatch_get_main_queue(), ^(void) {
+                    dispatch_async(operation.successCallbackQueue ?: dispatch_get_main_queue(), ^(void) {
                         success(operation.request, operation.response, processedImage);
                     });
                 });

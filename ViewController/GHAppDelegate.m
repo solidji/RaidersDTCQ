@@ -18,7 +18,7 @@
 #import "iVersion.h"//StoreKit framework.
 #import "APService.h"
 #import <ShareSDK/ShareSDK.h>
-#import "SettingViewController.h"
+//#import "SettingViewController.h"
 #import "PersonalViewController.h"
 #import "ActivityViewController.h"
 
@@ -136,57 +136,57 @@
 	
 	//UIColor *bgColor = [UIColor colorWithRed:(215.0f/255.0f) green:(215.0f/255.0f) blue:(215.0f/255.0f) alpha:1.0f];
     //UIColor *bgColor = [UIColor colorWithRed:(46.0f/255.0f) green:(51.0f/255.0f) blue:(57.0f/255.0f) alpha:1.0f];
-	self.revealController = [[GHRevealViewController alloc] initWithNibName:nil bundle:nil];
+	//self.revealController = [[GHRevealViewController alloc] initWithNibName:nil bundle:nil];
 	//self.revealController.view.backgroundColor = bgColor;
-    self.revealController.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background.png"]];
+    //self.revealController.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background.png"]];
 
-	RevealBlock revealBlock = ^(){
-		[self.revealController toggleSidebar:!self.revealController.sidebarShowing 
-									duration:kGHRevealSidebarDefaultAnimationDuration];
-	};
-    
-	NSArray *headers = @[
-		@"",
-		@"任玩堂"
-	];
-	NSArray *controllers = @[
-		@[//[NSNumber numberWithInt:-1]
-      [[UINavigationController alloc] initWithRootViewController:[[HomeScrollView alloc] initWithTitle:@"主页" withRevealBlock:revealBlock]],
-      //[[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"收藏" withUrl:@"Favorites" withRevealBlock:revealBlock]],
-      
-		],
-		@[
-            [[UINavigationController alloc] initWithRootViewController:[[SettingViewController alloc] initWithTitle:@"设置" withUrl:@"Setting" withRevealBlock:revealBlock]]
-		]
-	];
-    
-	NSArray *cellInfos = @[
-		@[
-			@{kSidebarCellImageKey: @"Home.png", kSidebarCellTextKey: NSLocalizedString(@"主页", @"")},
-            //@{kSidebarCellImageKey: @"Collection.png", kSidebarCellTextKey: NSLocalizedString(@"收藏", @"")}
-		],
-		@[
-			@{kSidebarCellImageKey: @"Set-up.png", kSidebarCellTextKey: NSLocalizedString(@"设置", @"")}
-		]
-	];
-	
-	// Add drag feature to each root navigation controller
-	[controllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
-		[((NSArray *)obj) enumerateObjectsUsingBlock:^(id obj2, NSUInteger idx2, BOOL *stop2){
-			UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self.revealController 
-																						 action:@selector(dragContentView:)];
-			panGesture.cancelsTouchesInView = YES;
-			[((UINavigationController *)obj2).navigationBar addGestureRecognizer:panGesture];
-            //[((UINavigationController *)obj2).view addGestureRecognizer:panGesture];
-		}];
-	}];
-	
-	self.menuController = [[GHMenuViewController alloc] initWithSidebarViewController:self.revealController 
-																		withSearchBar:self.searchController.searchBar 
-																		  withHeaders:headers 
-																	  withControllers:controllers 
-																		withCellInfos:cellInfos];
-    kDataSource.menuController = self.menuController;
+//	RevealBlock revealBlock = ^(){
+//		[self.revealController toggleSidebar:!self.revealController.sidebarShowing 
+//									duration:kGHRevealSidebarDefaultAnimationDuration];
+//	};
+//
+//	NSArray *headers = @[
+//		@"",
+//		@"任玩堂"
+//	];
+//	NSArray *controllers = @[
+//		@[//[NSNumber numberWithInt:-1]
+//      [[UINavigationController alloc] initWithRootViewController:[[HomeScrollView alloc] initWithTitle:@"主页" withRevealBlock:revealBlock]],
+//      //[[UINavigationController alloc] initWithRootViewController:[[ArticleListViewController alloc] initWithTitle:@"收藏" withUrl:@"Favorites" withRevealBlock:revealBlock]],
+//      
+//		],
+//		@[
+//            [[UINavigationController alloc] initWithRootViewController:[[SettingViewController alloc] initWithTitle:@"设置" withUrl:@"Setting" withRevealBlock:revealBlock]]
+//		]
+//	];
+//    
+//	NSArray *cellInfos = @[
+//		@[
+//			@{kSidebarCellImageKey: @"Home.png", kSidebarCellTextKey: NSLocalizedString(@"主页", @"")},
+//            //@{kSidebarCellImageKey: @"Collection.png", kSidebarCellTextKey: NSLocalizedString(@"收藏", @"")}
+//		],
+//		@[
+//			@{kSidebarCellImageKey: @"Set-up.png", kSidebarCellTextKey: NSLocalizedString(@"设置", @"")}
+//		]
+//	];
+//	
+//	// Add drag feature to each root navigation controller
+//	[controllers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+//		[((NSArray *)obj) enumerateObjectsUsingBlock:^(id obj2, NSUInteger idx2, BOOL *stop2){
+//			UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self.revealController 
+//																						 action:@selector(dragContentView:)];
+//			panGesture.cancelsTouchesInView = YES;
+//			[((UINavigationController *)obj2).navigationBar addGestureRecognizer:panGesture];
+//            //[((UINavigationController *)obj2).view addGestureRecognizer:panGesture];
+//		}];
+//	}];
+//	
+//	self.menuController = [[GHMenuViewController alloc] initWithSidebarViewController:self.revealController 
+//																		withSearchBar:self.searchController.searchBar 
+//																		  withHeaders:headers 
+//																	  withControllers:controllers 
+//																		withCellInfos:cellInfos];
+//    kDataSource.menuController = self.menuController;
     
     //处理程序通过推送通知来启动时的情况    
     NSDictionary *remoteNotif = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
@@ -197,7 +197,8 @@
     }
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.window.rootViewController = self.revealController;
+    //self.window.rootViewController = self.revealController;
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[HomeScrollView alloc] initWithTitle:@"刀塔英雄攻略"]];
     [self.window makeKeyAndVisible];
     
     //[NSThread sleepForTimeInterval:1];
@@ -279,21 +280,21 @@
 - (void)launchNotification:(NSDictionary *)userInfo
 {
     NSLog(@"launchNotification");//仅在程序关闭时收到推送被调用
-    NSString *urlField = [userInfo valueForKey:@"url"]; //自定义参数，key是自己定义的
-    if (urlField != nil) {
-        RevealBlock revealBlock = ^(){
-            [self.revealController toggleSidebar:!self.revealController.sidebarShowing
-                                        duration:kGHRevealSidebarDefaultAnimationDuration];
-        };
-        UINavigationController *pushViewController = [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"消息页面" withUrl:urlField withRevealBlock:revealBlock]];
-        self.revealController.contentViewController = pushViewController;//设置默认页面
-        
-        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self.revealController
-                                                                                     action:@selector(dragContentView:)];
-        panGesture.cancelsTouchesInView = YES;
-        //[((UINavigationController *)obj2).navigationBar addGestureRecognizer:panGesture];
-        [pushViewController.view addGestureRecognizer:panGesture];
-    }
+//    NSString *urlField = [userInfo valueForKey:@"url"]; //自定义参数，key是自己定义的
+//    if (urlField != nil) {
+//        RevealBlock revealBlock = ^(){
+//            [self.revealController toggleSidebar:!self.revealController.sidebarShowing
+//                                        duration:kGHRevealSidebarDefaultAnimationDuration];
+//        };
+//        UINavigationController *pushViewController = [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"消息页面" withUrl:urlField withRevealBlock:revealBlock]];
+//        self.revealController.contentViewController = pushViewController;//设置默认页面
+//        
+//        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self.revealController
+//                                                                                     action:@selector(dragContentView:)];
+//        panGesture.cancelsTouchesInView = YES;
+//        //[((UINavigationController *)obj2).navigationBar addGestureRecognizer:panGesture];
+//        [pushViewController.view addGestureRecognizer:panGesture];
+//    }
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {

@@ -22,6 +22,9 @@
 @synthesize articleIconURL = _strArticleIconURL;
 @synthesize commentCount = _strCommentCount;
 
+@synthesize tag = _strTag;
+@synthesize firstPicURL = _strFirstPicURL;
+
 - (BOOL)isEqual:(id)anObject {
     if (![anObject isKindOfClass:[ArticleItem class]]) return NO;
     ArticleItem *otherObject = (ArticleItem *)anObject;
@@ -43,6 +46,9 @@
         self.userID = [coder decodeObjectForKey:@"userID"];
         self.articleIconURL = [coder decodeObjectForKey:@"articleIconURL"];
         self.commentCount = [coder decodeObjectForKey:@"commentCount"];
+        
+        self.tag = [coder decodeObjectForKey:@"tag"];
+        self.firstPicURL = [coder decodeObjectForKey:@"firstPicURL"];
     }
     return self;
 }
@@ -60,5 +66,8 @@
     [coder encodeObject:self.userID forKey:@"userID"];
     [coder encodeObject:self.articleIconURL forKey:@"articleIconURL"];
     [coder encodeObject:self.commentCount forKey:@"commentCount"];
+    
+    [coder encodeObject:self.tag forKey:@"tag"];
+    [coder encodeObject:self.firstPicURL forKey:@"firstPicURL"];
 }
 @end

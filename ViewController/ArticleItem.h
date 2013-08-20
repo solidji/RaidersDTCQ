@@ -19,11 +19,14 @@
     NSURL    *_strArticleIconURL;       //文章缩略图url
     NSString *_strDescription;          //文章描述
     NSString *_strContent;              //文章正文
-    NSNumber *commentCount;             //文章评论数
+    NSNumber *_strcommentCount;             //文章评论数
     
     NSString *_strCreator;              //文章作者
     NSURL    *_strIconURL;              //作者头像url
     NSNumber *_strUserID;               //关注与粉丝列表中的用户ID,既文章作者ID
+    
+    NSString *_strTag;                  //文章标签 app_xxx
+    NSURL    *_strFirstPicURL;          //文章第一张附件图url
 }
 
 @property (nonatomic, strong) NSURL *articleURL;
@@ -38,6 +41,8 @@
 @property (nonatomic, strong) NSNumber *userID;
 @property (nonatomic, strong) NSNumber *commentCount;
 
+@property (nonatomic, copy) NSString *tag;
+@property (nonatomic, strong) NSURL *firstPicURL;
 - (BOOL)isEqual:(id)anObject;
 
 @end

@@ -7,14 +7,9 @@
 //  https://github.com/samvermette/SVWebViewController
 
 #import "SVWebViewController.h"
-#import "IADisquser.h"
-#import "IADisqusConfig.h"
-#import "CommentViewController.h"
 #import "AFHTTPClient.h"
 #import "AFXMLRequestOperation.h"
 #import <ShareSDK/ShareSDK.h>
-#import "YIPopupTextView.h"
-#import "AppDataSouce.h"
 #import "GlobalConfigure.h"
 
 @interface SVWebViewController () <UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
@@ -33,7 +28,7 @@
 @property (nonatomic, strong, readonly) UIButton *shareBarButton;
 
 @property (strong, nonatomic) NSString *textView;
-@property (nonatomic, strong) UIWebView *mainWebView;
+
 @property (nonatomic, strong) NSURL *URL;
 @property (nonatomic) BOOL isHide;
 @property (nonatomic, strong) ArticleItem *htmlString;
@@ -218,31 +213,30 @@
     //[panGesture requireGestureRecognizerToFail:swipeGesture];
     
     UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    leftButton.frame = CGRectMake(0, 0, 50, 26);
+    leftButton.frame = CGRectMake(0, 0, 21, 21);
     [leftButton setBackgroundImage:[UIImage imageNamed:@"Return.png"] forState:UIControlStateNormal];
     [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [leftButton setShowsTouchWhenHighlighted:YES];
     [leftButton addTarget:self action:@selector(goPopClicked:) forControlEvents:UIControlEventTouchUpInside];
-    [leftButton setTitle:@" 后退" forState:UIControlStateNormal];
-    [leftButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11]];
-    leftButton.titleLabel.textColor = [UIColor yellowColor];
+//    [leftButton setTitle:@" 后退" forState:UIControlStateNormal];
+//    [leftButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11]];
+//    leftButton.titleLabel.textColor = [UIColor yellowColor];
     
     UIBarButtonItem *temporaryLeftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
     temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
     self.navigationItem.leftBarButtonItem = temporaryLeftBarButtonItem;
     
     UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    rightButton.frame = CGRectMake(0, 0, 41, 28);
-    [rightButton setBackgroundImage:[UIImage imageNamed:@"Share-right.png"] forState:UIControlStateNormal];
+    rightButton.frame = CGRectMake(0, 0, 52, 52);
+    //[rightButton setBackgroundImage:[UIImage imageNamed:@"Share-right.png"] forState:UIControlStateNormal];
     [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [rightButton setShowsTouchWhenHighlighted:YES];
     [rightButton addTarget:self action:@selector(shareClicked:) forControlEvents:UIControlEventTouchUpInside];
-    //[rightButton setTitle:@"1000评论" forState:UIControlStateNormal];// 添加文字
-    //[rightButton.titleLabel setFont:[UIFont boldSystemFontOfSize:12.0f]];
-    //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    //[rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+    [rightButton setTitle:@"分享" forState:UIControlStateNormal];
+    [rightButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15.0]];
+    rightButton.titleLabel.textColor = [UIColor whiteColor];
     
     UIBarButtonItem *temporaryRightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
     temporaryRightBarButtonItem.style = UIBarButtonItemStylePlain;
@@ -371,7 +365,8 @@
     self.alerViewManager = [[AlerViewManager alloc] init];
 
     [self updateToolbarItems];
-    self.view.backgroundColor = [UIColor colorWithRed:234.0/255 green:234.0/255 blue:234.0/255 alpha:1.0];
+    self.view.backgroundColor = [UIColor whiteColor];
+    //self.view.backgroundColor = [UIColor colorWithRed:234.0/255 green:234.0/255 blue:234.0/255 alpha:1.0];
 }
 
 - (void)viewDidUnload {
@@ -597,12 +592,15 @@
         //[[UIApplication sharedApplication] openURL:[inRequest URL]];
         //NSLog(@"host:%@\npath:%@",[[inRequest URL] host],[[inRequest URL] path]);
         if ([[[inRequest URL] host] rangeOfString:@".appgame.com"].location != NSNotFound) {
+            if ([[[inRequest URL] host] rangeOfString:@"bbs.appgame.com"].location != NSNotFound) {
+                return YES;//对论坛站直接用网页打开
+            }
         //if (self.htmlString != nil) {
             NSLog(@"站内页面");
             AFHTTPClient *jsonapiClient = [AFHTTPClient clientWithBaseURL:[inRequest URL]];
             
             NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        @"get_posts", @"json",
+                                        @"get_post", @"json",
                                         nil];
             
             [jsonapiClient getPath:@""
@@ -716,6 +714,9 @@
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     
     //self.navigationItem.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitUserSelect='none';"];
+    // Disable callout
+    [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
     [self updateToolbarItems];
 }
 
@@ -724,54 +725,6 @@
     [self updateToolbarItems];
 }
 
-#pragma mark -
-#pragma mark YIPopupTextViewDelegate
-
-- (void)popupTextView:(YIPopupTextView *)textView willDismissWithText:(NSString *)text cancelled:(BOOL)cancelled
-{
-    NSLog(@"will dismiss: cancelled=%d",cancelled);
-    self.textView = text;
-    NSLog(@"textView:%@",self.textView);
-    if (!cancelled) {
-        IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];
-        [IADisquser getThreadIdWithLink:self.URL.absoluteString
-                                success:^(NSNumber *threadID) {
-                                    NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                                kDataSource.credentialObject.accessToken, @"access_token",
-                                                                //DISQUS_API_SECRET, @"api_secret",
-                                                                DISQUS_API_PUBLIC,@"api_key",
-                                                                //dUser.userID, @"user",
-                                                                self.textView,@"message",
-                                                                threadID,@"thread",
-                                                                nil];
-                                    //create the post
-                                    [iaDisquser postComment:parameters
-                                                         success:^(NSDictionary *responseDictionary){
-                                                             // check the code (success is 0)
-                                                             NSNumber *code = [responseDictionary objectForKey:@"code"];
-                                                             
-                                                             if ([code integerValue] != 0) {   // there's an error
-                                                                 NSLog(@"评论发表异常");
-                                                             }else {
-                                                                 NSArray *responseArray = [responseDictionary objectForKey:@"response"];
-                                                                 if ([responseArray count] != 0) {
-                                                                     NSLog(@"成功发表评论:%@,%@,%@",self.URL.absoluteString, threadID, self.textView);
-                                                                 }
-                                                             }
-                                                         }
-                                                            fail:^(NSError *error) {
-                                                                NSLog(@"发表评论失败:%@",error);
-                                                            }];
-                                } fail:^(NSError *error) {
-                                    NSLog(@"发表评论失败:%@",error);
-                                }];
-    }
-}
-
-- (void)popupTextView:(YIPopupTextView *)textView didDismissWithText:(NSString *)text cancelled:(BOOL)cancelled
-{
-    NSLog(@"did dismiss: cancelled=%d",cancelled);
-}
 
 #pragma mark - Target actions
 
@@ -780,26 +733,6 @@
 }
 
 - (void)goTextViewClicked:(UIButton *)sender {
-    // NOTE: maxCount = 0 to hide count
-    // YIPopupTextView* popupTextView = [[YIPopupTextView alloc] initWithPlaceHolder:@"input here" maxCount:1000];
-    YIPopupTextView* popupTextView = [[YIPopupTextView alloc] initWithPlaceHolder:@"很给力!"
-                                                                         maxCount:1000
-                                                                      buttonStyle:YIPopupTextViewButtonStyleLeftCancelRightDone
-                                                                  tintsDoneButton:YES];
-    popupTextView.delegate = self;
-    popupTextView.caretShiftGestureEnabled = YES;   // default = NO
-    popupTextView.text = self.textView;
-    //    popupTextView.editable = NO;                  // set editable=NO to show without keyboard
-    [popupTextView showInView:self.view];
-    
-    //
-    // NOTE:
-    // You can add your custom-button after calling -showInView:
-    // (it's better to add on either superview or superview.superview)
-    // https://github.com/inamiy/YIPopupTextView/issues/3
-    //
-    // [popupTextView.superview addSubview:customButton];
-    //
 }
 
 - (void)goFavoriteClicked:(UIButton *)sender {
@@ -850,19 +783,17 @@
 }
 
 - (void)goCommentClicked:(id)sender {
-    
-    CommentViewController *viewController = [[CommentViewController alloc] initWithTitle:self.htmlString.title withUrl:[self.htmlString.articleURL absoluteString] threadID:[NSNumber numberWithInteger:-1]];
-    
-//    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"正文" style:UIBarButtonItemStyleBordered target:nil action:nil];
-//    [self.navigationItem setBackBarButtonItem:backItem];
-
-    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 - (void)shareClicked:(UIButton *)sender {
     
+    
     ArticleItem *aArticleItem = (ArticleItem*)self.htmlString;
 	NSString *shareString =  [NSString stringWithFormat:@"%@\r\n%@\r\n---任玩堂", aArticleItem.title, aArticleItem.articleURL];
+    
+    if (self.htmlString == nil) {
+        shareString =  [NSString stringWithFormat:@"%@\r\n%@\r\n---任玩堂", [self.mainWebView stringByEvaluatingJavaScriptFromString:@"document.title"], self.mainWebView.request.URL.absoluteString];
+    }
     
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         id<ISSContainer> container = [ShareSDK container];
@@ -874,7 +805,7 @@
                                                     image:[ShareSDK imageWithPath:imagePath]
                                                     title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
         
-        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, ShareTypeSMS, ShareTypeAirPrint, nil];//ShareTypeCopy
+        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, nil];//ShareTypeSMS, ShareTypeAirPrint, ShareTypeCopy
         [ShareSDK showShareActionSheet:container shareList:shareList
                                content:publishContent
                          statusBarTips:YES
@@ -911,7 +842,7 @@
                                                     image:[ShareSDK imageWithPath:imagePath]
                                                     title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
         
-        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, ShareTypeSMS, ShareTypeAirPrint, nil];//ShareTypeCopy
+        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, nil];//ShareTypeSMS, ShareTypeAirPrint, ShareTypeCopy
         [ShareSDK showShareActionSheet:nil shareList:shareList
                                content:publishContent
                          statusBarTips:YES
@@ -955,6 +886,10 @@
     
     ArticleItem *aArticleItem = (ArticleItem*)self.htmlString;
 	NSString *shareString =  [NSString stringWithFormat:@"%@\r\n%@\r\n---任玩堂", aArticleItem.title, aArticleItem.articleURL];
+    
+    if (self.htmlString == nil) {
+        shareString =  [NSString stringWithFormat:@"%@\r\n%@\r\n---任玩堂", [self.mainWebView stringByEvaluatingJavaScriptFromString:@"document.title"], self.mainWebView.request.URL.absoluteString];
+    }
     
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         id<ISSContainer> container = [ShareSDK container];

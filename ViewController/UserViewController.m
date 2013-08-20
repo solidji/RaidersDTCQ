@@ -46,7 +46,7 @@
         _revealBlock = [revealBlock copy];
         
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        leftButton.frame = CGRectMake(0, 0, 50, 26);
+        leftButton.frame = CGRectMake(0, 0, 21, 21);
         [leftButton setBackgroundImage:[UIImage imageNamed:@"Return.png"] forState:UIControlStateNormal];
         [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];

@@ -31,8 +31,8 @@
 #import "SVWebViewController.h"
 #import "AFHTTPClient.h"
 #import "AFXMLRequestOperation.h"
-#import "AppDataSouce.h"
 #import "GlobalConfigure.h"
+#import "Globle.h"
 
 CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
@@ -59,27 +59,30 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
         // Further initialization if needed
     }
     UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    leftButton.frame = CGRectMake(0, 0, 50, 26);
+    leftButton.frame = CGRectMake(0, 0, 21, 21);
     [leftButton setBackgroundImage:[UIImage imageNamed:@"Return.png"] forState:UIControlStateNormal];
     [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [leftButton setShowsTouchWhenHighlighted:YES];
     [leftButton addTarget:self action:@selector(goPopClicked:) forControlEvents:UIControlEventTouchUpInside];
-    [leftButton setTitle:@" 后退" forState:UIControlStateNormal];
-    [leftButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11]];
-    leftButton.titleLabel.textColor = [UIColor yellowColor];
+//    [leftButton setTitle:@" 后退" forState:UIControlStateNormal];
+//    [leftButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11]];
+//    leftButton.titleLabel.textColor = [UIColor yellowColor];
     
     UIBarButtonItem *temporaryLeftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
     temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
     self.navigationItem.leftBarButtonItem = temporaryLeftBarButtonItem;
     
     UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    rightButton.frame = CGRectMake(0, 0, 41, 28);
-    [rightButton setBackgroundImage:[UIImage imageNamed:@"Share-right.png"] forState:UIControlStateNormal];
+    rightButton.frame = CGRectMake(0, 0, 52, 52);
+    //[rightButton setBackgroundImage:[UIImage imageNamed:@"Share-right.png"] forState:UIControlStateNormal];
     [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [rightButton setShowsTouchWhenHighlighted:YES];
     [rightButton addTarget:self action:@selector(shareClicked:) forControlEvents:UIControlEventTouchUpInside];
+    [rightButton setTitle:@"分享" forState:UIControlStateNormal];
+    [rightButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15.0]];
+    rightButton.titleLabel.textColor = [UIColor whiteColor];
 
     UIBarButtonItem *temporaryRightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
     temporaryRightBarButtonItem.style = UIBarButtonItemStylePlain;
@@ -91,13 +94,23 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
 - (void)viewDidLoad
 {
+    self.view.backgroundColor = [UIColor clearColor];
     //self.view.backgroundColor = [UIColor whiteColor];
-    self.view.backgroundColor = [UIColor colorWithRed:234.0/255 green:234.0/255 blue:234.0/255 alpha:1.0];
+    self.view.backgroundColor = [UIColor whiteColor];
+    //self.view.backgroundColor = [UIColor colorWithRed:211.0f/255.0f green:214.0f/255.0f blue:219.0f/255.0f alpha:1.0f];
+    
+    //self.view.frame = CGRectMake(0, 0, [Globle shareInstance].globleWidth, [Globle shareInstance].globleHeight);
+    //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background-2.png"]];
+    UIImage *image = [UIImage imageNamed:@"Background.png"];
+    UIImageView *bg = [[UIImageView alloc] initWithImage:image];
+    bg.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    bg.alpha = 0.5f;
+    [self.view addSubview:bg];
     
     self.headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(59, 13, 241, 21)];
-    self.headerLabel.backgroundColor = [UIColor colorWithRed:234.0/255 green:234.0/255 blue:234.0/255 alpha:1.0];
+    self.headerLabel.backgroundColor = [UIColor clearColor];
     self.footerLabel = [[UILabel alloc] initWithFrame:CGRectMake(59, 13, 241, 21)];
-    self.footerLabel.backgroundColor = [UIColor colorWithRed:234.0/255 green:234.0/255 blue:234.0/255 alpha:1.0];
+    self.footerLabel.backgroundColor = [UIColor clearColor];
     self.headerImageView = [[UIImageView alloc] initWithFrame:CGRectMake(13, 4, 21, 39)];
     [self.headerImageView setContentMode:UIViewContentModeScaleToFill];
     [self.headerImageView setBackgroundColor:[UIColor clearColor]];
@@ -113,7 +126,9 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     self.headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 55)];
     self.footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 55)];
     self.headerView.backgroundColor = [UIColor clearColor];
+    self.headerView.backgroundColor = [UIColor colorWithRed:211.0f/255.0f green:214.0f/255.0f blue:219.0f/255.0f alpha:0.7f];
     self.footerView.backgroundColor = [UIColor clearColor];
+    self.footerView.backgroundColor = [UIColor colorWithRed:211.0f/255.0f green:214.0f/255.0f blue:219.0f/255.0f alpha:0.7f];
     self.headerView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
     self.footerView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
     
@@ -132,6 +147,26 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     [swipeGesture setDirection:(UISwipeGestureRecognizerDirectionRight)];
     swipeGesture.cancelsTouchesInView = NO;
     [self.view addGestureRecognizer:swipeGesture];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    //NSLog(@"viewWillAppear");
+    //self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    [self.navigationController.navigationBar setTranslucent:NO];
+    [self.navigationController setToolbarHidden:YES animated:animated];
+    
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] > 4.9) {
+        //IOS5
+        [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
+        
+        if ([self.navigationController.toolbar respondsToSelector:@selector(setBackgroundImage:forToolbarPosition:barMetrics:)]) {
+            [self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"fot.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+        }
+        self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:UITextAttributeTextColor];
+    }else {//IOS4
+        
+        [self.navigationController.toolbar insertSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fot.png"]] atIndex:0];
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
@@ -168,7 +203,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
                                                     image:[ShareSDK imageWithPath:imagePath]
                                                     title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
         
-        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, ShareTypeSMS, ShareTypeAirPrint, nil];//ShareTypeCopy
+        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail,nil];// ShareTypeSMS, ShareTypeAirPrint, ShareTypeCopy
         [ShareSDK showShareActionSheet:container shareList:shareList
                                content:publishContent
                          statusBarTips:YES
@@ -205,7 +240,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
                                                     image:[ShareSDK imageWithPath:imagePath]
                                                     title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
         
-        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, ShareTypeSMS, ShareTypeAirPrint, nil];//ShareTypeCopy
+        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, nil];//ShareTypeSMS, ShareTypeAirPrint, ShareTypeCopy
         [ShareSDK showShareActionSheet:nil shareList:shareList
                                content:publishContent
                          statusBarTips:YES
@@ -276,11 +311,12 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
     if (!currentPage)
     currentPage = [self createWebViewForIndex:page];
-  
-    self.previousPage = page > 0 ? [self createWebViewForIndex:page-1] : nil;
+    
+    //NSLog(@"createwebviewindex:%d",page);
+    self.previousPage = (page > 0 && page < appData.count) ? [self createWebViewForIndex:page-1] : nil;
     self.nextPage = (page == (appData.count-1)) ? nil : [self createWebViewForIndex:page+1];
     ArticleItem *hArticle, *fArticle;
-    if (page > 0)
+    if (page > 0 && page < appData.count)
         hArticle = [appData objectAtIndex:page-1];
         headerLabel.text = hArticle.title;
     if (page < appData.count-1)
@@ -289,6 +325,8 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
     pageIndex = page;
     currentPage.delegate = self;
+    previousPage.delegate = self;
+    nextPage.delegate = self;
     
     return currentPage;
 }
@@ -303,12 +341,16 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     CGRect webFrame = CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-20-44);
     UIWebView* webView = [[UIWebView alloc] initWithFrame:webFrame];    
     webView.opaque = NO;
+    //webView.alpha = 0.6f;
     [webView setBackgroundColor:[UIColor clearColor]];
+    [webView setBackgroundColor:[UIColor grayColor]];
+    webView.scalesPageToFit = YES;
+    //[webView setBackgroundColor:[UIColor colorWithWhite:111.0/256.0 alpha:0.7f]];
     [self hideGradientBackground:webView];
 
     ArticleItem *aArticle = [appData objectAtIndex:index];
     [webView loadHTMLString:aArticle.content baseURL:aArticle.articleURL];
-  
+    
   return webView;
 }
 
@@ -348,7 +390,7 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
             AFHTTPClient *jsonapiClient = [AFHTTPClient clientWithBaseURL:[inRequest URL]];
             
             NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        @"get_posts", @"json",
+                                        @"get_post", @"json",
                                         nil];
             
             [jsonapiClient getPath:@""
@@ -459,6 +501,10 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    
+    [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitUserSelect='none';"];
+    // Disable callout
+    [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {

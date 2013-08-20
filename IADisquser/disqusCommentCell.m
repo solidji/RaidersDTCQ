@@ -38,7 +38,7 @@
             [articleLabel setMinimumFontSize:13.0];
         }
         [articleLabel setBackgroundColor:[UIColor clearColor]];
-        [articleLabel setLineBreakMode:UILineBreakModeWordWrap];//UILineBreakModeWordWrap
+        [articleLabel setLineBreakMode:NSLineBreakByWordWrapping];//UILineBreakModeWordWrap
         [articleLabel setNumberOfLines:0];
         [self.contentView addSubview:articleLabel];
         

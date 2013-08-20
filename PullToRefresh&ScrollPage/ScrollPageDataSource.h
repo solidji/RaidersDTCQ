@@ -15,7 +15,7 @@
 - (int)numberOfPages;
 
 //每页的图片
-- (UIImage *)imageAtIndex:(int)index;
+- (UIImageView *)imageAtIndex:(int)index;
 
 //需要下载
 - (void)pageImageNeedDownlod:(NSInteger)index;

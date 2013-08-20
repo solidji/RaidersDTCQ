@@ -19,18 +19,18 @@
     if (self) {
         // Initialization code
         articleLabel = [[UILabel alloc] init];
-        //[articleLabel setTextColor:[UIColor colorWithRed:38.0/255.0 green:43.0/255.0 blue:52.0/255.0 alpha:1.0]];
-        [articleLabel setTextColor:[UIColor colorWithRed:135.0/255.0 green:200.0/255.0 blue:235.0/255.0 alpha:1.0]];
-        [articleLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:16.0]];
+        [articleLabel setTextColor:[UIColor blackColor]];
+        //[articleLabel setTextColor:[UIColor colorWithRed:135.0/255.0 green:200.0/255.0 blue:235.0/255.0 alpha:1.0]];
+        [articleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15.0]];
         //[articleLabel setMinimumScaleFactor:12.0];//setMinimumFontSize
         if ([articleLabel respondsToSelector: @selector(setMinimumScaleFactor:)]) {
-            [articleLabel setMinimumScaleFactor:16.0];
+            [articleLabel setMinimumScaleFactor:15.0];
         }
         else {
-            [articleLabel setMinimumFontSize:16.0];
+            [articleLabel setMinimumFontSize:15.0];
         }
         [articleLabel setBackgroundColor:[UIColor clearColor]];
-        [articleLabel setLineBreakMode:UILineBreakModeWordWrap];//UILineBreakModeWordWrap
+        [articleLabel setLineBreakMode:NSLineBreakByWordWrapping];//UILineBreakModeWordWrap  
         [articleLabel setNumberOfLines:0];
         [self.contentView addSubview:articleLabel];
         
@@ -67,20 +67,20 @@
         //[imageView.layer setMasksToBounds:YES];
         //[imageView.layer setOpaque:NO];
         //[imageView.layer setCornerRadius:5.0];
-        //[self.contentView addSubview:imageView];
+        [self.contentView addSubview:imageView];
         
         //增加上下分割线
-		UIView *topLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
-		topLine.backgroundColor = [UIColor colorWithRed:(9.0f/255.0f) green:(37.0f/255.0f) blue:(58.0f/255.0f) alpha:1.0f];
-		[self.textLabel.superview addSubview:topLine];
-		
-        UIView *topLine2 = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 1.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
-		topLine2.backgroundColor = [UIColor colorWithRed:(37.0f/255.0f) green:(65.0f/255.0f) blue:(86.0f/255.0f) alpha:1.0f];
-		[self.textLabel.superview addSubview:topLine2];
-//
-//		UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 51.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
-//		bottomLine.backgroundColor = [UIColor colorWithRed:(246.0f/255.0f) green:(242.0f/255.0f) blue:(237.0f/255.0f) alpha:1.0f];
-//		[self.textLabel.superview addSubview:bottomLine];
+//		UIView *topLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
+//		topLine.backgroundColor = [UIColor colorWithRed:(9.0f/255.0f) green:(37.0f/255.0f) blue:(58.0f/255.0f) alpha:1.0f];
+//		[self.textLabel.superview addSubview:topLine];
+//		
+//        UIView *topLine2 = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 1.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
+//		topLine2.backgroundColor = [UIColor colorWithRed:(37.0f/255.0f) green:(65.0f/255.0f) blue:(86.0f/255.0f) alpha:1.0f];
+//		[self.textLabel.superview addSubview:topLine2];
+
+		//UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
+		//bottomLine.backgroundColor = [UIColor whiteColor];
+		//[self.textLabel.superview addSubview:bottomLine];
     }
     return self;
 }
@@ -90,6 +90,20 @@
     [super setSelected:selected animated:animated];
     
     // Configure the view for the selected state
+}
+
+- (void)drawRect:(CGRect)rect {
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetLineWidth(context, 1.0);
+    CGContextSetStrokeColorWithColor(context, [UIColor grayColor].CGColor);
+    
+    CGFloat dashArray[] = {4,2};
+    CGContextSetLineDash(context, 0, dashArray, 2);
+    
+    CGContextMoveToPoint(context, 10, 0);
+    CGContextAddLineToPoint(context, 310.0, 0.0);
+    CGContextStrokePath(context);
+    //CGContextClosePath(context);
 }
 
 - (void)layoutSubviews {

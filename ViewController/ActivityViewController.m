@@ -22,7 +22,7 @@
 #import "DetailViewController.h"
 #import "CommentViewController.h"
 #import "PersonalViewController.h"
-#import "LoginController.h"
+//#import "LoginController.h"
 
 #import "GlobalConfigure.h"
 #import "AppDataSouce.h"
@@ -458,8 +458,8 @@
     
     //[NSKeyedUnarchiver unarchiveObjectWithData:data];
     //[NSKeyedUnarchiver unarchiveObjectWithFile:@"loginform.json"];
-    LoginController *viewController = [[LoginController alloc] initWithCoder:[NSKeyedUnarchiver unarchiveObjectWithFile:@"loginform.json"]];
-    [self.navigationController pushViewController:viewController animated:YES];
+//    LoginController *viewController = [[LoginController alloc] initWithCoder:[NSKeyedUnarchiver unarchiveObjectWithFile:@"loginform.json"]];
+//    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 #pragma mark -

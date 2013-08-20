@@ -243,8 +243,9 @@
 //    [externalDelegate scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
   
   // If the header is loaded, then the user wants to go to the previous page
-  if (_headerLoaded)
+  if (_headerLoaded && currentPageIndex>0)
   {
+      //NSLog(@"currentPageIndex:%d",currentPageIndex);
     // Ask the delegate for the previous page
     UIView* previousPage = [externalDelegate viewForScrollView:self atPage:currentPageIndex-1];
     // We want to animate this new page coming down, so we first

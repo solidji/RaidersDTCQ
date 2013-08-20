@@ -15,11 +15,14 @@
 #import "ArticleItemCell.h"
 #import "SVWebViewController.h"
 #import "DetailViewController.h"
+#import "Globle.h"
+#import "SearchViewController.h"
 
 @interface HomeViewController ()
 - (void)revealSidebar;
 - (void)getComments;
 - (void)goPopClicked:(UIBarButtonItem *)sender;
+- (void)gotoSearch;//搜索文章
 @end
 
 @implementation HomeViewController
@@ -33,19 +36,32 @@
         self.webURL = url;
         
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        leftButton.frame = CGRectMake(0, 0, 50, 26);
+        leftButton.frame = CGRectMake(0, 0, 21, 21);
         [leftButton setBackgroundImage:[UIImage imageNamed:@"Return.png"] forState:UIControlStateNormal];
         [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setShowsTouchWhenHighlighted:YES];
         [leftButton addTarget:self action:@selector(goPopClicked:) forControlEvents:UIControlEventTouchUpInside];
-        [leftButton setTitle:@" 后退" forState:UIControlStateNormal];
-        [leftButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11]];
-        leftButton.titleLabel.textColor = [UIColor yellowColor];
+        //[leftButton setTitle:@" 后退" forState:UIControlStateNormal];
+        //[leftButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11]];
+        //leftButton.titleLabel.textColor = [UIColor yellowColor];
         
         UIBarButtonItem *temporaryLeftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
         temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
         self.navigationItem.leftBarButtonItem = temporaryLeftBarButtonItem;
+        
+        UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        rightButton.frame = CGRectMake(0, 0, 26, 26);
+        [rightButton setBackgroundImage:[UIImage imageNamed:@"search.png"] forState:UIControlStateNormal];
+        [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+        [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+        [rightButton setShowsTouchWhenHighlighted:YES];
+        [rightButton addTarget:self action:@selector(gotoSearch:) forControlEvents:UIControlEventTouchUpInside];
+
+        
+        UIBarButtonItem *temporaryRightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+        temporaryRightBarButtonItem.style = UIBarButtonItemStylePlain;
+        self.navigationItem.rightBarButtonItem = temporaryRightBarButtonItem;
     }
     
     alerViewManager = [[AlerViewManager alloc] init];
@@ -57,24 +73,30 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor colorWithRed:19.0f/255 green:47.0f/255 blue:69.0f/255 alpha:1.0];
-    //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background.png"]];
-    
+    self.view.backgroundColor = [UIColor clearColor];
+    self.view.frame = CGRectMake(0, 0, [Globle shareInstance].globleWidth, [Globle shareInstance].globleHeight);
+    //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background-2.png"]];
+    UIImage *image = [UIImage imageNamed:@"Background.png"];
+    UIImageView *bg = [[UIImageView alloc] initWithImage:image];
+    bg.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    bg.alpha = 0.5f;
+    [self.view addSubview:bg];
     comments = [[NSMutableArray alloc] init];
     start = 0;
     receiveMember = 0;
     
-    pullToRefreshTableView = [[PullToRefreshTableView alloc] initWithFrame: CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height-20) withType: withStateViews];
+    pullToRefreshTableView = [[PullToRefreshTableView alloc] initWithFrame: CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height) withType: withStateViews];//[[UIScreen mainScreen] bounds].size.height-20
     
     [self.pullToRefreshTableView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
     pullToRefreshTableView.delegate = self;
     pullToRefreshTableView.dataSource = self;
     pullToRefreshTableView.allowsSelection = YES;
     pullToRefreshTableView.backgroundColor = [UIColor clearColor];
-    //pullToRefreshTableView.backgroundColor = [UIColor colorWithRed:248.0f/255.0f green:244.0f/255.0f blue:239.0f/255.0f alpha:1.0f];
-    pullToRefreshTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    pullToRefreshTableView.backgroundColor = [UIColor colorWithRed:211.0f/255.0f green:214.0f/255.0f blue:219.0f/255.0f alpha:0.7f];
+    pullToRefreshTableView.separatorStyle = UITableViewCellSeparatorStyleNone;//选中时cell样式
     pullToRefreshTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [pullToRefreshTableView setHidden:NO];
+    //pullToRefreshTableView.alpha = 0.7f;
     [self.view addSubview:pullToRefreshTableView];
     
     UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self
@@ -85,7 +107,18 @@
     [self.view addGestureRecognizer:swipeGesture];
     
     // get array of articles
+    
+//    double delayInSeconds = 10.0;
+//    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+//    dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
+//                   ^(void){
+//                       //your code here
+//                       [self performSelectorInBackground:@selector(getComments) withObject:nil];
+//                   });
+    //[self performSelectorInBackground:@selector(getComments) withObject:nil];
+    //[self performSelectorOnMainThread:@selector(getComments) withObject:nil waitUntilDone:NO];
     [self getComments];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -97,6 +130,7 @@
     if ([[[UIDevice currentDevice] systemVersion] floatValue] > 4.9) {
         //IOS5
         [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
+        //self.navigationController.navigationBar.tintColor = [UIColor blackColor];
     }
 }
 
@@ -124,6 +158,14 @@
 #pragma mark - Class Methods
 - (void)revealSidebar {
 	_revealBlock();
+}
+
+- (void)gotoSearch{
+    //设置搜索页出现
+    //[self.RootScrollView setContentOffset:CGPointMake(6*320, 0) animated:YES];
+    SearchViewController *searchController = [[SearchViewController alloc] initWithTitle:@"搜索" withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
+    
+    [self.navigationController pushViewController:searchController animated:YES];
 }
 
 - (void)goPopClicked:(UIBarButtonItem *)sender {
@@ -173,8 +215,8 @@
     //return 60.0f;
     
     ArticleItem *comment = (ArticleItem *)[self.comments objectAtIndex:indexPath.row];
-    CGSize constraint = CGSizeMake(320.0f-16.0, 20000);
-    CGSize size = [comment.title sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:16] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
+    CGSize constraint = CGSizeMake(290.0f-16.0, 20000);
+    CGSize size = [comment.title sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
     
     return MAX(size.height, 20.0f) + 40.0f;//计算每一个cell的高度
 }
@@ -193,8 +235,11 @@
     ArticleItemCell *cell = (ArticleItemCell*) [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[ArticleItemCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
+    cell.selectionStyle = UITableViewCellSelectionStyleGray;
+    //cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    //cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"go.png"]];
+    //cell.accessoryView.frame = CGRectMake(300, 20, 20, 20);
     // Leave cells empty if there's no data yet
     int nodeCount = [self.comments count];
     
@@ -222,9 +267,12 @@
         //[cell.imageView setImageWithURL:[NSURL URLWithString:aComment.authorAvatar]
         //              placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
         
-        CGSize constraint = CGSizeMake(320.0f-16.0, 20000);
-        CGSize size = [cell.articleLabel.text sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:16] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
-        [cell.articleLabel setFrame:CGRectMake(8.0, 20.0, 320.0-16.0, MAX(size.height, 20.0f))];
+        CGSize constraint = CGSizeMake(290.0f-16.0, 20000);
+        CGSize size = [cell.articleLabel.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
+        [cell.articleLabel setFrame:CGRectMake(8.0, 20.0, 290.0f-16.0, MAX(size.height, 20.0f))];
+        
+        cell.imageView.image = [UIImage imageNamed:@"go.png"];
+        cell.imageView.frame = CGRectMake(320.0-30, (MAX(size.height, 20.0f)+20)/2, 20, 20);
         
     }
     
@@ -383,7 +431,7 @@
                                }
                                //self.comments = [NSMutableArray arrayWithArray:_comments];
                                
-                               [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
+                               [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:YES];
                            }
                            //到这里就是0条数据
                        }

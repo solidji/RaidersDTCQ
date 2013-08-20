@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "IADisqusUser.h"
 #import "AFOAuth2Client.h"
 #import "GHMenuViewController.h"
 
@@ -18,10 +17,7 @@
 
 + (AppDataSouce *)shareInstance;
 
-@property (nonatomic, retain) GHMenuViewController      *menuController;
-@property (nonatomic, retain) IADisqusUser              *userObject;
 @property (nonatomic, retain) AFOAuthCredential       *credentialObject;
-
 @property (nonatomic, retain) NSMutableArray          *reviewPromoList;
 @property (nonatomic, retain) NSMutableArray          *reviewList;
 @property (nonatomic, retain) NSMutableArray          *reviewOtherList;

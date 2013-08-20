@@ -114,7 +114,7 @@
 - (void)updateTimeLabel{
     NSDate * date = [NSDate date];
     NSDateFormatter * formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateStyle:kCFDateFormatterFullStyle];
+    [formatter setDateStyle:NSDateFormatterFullStyle];//kCFDateFormatterFullStyle
     [formatter setDateFormat:@"MM-dd HH:mm"];
     timeLabel.text = [NSString stringWithFormat:@"更新于 %@", [formatter stringFromDate:date]];
     //[formatter release];

@@ -46,7 +46,7 @@
         hasNext = false;
         
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        leftButton.frame = CGRectMake(0, 0, 50, 26);
+        leftButton.frame = CGRectMake(0, 0, 21, 21);
         [leftButton setBackgroundImage:[UIImage imageNamed:@"Return.png"] forState:UIControlStateNormal];
         [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
@@ -344,7 +344,7 @@
                        placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
         
         CGSize constraint = CGSizeMake(320.0f-52.0f, 20000);
-        CGSize size = [cell.articleLabel.text sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:13] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+        CGSize size = [cell.articleLabel.text sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:13] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
         [cell.articleLabel setFrame:CGRectMake(8.0+36.0+8.0, 26.0, 320.0-16.0-36.0-8.0, MAX(size.height, 18.0f))];
 
     }
