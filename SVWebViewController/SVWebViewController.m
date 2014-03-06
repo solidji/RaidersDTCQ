@@ -191,7 +191,7 @@
         self.URL = pageURL;
         self.availableActions = SVWebViewControllerAvailableActionsOpenInSafari | SVWebViewControllerAvailableActionsMailLink | SVWebViewControllerAvailableActionsCopyLink;
     }
-    
+    NSLog(@"initWithURL:%@",self.URL);
 //    UITapGestureRecognizer* singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
 //    [self.view addGestureRecognizer:singleTap];
 //    singleTap.delegate = self;
@@ -349,6 +349,7 @@
 #pragma mark - View lifecycle
 
 - (void)loadView {
+    NSLog(@"initWithURL:%@",self.URL);
     mainWebView = [[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     mainWebView.delegate = self;
     mainWebView.scalesPageToFit = YES;
@@ -399,11 +400,11 @@
             [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
             
             if ([self.navigationController.toolbar respondsToSelector:@selector(setBackgroundImage:forToolbarPosition:barMetrics:)]) {
-                [self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"fot.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+                [self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"tabbarbg.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
             }
         }else {//IOS4
             
-            [self.navigationController.toolbar insertSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fot.png"]] atIndex:0];
+            [self.navigationController.toolbar insertSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tabbarbg.png"]] atIndex:0];
         }
     }
     
@@ -430,13 +431,15 @@
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     
     NSData *udObject = [standardDefaults objectForKey:@"Favorites"];
-    NSArray *udData = [NSKeyedUnarchiver unarchiveObjectWithData:udObject];// reverseObjectEnumerator] allObjects];
-    self.articles = [NSMutableArray arrayWithArray:udData];
-    //如果收藏列表里已经有,表示已经收藏
-    if ([self.articles containsObject:self.htmlString]) {
-        [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Collection-Solid.png"] forState:UIControlStateNormal];
-    }else {//没有收藏
-        [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Collection-Hollow.png"] forState:UIControlStateNormal];
+    if (udObject != nil) {
+        NSArray *udData = [NSKeyedUnarchiver unarchiveObjectWithData:udObject];// reverseObjectEnumerator] allObjects];
+        self.articles = [NSMutableArray arrayWithArray:udData];
+        //如果收藏列表里已经有,表示已经收藏
+        if ([self.articles containsObject:self.htmlString]) {
+            [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Collection-Solid.png"] forState:UIControlStateNormal];
+        }else {//没有收藏
+            [self.favoriteBarButton setBackgroundImage:[UIImage imageNamed:@"Collection-Hollow.png"] forState:UIControlStateNormal];
+        }
     }
     
     [self.navigationController.toolbar addSubview:favoriteBarButton];
@@ -729,7 +732,10 @@
 #pragma mark - Target actions
 
 - (void)goPopClicked:(UIBarButtonItem *)sender {
-    [[self navigationController] popViewControllerAnimated:YES];
+    if ([[self navigationController].viewControllers count]>1)
+    {
+        [[self navigationController] popViewControllerAnimated:YES];
+    }
 }
 
 - (void)goTextViewClicked:(UIButton *)sender {

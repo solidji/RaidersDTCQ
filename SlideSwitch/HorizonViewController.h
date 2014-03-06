@@ -15,20 +15,18 @@
 @interface HorizonViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, POHorizontalListDelegate> {
     NSMutableArray *itemArray;
     
-    NSMutableArray *freeList;
-    NSMutableArray *paidList;
-    NSMutableArray *grossingList;
+    NSMutableArray *dataList1;
+    NSMutableArray *dataList2;
+    NSMutableArray *dataList3;
+    NSMutableArray *dataList4;//数据源
+    
     PullToRefreshTableView *horizontalTableView;
     AlerViewManager *alerViewManager;
     NSInteger receiveMember;
-    
-    NSMutableArray *liliangList;//数据源
-    NSMutableArray *minjieList;//数据源
-    NSMutableArray *zhiliList;//数据源
 }
 
 @property (nonatomic, strong) PullToRefreshTableView *horizontalTableView;
-@property (strong, nonatomic) NSMutableArray *freeList,*paidList,*grossingList,*liliangList,*minjieList,*zhiliList;
+@property (strong, nonatomic) NSMutableArray *dataList1,*dataList2,*dataList3,*dataList4;
 
 - (id)initWithTitle:(NSString *)title;
 

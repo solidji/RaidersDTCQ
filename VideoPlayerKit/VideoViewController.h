@@ -10,6 +10,7 @@
 #import "VideoPlayerKit.h"
 #import "PullToRefreshTableView.h"
 #import "AlerViewManager.h"
+//#import "ALMoviePlayerController.h"
 
 @interface VideoViewController : UIViewController <VideoPlayerDelegate,UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate,UIGestureRecognizerDelegate> {
     NSMutableArray *comments;//数据源

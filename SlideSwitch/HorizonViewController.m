@@ -14,6 +14,7 @@
 #import "ArticleItem.h"
 #import "SVWebViewController.h"
 #import "DetailViewController.h"
+#import "GlobalConfigure.h"
 #import "Globle.h"
 #import "pullToRefreshTableView.h"
 #import "AlerViewManager.H"
@@ -23,7 +24,7 @@
 @end
 
 @implementation HorizonViewController
-@synthesize horizontalTableView,freeList,paidList,grossingList,liliangList,minjieList,zhiliList;
+@synthesize horizontalTableView,dataList1,dataList2,dataList3,dataList4;
 
 - (id)initWithTitle:(NSString *)title
 {
@@ -49,13 +50,10 @@
 //        freeList = [[NSMutableArray alloc] initWithObjects: item1, item2, item3, item4, item5, nil];
 //        paidList = [[NSMutableArray alloc] initWithObjects: item6, item7, item8, item9, item10, nil];
 //        grossingList = [[NSMutableArray alloc] initWithObjects: item11, item12, item13, item14, item15, nil];
-        freeList = [[NSMutableArray alloc] init];
-        paidList = [[NSMutableArray alloc] init];
-        grossingList = [[NSMutableArray alloc] init];
-        
-        liliangList = [[NSMutableArray alloc] init];
-        minjieList = [[NSMutableArray alloc] init];
-        zhiliList = [[NSMutableArray alloc] init];
+        dataList1 = [[NSMutableArray alloc] init];
+        dataList2 = [[NSMutableArray alloc] init];
+        dataList3 = [[NSMutableArray alloc] init];
+        dataList4 = [[NSMutableArray alloc] init];
     }
     alerViewManager = [[AlerViewManager alloc] init];
     receiveMember = 0;
@@ -71,9 +69,12 @@
     self.view.frame = CGRectMake(0, 0, [Globle shareInstance].globleWidth, [Globle shareInstance].globleHeight);
     //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background-2.png"]];
     UIImage *image = [UIImage imageNamed:@"Background.png"];
+    if (IPhone5) {
+        image = [UIImage imageNamed:@"Backgroundh.png"];
+    }
     UIImageView *bg = [[UIImageView alloc] initWithImage:image];
-    bg.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
-    bg.alpha = 0.5f;
+    bg.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-44-44);
+    //bg.alpha = 0.5f;
     [self.view addSubview:bg];
     
     //horizontalTableView = [[PullToRefreshTableView alloc] initWithFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight) style:UITableViewStylePlain];
@@ -89,15 +90,17 @@
     //pullToRefreshTableView.backgroundColor = [UIColor colorWithRed:248.0f/255.0f green:244.0f/255.0f blue:239.0f/255.0f alpha:1.0f];
     //tableView.backgroundColor = [UIColor colorWithRed:19.0f/255 green:47.0f/255 blue:69.0f/255 alpha:1.0];
     //horizontalTableView.backgroundColor = [UIColor colorWithRed:211.0f/255.0f green:214.0f/255.0f blue:219.0f/255.0f alpha:0.7f];
-    horizontalTableView.backgroundColor = [UIColor colorWithWhite:255.0f/255.0f alpha:0.7f];
+    //horizontalTableView.backgroundColor = [UIColor colorWithWhite:255.0f/255.0f alpha:0.7f];
+    horizontalTableView.backgroundColor = [UIColor whiteColor];
     horizontalTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     horizontalTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     //horizontalTableView.alpha = 0.8f;
 
     [self.view addSubview:horizontalTableView];
-    [self getComments:@"liliang"];
-    [self getComments:@"minjie"];
-    [self getComments:@"zhili"];
+    //[self getComments:@"jing-ying"];
+    NSInteger returnKey = k_RETURN_REFRESH;
+    NSString * key = [NSString stringWithFormat:@"%d", returnKey];
+    [NSThread detachNewThreadSelector:@selector(updateThread:) toTarget:self withObject:key];
 }
 
 - (void)didReceiveMemoryWarning
@@ -144,7 +147,7 @@
 }
 
 - (int)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 3;
+    return 4;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -162,21 +165,51 @@
     
     NSString *title = @"";
     POHorizontalList *list;
+    NSMutableArray *dataList = [[NSMutableArray alloc] init];
     
     if ([indexPath row] == 0) {
         title = @"力量型";
-        
-        list = [[POHorizontalList alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 139) title:title items:freeList];
+        for (ArticleItem *commentItem in dataList1) {
+            UIImageView * imageview = [[UIImageView alloc] init];
+            [imageview setImageWithURL:commentItem.firstPicURL
+                      placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
+            ListItem *listitem = [[ListItem alloc] initWithFrame:CGRectZero image:imageview text:commentItem.title];
+            [dataList addObject:listitem];
+        }
+        list = [[POHorizontalList alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 139) title:title items:dataList];
     }
     else if ([indexPath row] == 1) {
         title = @"敏捷型";
-        
-        list = [[POHorizontalList alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 139) title:title items:paidList];
+        for (ArticleItem *commentItem in dataList2) {
+            UIImageView * imageview = [[UIImageView alloc] init];
+            [imageview setImageWithURL:commentItem.firstPicURL
+                      placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
+            ListItem *listitem = [[ListItem alloc] initWithFrame:CGRectZero image:imageview text:commentItem.title];
+            [dataList addObject:listitem];
+        }
+        list = [[POHorizontalList alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 139) title:title items:dataList];
     }
     else if ([indexPath row] == 2) {
-        title = @"智慧型";
-        
-        list = [[POHorizontalList alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 139) title:title items:grossingList];
+        title = @"智力型";
+        for (ArticleItem *commentItem in dataList3) {
+            UIImageView * imageview = [[UIImageView alloc] init];
+            [imageview setImageWithURL:commentItem.firstPicURL
+                      placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
+            ListItem *listitem = [[ListItem alloc] initWithFrame:CGRectZero image:imageview text:commentItem.title];
+            [dataList addObject:listitem];
+        }
+        list = [[POHorizontalList alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 139) title:title items:dataList];
+    }
+    else if ([indexPath row] == 3) {
+        title = @"装备";
+        for (ArticleItem *commentItem in dataList4) {
+            UIImageView * imageview = [[UIImageView alloc] init];
+            [imageview setImageWithURL:commentItem.firstPicURL
+                      placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
+            ListItem *listitem = [[ListItem alloc] initWithFrame:CGRectZero image:imageview text:commentItem.title];
+            [dataList addObject:listitem];
+        }
+        list = [[POHorizontalList alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 139) title:title items:dataList];
     }
     
     [list setDelegate:self];
@@ -189,27 +222,52 @@
 
 - (void) didSelectItem:(ListItem *)item {
     NSLog(@"Horizontal List Item %@ selected", item.imageTitle);
-    if ([freeList containsObject:item]) {
-        DetailViewController *viewController = [[DetailViewController alloc] initWithTitle:self.title];
-        viewController.appData = self.liliangList;
-        viewController.startIndex = [freeList indexOfObject:item];
-        
-        //NSLog(@"didSelectArticle:%@",aArticle.content);
-        [self.navigationController pushViewController:viewController animated:YES];
-    }else if ([paidList containsObject:item]){
-        DetailViewController *viewController = [[DetailViewController alloc] initWithTitle:self.title];
-        viewController.appData = self.minjieList;
-        viewController.startIndex = [paidList indexOfObject:item];
-        
-        //NSLog(@"didSelectArticle:%@",aArticle.content);
-        [self.navigationController pushViewController:viewController animated:YES];
-    }else if ([grossingList containsObject:item]){
-        DetailViewController *viewController = [[DetailViewController alloc] initWithTitle:self.title];
-        viewController.appData = self.zhiliList;
-        viewController.startIndex = [grossingList indexOfObject:item];
-        
-        //NSLog(@"didSelectArticle:%@",aArticle.content);
-        [self.navigationController pushViewController:viewController animated:YES];
+    for (ArticleItem *commentItem in dataList1) {
+        if([commentItem.title isEqualToString:item.imageTitle]) {
+            DetailViewController *viewController = [[DetailViewController alloc] initWithTitle:self.title];
+            viewController.appData = self.dataList1;
+            viewController.startIndex = [dataList1 indexOfObject:commentItem];
+            
+            //NSLog(@"didSelectArticle:%@",aArticle.content);
+            [self.navigationController pushViewController:viewController animated:YES];
+            return;
+        }
+    }
+    
+    for (ArticleItem *commentItem in dataList2) {
+        if([commentItem.title isEqualToString:item.imageTitle]) {
+            DetailViewController *viewController = [[DetailViewController alloc] initWithTitle:self.title];
+            viewController.appData = self.dataList2;
+            viewController.startIndex = [dataList2 indexOfObject:commentItem];
+            
+            //NSLog(@"didSelectArticle:%@",aArticle.content);
+            [self.navigationController pushViewController:viewController animated:YES];
+            return;
+        }
+    }
+    
+    for (ArticleItem *commentItem in dataList3) {
+        if([commentItem.title isEqualToString:item.imageTitle]) {
+            DetailViewController *viewController = [[DetailViewController alloc] initWithTitle:self.title];
+            viewController.appData = self.dataList3;
+            viewController.startIndex = [dataList3 indexOfObject:commentItem];
+            
+            //NSLog(@"didSelectArticle:%@",aArticle.content);
+            [self.navigationController pushViewController:viewController animated:YES];
+            return;
+        }
+    }
+    
+    for (ArticleItem *commentItem in dataList4) {
+        if([commentItem.title isEqualToString:item.imageTitle]) {
+            DetailViewController *viewController = [[DetailViewController alloc] initWithTitle:self.title];
+            viewController.appData = self.dataList4;
+            viewController.startIndex = [dataList4 indexOfObject:commentItem];
+            
+            //NSLog(@"didSelectArticle:%@",aArticle.content);
+            [self.navigationController pushViewController:viewController animated:YES];
+            return;
+        }
     }
 }
 
@@ -244,16 +302,15 @@
         switch ([returnKey intValue]) {
             case k_RETURN_REFRESH:
             {
-                [freeList removeAllObjects];
-                [paidList removeAllObjects];
-                [grossingList removeAllObjects];
-                [liliangList removeAllObjects];
-                [minjieList removeAllObjects];
-                [zhiliList removeAllObjects];
+                [dataList1 removeAllObjects];
+                [dataList2 removeAllObjects];
+                [dataList3 removeAllObjects];
+                [dataList4 removeAllObjects];
 
-                [self performSelectorOnMainThread:@selector(getComments:) withObject:@"liliang" waitUntilDone:NO];
-                [self performSelectorOnMainThread:@selector(getComments:) withObject:@"minjie" waitUntilDone:NO];
-                [self performSelectorOnMainThread:@selector(getComments:) withObject:@"zhili" waitUntilDone:NO];
+                [self performSelectorOnMainThread:@selector(getComments:) withObject:@"li-liang" waitUntilDone:NO];
+                [self performSelectorOnMainThread:@selector(getComments:) withObject:@"min-jie" waitUntilDone:NO];
+                [self performSelectorOnMainThread:@selector(getComments:) withObject:@"zhi-li" waitUntilDone:NO];
+                [self performSelectorOnMainThread:@selector(getComments:) withObject:@"zhuang-bei" waitUntilDone:NO];
             break;
             }
             default:
@@ -274,12 +331,13 @@
     
     [alerViewManager showMessage:@"正在加载数据" inView:self.view];
     
-    AFHTTPClient *jsonapiClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:@"http://dt.appgame.com/"]];
+    AFHTTPClient *jsonapiClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:@"http://dtcq.appgame.com/"]];
     
     NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
                                 @"get_category_posts", @"json",
-                                slug, @"slug",
                                 @"200", @"count",
+                                @"attachments", @"exclude",
+                                slug, @"slug",
                                 nil];
     [jsonapiClient getPath:@""
                 parameters:parameters
@@ -327,7 +385,7 @@
                        NSString *code = [responseDictionary objectForKey:@"status"];
                        
                        if (![code isEqualToString:@"ok"]) {   // there's an error
-                           NSLog(@"获取分类json异常:liliang");
+                           NSLog(@"获取分类json异常:图鉴");
                        }else {
                            receiveMember = [[responseDictionary objectForKey:@"count"] integerValue];
                            if (receiveMember > 0) {
@@ -377,38 +435,45 @@
                                    
                                    //取附件里的第一张图,如果没有就尝试取缩略图
                                    aComment.firstPicURL = nil;
-                                   NSArray *attachmentsArray = [commentDictionary objectForKey:@"attachments"];
-                                   if ([attachmentsArray count]>0) {
-                                       NSDictionary *attachmentDic = attachmentsArray[0];
-                                       aComment.firstPicURL = [NSURL URLWithString:[[[[attachmentDic objectForKey:@"images"] valueForKey:@"small-feature"] valueForKey:@"url"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-                                   }else {
-                                       aComment.firstPicURL = [NSURL URLWithString:[[commentDictionary valueForKey:@"thumbnail"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-                                   }
+                                   id urlStr = [commentDictionary objectForKey:@"thumbnail"];
+                                   if (!urlStr)
+                                       urlStr = @"";
+                                   else if (![urlStr isKindOfClass: [NSString class]])
+                                       urlStr = [urlStr description];
+                                   aComment.firstPicURL = [NSURL URLWithString:[urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                                   //aComment.firstPicURL = [NSURL URLWithString:[[commentDictionary valueForKey:@"thumbnail"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                                   
+//                                   if (aComment.firstPicURL != nil) {
+//                                       NSArray *attachmentsArray = [commentDictionary objectForKey:@"attachments"];
+//                                       if ([attachmentsArray count]>0) {
+//                                           NSDictionary *attachmentDic = attachmentsArray[0];
+//                                           aComment.firstPicURL = [NSURL URLWithString:[[[[attachmentDic objectForKey:@"images"] valueForKey:@"small-feature"] valueForKey:@"url"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+//                                       }
+//                                   }
                                    
                                    // add the comment to the mutable array
                                    [_comments addObject:aComment];
                                }
                                
                                for (ArticleItem *commentItem in _comments) {
-                                   UIImageView * imageview = [[UIImageView alloc] init];
-                                   [imageview setImageWithURL:commentItem.firstPicURL
-                                             placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
-                                   ListItem *listitem = [[ListItem alloc] initWithFrame:CGRectZero image:imageview text:commentItem.title];
-                                   if ([slug isEqualToString:@"liliang"]) {
-                                       [self.liliangList addObject:commentItem];
-                                       [self.freeList addObject:listitem];
-                                   }else if([slug isEqualToString:@"minjie"]) {
-                                       [self.minjieList addObject:commentItem];
-                                       [self.paidList addObject:listitem];
-                                   }else if([slug isEqualToString:@"zhili"]) {
-                                       [self.zhiliList addObject:commentItem];
-                                       [self.grossingList addObject:listitem];
+                                   //UIImageView * imageview = [[UIImageView alloc] init];
+                                   //[imageview setImageWithURL:commentItem.firstPicURL
+                                   //          placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
+                                   //ListItem *listitem = [[ListItem alloc] initWithFrame:CGRectZero image:imageview text:commentItem.title];
+                                   if ([slug isEqualToString:@"li-liang"]) {
+                                       [self.dataList1 addObject:commentItem];
+                                   }else if([slug isEqualToString:@"min-jie"]) {
+                                       [self.dataList2 addObject:commentItem];
+                                   }else if([slug isEqualToString:@"zhi-li"]) {
+                                       [self.dataList3 addObject:commentItem];
+                                   }else if([slug isEqualToString:@"zhuang-bei"]) {
+                                       [self.dataList4 addObject:commentItem];
                                    }
                                }
                                //self.comments = [NSMutableArray arrayWithArray:_comments];
                                
-                               //[self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
-                               [horizontalTableView reloadData];
+                               [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
+                               //[horizontalTableView reloadData];
                            }
                            //到这里就是0条数据
                        }

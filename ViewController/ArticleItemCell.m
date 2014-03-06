@@ -8,6 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "ArticleItemCell.h"
+#import "GlobalConfigure.h"
 
 @implementation ArticleItemCell
 
@@ -18,6 +19,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
+        self.backgroundColor = [UIColor clearColor];
         articleLabel = [[UILabel alloc] init];
         [articleLabel setTextColor:[UIColor blackColor]];
         //[articleLabel setTextColor:[UIColor colorWithRed:135.0/255.0 green:200.0/255.0 blue:235.0/255.0 alpha:1.0]];
@@ -32,6 +34,7 @@
         [articleLabel setBackgroundColor:[UIColor clearColor]];
         [articleLabel setLineBreakMode:NSLineBreakByWordWrapping];//UILineBreakModeWordWrap  
         [articleLabel setNumberOfLines:0];
+        //articleLabel.textAlignment = UITextAlignmentCenter;
         [self.contentView addSubview:articleLabel];
         
         descriptLabel = [[UILabel alloc] init];
@@ -70,17 +73,18 @@
         [self.contentView addSubview:imageView];
         
         //增加上下分割线
-//		UIView *topLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
-//		topLine.backgroundColor = [UIColor colorWithRed:(9.0f/255.0f) green:(37.0f/255.0f) blue:(58.0f/255.0f) alpha:1.0f];
-//		[self.textLabel.superview addSubview:topLine];
-//		
-//        UIView *topLine2 = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 1.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
-//		topLine2.backgroundColor = [UIColor colorWithRed:(37.0f/255.0f) green:(65.0f/255.0f) blue:(86.0f/255.0f) alpha:1.0f];
-//		[self.textLabel.superview addSubview:topLine2];
-
-		//UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
-		//bottomLine.backgroundColor = [UIColor whiteColor];
+		//UIView *topLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
+		//topLine.backgroundColor = [UIColor colorWithRed:(251.0f/255.0f) green:(84.0f/255.0f) blue:(94.0f/255.0f) alpha:1.0f];
+        //topLine.backgroundColor = RGB(251,251,250);
+		//[self.textLabel.superview addSubview:topLine];
+		
+        //UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 58.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
+        //bottomLine.backgroundColor = RGB(230,230,229);
 		//[self.textLabel.superview addSubview:bottomLine];
+
+		UIView *bottomLine2 = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 59.0f, [UIScreen mainScreen].bounds.size.width, 1.0f)];
+		bottomLine2.backgroundColor = RGB(242,242,241);
+		[self.textLabel.superview addSubview:bottomLine2];
     }
     return self;
 }
@@ -93,17 +97,18 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetLineWidth(context, 1.0);
-    CGContextSetStrokeColorWithColor(context, [UIColor grayColor].CGColor);
-    
-    CGFloat dashArray[] = {4,2};
-    CGContextSetLineDash(context, 0, dashArray, 2);
-    
-    CGContextMoveToPoint(context, 10, 0);
-    CGContextAddLineToPoint(context, 310.0, 0.0);
-    CGContextStrokePath(context);
-    //CGContextClosePath(context);
+    //画虚线
+//    CGContextRef context = UIGraphicsGetCurrentContext();
+//    CGContextSetLineWidth(context, 1.0);
+//    CGContextSetStrokeColorWithColor(context, [UIColor grayColor].CGColor);
+//    
+//    CGFloat dashArray[] = {4,2};
+//    CGContextSetLineDash(context, 0, dashArray, 2);
+//    
+//    CGContextMoveToPoint(context, 10, 0);
+//    CGContextAddLineToPoint(context, 310.0, 0.0);
+//    CGContextStrokePath(context);
+//    //CGContextClosePath(context);
 }
 
 - (void)layoutSubviews {

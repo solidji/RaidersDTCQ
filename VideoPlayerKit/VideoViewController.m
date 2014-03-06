@@ -13,7 +13,9 @@
 
 #import "ArticleItem.h"
 #import "ArticleItemCell.h"
+#import "HomeViewCell.h"
 #import "Globle.h"
+#import "GlobalConfigure.h"
 
 @interface VideoViewController ()
 - (void)getComments;
@@ -60,6 +62,9 @@
     self.view.frame = CGRectMake(0, 0, [Globle shareInstance].globleWidth, [Globle shareInstance].globleHeight);
     //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background-2.png"]];
     UIImage *image = [UIImage imageNamed:@"Background.png"];
+    if (IPhone5) {
+        image = [UIImage imageNamed:@"Backgroundh.png"];
+    }
     UIImageView *bg = [[UIImageView alloc] initWithImage:image];
     bg.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
     bg.alpha = 0.5f;
@@ -91,7 +96,6 @@
     
     // get array of articles
     [self performSelectorInBackground:@selector(getComments) withObject:nil];
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -224,6 +228,49 @@
     return [NSArray arrayWithArray:videosURLStringArray];
 }
 
+
+-(NSArray *)videosFromHTMLStringQQ:(NSString *)htmlstr
+{
+    NSMutableArray *videosURLStringArray = [[NSMutableArray alloc] init];
+    
+    NSError *error;
+    
+    NSRegularExpression *regex = [NSRegularExpression
+                                  regularExpressionWithPattern:@"vid=\\w+&"
+                                  options:NSRegularExpressionCaseInsensitive
+                                  error:&error];
+    
+    [regex enumerateMatchesInString:htmlstr
+                            options:0
+                              range:NSMakeRange(0, htmlstr.length)
+                         usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                             [videosURLStringArray addObject:[htmlstr substringWithRange:result.range]];
+                         }];
+    
+    return [NSArray arrayWithArray:videosURLStringArray];
+}
+
+-(NSArray *)videosFromHTMLStringQQPic:(NSString *)htmlstr
+{
+    NSMutableArray *videosURLStringArray = [[NSMutableArray alloc] init];
+    
+    NSError *error;
+    
+    NSRegularExpression *regex = [NSRegularExpression
+                                  regularExpressionWithPattern:@"pic=(https?)\\S*(png|jpg|jpeg|gif)"
+                                  options:NSRegularExpressionCaseInsensitive
+                                  error:&error];
+    
+    [regex enumerateMatchesInString:htmlstr
+                            options:0
+                              range:NSMakeRange(0, htmlstr.length)
+                         usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                             [videosURLStringArray addObject:[htmlstr substringWithRange:result.range]];
+                         }];
+    
+    return [NSArray arrayWithArray:videosURLStringArray];
+}
+
 - (void)playVideo
 {   
     NSURL *url = [NSURL URLWithString:@"http://v.youku.com/player/getRealM3U8/vid/XNTYzNTk2Nzg4/type//video.m3u8"];
@@ -256,39 +303,91 @@
     
     ArticleItem *aComment = [self.comments objectAtIndex:indexPath.row];
     NSArray *videosURLStringArray = [[NSArray alloc] init];
-    NSURL *url = [NSURL URLWithString:@"http://182.140.163.45/videoctfs.tc.qq.com/y0113wa3124.mp4?vkey=BE6A4B3231EA01545F80EEC6C33B7C0AF9023E78D329B2446A87016B6EB25DCE8B7D1FB8B5D6C932&br=72&platform=0&fmt=mp4&level=3&sha=f096fbc1171facd02f85101ac751880269821ee9"];
     
-    videosURLStringArray = [self videosFromHTMLString:aComment.content];
+    videosURLStringArray = [self videosFromHTMLStringQQ:aComment.content];
+    
     if ([videosURLStringArray count] >0) {
-        url = [NSURL URLWithString:videosURLStringArray[0]];
+        
+        NSString * vidtmp = videosURLStringArray[0];
+        NSRange range = NSMakeRange(4, vidtmp.length-5);
+        NSString * vid = [vidtmp substringWithRange:range];
+        NSLog(@"vid is:%@",vid);
+        
+        AFHTTPClient *jsonapiClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:@"http://vv.video.qq.com/"]];
+        
+        NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    @"json", @"otype",
+                                    vid, @"vid",
+                                    nil];
+        
+        [jsonapiClient getPath:@"geturl"
+                    parameters:parameters
+                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                           
+                           __block NSString *jsonString = operation.responseString;
+                           
+                           NSError *error;
+                           //(.|\\s)*或([\\s\\S]*)可以匹配包括换行在内的任意字符
+                           NSRegularExpression *regexW3tc = [NSRegularExpression
+                                                             regularExpressionWithPattern:@"QZOutputJson="
+                                                             options:NSRegularExpressionCaseInsensitive
+                                                             error:&error];
+                           [regexW3tc enumerateMatchesInString:jsonString
+                                                       options:0
+                                                         range:NSMakeRange(0, jsonString.length)
+                                                    usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                                                        jsonString = [jsonString stringByReplacingOccurrencesOfString:[jsonString substringWithRange:result.range] withString:@""];
+                                                    }];
+                           
+                           jsonString = [jsonString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                           jsonString = [jsonString stringByReplacingOccurrencesOfString:@";" withString:@""];
+                           
+                           NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+                           // fetch the json response to a dictionary
+                           NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+                           // pass it to the block
+                           //ArticleItem *aArticle = [[ArticleItem alloc] init];
+                           
+                           NSArray *commentsArray = [[responseDictionary objectForKey:@"vd"] objectForKey:@"vi"];
+                           
+                           aComment.articleURL = [NSURL URLWithString:[commentsArray[0] objectForKey:@"url"]];
+                           
+                           if (!self.videoPlayerViewController) {
+                               self.videoPlayerViewController = [VideoPlayerKit videoPlayerWithContainingViewController:self optionalTopView:nil hideTopViewWithControls:YES];
+                               // Need to set edge inset if top view is inserted
+                               //[self.videoPlayerViewController setControlsEdgeInsets:UIEdgeInsetsMake(self.topView.frame.size.height, 0, 0, 0)];
+                               self.videoPlayerViewController.delegate = self;
+                               self.videoPlayerViewController.allowPortraitFullscreen = YES;
+                           }
+                           //[self.videoPlayerViewController.view setFrame:CGRectMake(0, 0, 50, 50)];
+                           [self.view addSubview:self.videoPlayerViewController.view];
+                           
+                           [self.videoPlayerViewController playVideoWithTitle:@"" URL:aComment.articleURL videoID:nil shareURL:nil isStreaming:NO playInFullScreen:YES];
+                           
+                           [tableView deselectRowAtIndexPath:indexPath animated:YES];//反选
+                       }
+                       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                           // pass error to the block
+                           NSLog(@"获取视频json失败:%@",error);
+                       }];
     }
+
+    //[self videosFromHTMLStringQQPic:aComment.content];
     //[self playVideo];
-    if (!self.videoPlayerViewController) {
-        self.videoPlayerViewController = [VideoPlayerKit videoPlayerWithContainingViewController:self optionalTopView:nil hideTopViewWithControls:YES];
-        // Need to set edge inset if top view is inserted
-        //[self.videoPlayerViewController setControlsEdgeInsets:UIEdgeInsetsMake(self.topView.frame.size.height, 0, 0, 0)];
-        self.videoPlayerViewController.delegate = self;
-        self.videoPlayerViewController.allowPortraitFullscreen = YES;
-    }
-    //[self.videoPlayerViewController.view setFrame:CGRectMake(0, 0, 50, 50)];
-    [self.view addSubview:self.videoPlayerViewController.view];
     
-    [self.videoPlayerViewController playVideoWithTitle:@"" URL:url videoID:nil shareURL:nil isStreaming:NO playInFullScreen:YES];
-    
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];//反选
 }
 
 #pragma mark - Table view data source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    //return 60.0f;
+    return 88.0f;
     
-    ArticleItem *comment = (ArticleItem *)[self.comments objectAtIndex:indexPath.row];
-    CGSize constraint = CGSizeMake(290.0f-16.0, 20000);
-    CGSize size = [comment.title sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
-    
-    return MAX(size.height, 20.0f) + 40.0f;//计算每一个cell的高度
+//    ArticleItem *comment = (ArticleItem *)[self.comments objectAtIndex:indexPath.row];
+//    CGSize constraint = CGSizeMake(290.0f-16.0, 20000);
+//    CGSize size = [comment.title sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
+//    
+//    return MAX(size.height, 20.0f) + 40.0f;//计算每一个cell的高度
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -302,51 +401,51 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     
-    ArticleItemCell *cell = (ArticleItemCell*) [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    HomeViewCell *cell = (HomeViewCell*) [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[ArticleItemCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell = [[HomeViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleGray;
-    //cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    //cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"go.png"]];
-    //cell.accessoryView.frame = CGRectMake(300, 20, 20, 20);
-    // Leave cells empty if there's no data yet
-    int nodeCount = [self.comments count];
     
+    int nodeCount = [self.comments count];
     if (nodeCount > 0)
-	{
+    {
         // Set up the cell...
-        ArticleItem *aComment = [self.comments objectAtIndex:indexPath.row];
-        cell.descriptLabel.text = aComment.description;
+        ArticleItem *aArticle = [self.comments objectAtIndex:indexPath.row];
+        cell.descriptLabel.text = @"视频";
         
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"YYYY-MM-dd HH:mm"];
-        cell.dateLabel.text = [dateFormatter stringFromDate:aComment.pubDate];
+        [dateFormatter setDateFormat:@"MM-dd HH:mm"];
+        cell.creatorLabel.text = [NSString stringWithFormat:@"发表于 %@ 由 %@",[dateFormatter stringFromDate:aArticle.pubDate],aArticle.creator];
         
-        cell.creatorLabel.text = aComment.creator;
-        //        CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000);
-        //        CGSize size = [aArticle.description sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12.0] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
-        cell.articleLabel.text = aComment.title;
-        //        cell.articleLabel.frame = CGRectMake(4.0, 52.0,
-        //                                             CELL_CONTENT_WIDTH - (2 * CELL_CONTENT_MARGIN),
-        //                                             45.0 + CELL_CONTENT_MARGIN);
+        cell.articleLabel.text = aArticle.title;
         
-        // Only load cached images; defer new downloads until scrolling ends
-        //当tableview停下来的时候才下载缩略图
-        //if (pullToRefreshTableView.dragging == NO && pullToRefreshTableView.decelerating == NO)
-        //[cell.imageView setImageWithURL:[NSURL URLWithString:aComment.authorAvatar]
-        //              placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
+        NSArray *videosPicStringArray = [[NSArray alloc] init];
         
-        CGSize constraint = CGSizeMake(290.0f-16.0, 20000);
-        CGSize size = [cell.articleLabel.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
-        [cell.articleLabel setFrame:CGRectMake(8.0, 20.0, 290.0f-16.0, MAX(size.height, 20.0f))];
+        NSURL *urlPic = [NSURL URLWithString:@"http://www.appgame.com/wp-content/uploads/2013/08/hello-hero.jpg"];
+        videosPicStringArray = [self videosFromHTMLStringQQPic:aArticle.content];
+        if ([videosPicStringArray count]>0) {
+            urlPic = [NSURL URLWithString:[videosPicStringArray[0] substringFromIndex:4]];
+        }
+        aArticle.articleIconURL = urlPic;
         
-        cell.imageView.image = [UIImage imageNamed:@"go.png"];
-        cell.imageView.frame = CGRectMake(320.0-30, (MAX(size.height, 20.0f)+20)/2, 20, 20);
+        cell.imageView.frame = CGRectMake(12.0f, 12.0f, 100.0f, 76.0f);
+        [cell.imageView setImageWithURL:aArticle.articleIconURL
+                       placeholderImage:[UIImage imageNamed:@"IconPlaceholder.png"]];
         
+        CGSize constraint = CGSizeMake(320.0f-100.0f-36.0f, 20000);
+        CGSize size = [cell.articleLabel.text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue" size:15] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
+        [cell.articleLabel setFrame:CGRectMake(100.0f+24.0f, 12.0f, 320.0f-100.0f-36.0f, MIN(size.height, 40.0f))];
+        //NSLog(@"cellSize:%@ %f %f",aArticle.title,size.height,size.width);
+        [cell.descriptLabel setFrame:CGRectMake(100.0f+24.0f, 12.0f+40.0f, 320.0f-100.0f-36.0f, 20)];
+        cell.descriptLabel.textColor = [UIColor orangeColor];
+        //if (size.height>50.0f) {
+        //[cell.descriptLabel setHidden:YES];
+        //}
+        [cell.creatorLabel setFrame:CGRectMake(100.0f+24.0f, 12.0f+60.0f, 320.0f-100.0f-36.0f, 16.0f)];
     }
     
-    return cell;
+    return cell;    return cell;
 }
 
 - (void)getComments {
@@ -354,11 +453,11 @@
     [alerViewManager showMessage:@"正在加载数据" inView:self.view];
     
     NSString *starString =  [NSString stringWithFormat:@"%ld", (long)start];
-    AFHTTPClient *jsonapiClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:@"http://dt.appgame.com/"]];
+    AFHTTPClient *jsonapiClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:@"http://dtcq.appgame.com/"]];
     
     NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
                                 @"get_category_posts", @"json",
-                                @"jing-cai-shi-pin", @"slug",
+                                @"re-men-shi-pin", @"slug",
                                 @"20", @"count",
                                 starString, @"page",
                                 nil];
@@ -431,7 +530,18 @@
                                    aComment.pubDate = [df dateFromString:[[commentDictionary objectForKey:@"date"] stringByReplacingOccurrencesOfString:@"T" withString:@" "]];
                                    
                                    aComment.description = [commentDictionary objectForKey:@"excerpt"];
+                                   if (aComment.description != nil) {
+                                       aComment.description = [aComment.description stringByReplacingOccurrencesOfString:@"&#038;" withString:@"&"];
+                                       aComment.description = [aComment.description stringByReplacingOccurrencesOfString:@"继续阅读" withString:@""];
+                                       aComment.description = [aComment.description stringByReplacingOccurrencesOfString:@"&rarr;" withString:@""];
+                                   }
                                    aComment.title = [commentDictionary objectForKey:@"title"];
+                                   if (aComment.title != nil) {
+                                       aComment.title = [aComment.title stringByReplacingOccurrencesOfString:@"&#038;" withString:@"&"];
+                                       aComment.title = [aComment.title stringByReplacingOccurrencesOfString:@"继续阅读" withString:@""];
+                                       aComment.title = [aComment.title stringByReplacingOccurrencesOfString:@"&rarr;" withString:@""];
+                                   }
+                                   
                                    aComment.content = [commentDictionary objectForKey:@"content"];
                                    aComment.articleURL = [NSURL URLWithString:[[commentDictionary objectForKey:@"url"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
                                    aComment.creator = [[commentDictionary objectForKey:@"author"] objectForKey:@"nickname"];

@@ -14,6 +14,7 @@
 #import "Globle.h"
 #import "PhotoCell.h"
 #import "ArticleItem.h"
+#import "GlobalConfigure.h"
 
 static CGFloat const kMaxAngle = 0.1;
 static CGFloat const kMaxOffset = 20;
@@ -66,6 +67,9 @@ static CGFloat const kMaxOffset = 20;
     self.view.frame = CGRectMake(0, 0, [Globle shareInstance].globleWidth, [Globle shareInstance].globleHeight);
     //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background-2.png"]];
     UIImage *image = [UIImage imageNamed:@"Background.png"];
+    if (IPhone5) {
+        image = [UIImage imageNamed:@"Backgroundh.png"];
+    }
     UIImageView *bg = [[UIImageView alloc] initWithImage:image];
     bg.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
     bg.alpha = 0.5f;
@@ -446,13 +450,15 @@ static CGFloat const kMaxOffset = 20;
                                    
                                    //取附件里的第一张图,如果没有就尝试取缩略图
                                    aComment.firstPicURL = nil;
-                                   NSArray *attachmentsArray = [commentDictionary objectForKey:@"attachments"];
-                                   if ([attachmentsArray count]>0) {
-                                       NSDictionary *attachmentDic = attachmentsArray[0];
-                                       aComment.firstPicURL = [NSURL URLWithString:[[[[attachmentDic objectForKey:@"images"] valueForKey:@"small-feature"] valueForKey:@"url"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-                                   }else {
-                                       aComment.firstPicURL = [NSURL URLWithString:[[commentDictionary valueForKey:@"thumbnail"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-                                   }
+                                   aComment.firstPicURL = [NSURL URLWithString:[[commentDictionary valueForKey:@"thumbnail"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+//                                   aComment.firstPicURL = nil;
+//                                   NSArray *attachmentsArray = [commentDictionary objectForKey:@"attachments"];
+//                                   if ([attachmentsArray count]>0) {
+//                                       NSDictionary *attachmentDic = attachmentsArray[0];
+//                                       aComment.firstPicURL = [NSURL URLWithString:[[[[attachmentDic objectForKey:@"images"] valueForKey:@"small-feature"] valueForKey:@"url"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+//                                   }else {
+//                                       aComment.firstPicURL = [NSURL URLWithString:[[commentDictionary valueForKey:@"thumbnail"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+//                                   }
                                    
                                    // add the comment to the mutable array
                                    [_comments addObject:aComment];

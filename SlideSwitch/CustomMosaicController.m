@@ -9,6 +9,7 @@
 #import "CustomMosaicController.h"
 #import "MosaicData.h"
 #import "MosaicDataView.h"
+#import "GlobalConfigure.h"
 #import "Globle.h"
 #import "MosaicData.h"
 
@@ -154,6 +155,9 @@
     self.view.backgroundColor = [UIColor clearColor];
     self.view.backgroundColor = [UIColor whiteColor];
     UIImage *image = [UIImage imageNamed:@"Background.png"];
+    if (IPhone5) {
+        image = [UIImage imageNamed:@"Backgroundh.png"];
+    }
     UIImageView *bg = [[UIImageView alloc] initWithImage:image];
     bg.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
     bg.alpha = 0.5f;
@@ -395,14 +399,7 @@
                                    
                                    //取附件里的第一张图,如果没有就尝试取缩略图
                                    aComment.firstPicURL = nil;
-                                   NSArray *attachmentsArray = [commentDictionary objectForKey:@"attachments"];
-                                   if ([attachmentsArray count]>0) {
-                                       NSDictionary *attachmentDic = attachmentsArray[0];
-                                       aComment.firstPicURL = [NSURL URLWithString:[[[[attachmentDic objectForKey:@"images"] valueForKey:@"full"] valueForKey:@"url"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-                                   }else {
-                                       aComment.firstPicURL = [NSURL URLWithString:[[commentDictionary valueForKey:@"thumbnail"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-                                   }
-                                   
+                                   aComment.firstPicURL = [NSURL URLWithString:[[commentDictionary valueForKey:@"thumbnail"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
                                    // add the comment to the mutable array
                                    [_comments addObject:aComment];
                                }

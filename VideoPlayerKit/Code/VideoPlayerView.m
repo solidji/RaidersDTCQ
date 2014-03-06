@@ -71,7 +71,7 @@
         _volumeView = [[MPVolumeView alloc] init];
         [_volumeView setShowsRouteButton:YES];
         [_volumeView setShowsVolumeSlider:NO];
-        [_playerControlBar addSubview:_volumeView];
+        //[_playerControlBar addSubview:_volumeView];//遮盖住了暂停按钮
         
         // Listen to alpha changes to know when other routes are available
         for (UIButton *button in [_volumeView subviews]) {
@@ -171,10 +171,12 @@
                                             _activityIndicator.frame.size.width,
                                             _activityIndicator.frame.size.height)];
     
-    [_playPauseButton setFrame:CGRectMake(0,
-                                          0,
-                                          PLAYER_CONTROL_BAR_HEIGHT,
-                                          PLAYER_CONTROL_BAR_HEIGHT)];
+    CGRect playPauseButtonFrame = CGRectMake(0,
+                                             0,
+                                             PLAYER_CONTROL_BAR_HEIGHT,
+                                             PLAYER_CONTROL_BAR_HEIGHT);
+    
+    [_playPauseButton setFrame:playPauseButtonFrame];
     
     CGRect fullScreenButtonFrame = CGRectMake(bounds.size.width - PLAYER_CONTROL_BAR_HEIGHT,
                                               0,

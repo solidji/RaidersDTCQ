@@ -7,18 +7,22 @@
 //
 
 #import "AppDelegate.h"
-#import "HomeScrollView.h"
+#import "HomeTabViewController.h"
 #import "iVersion.h"//StoreKit framework.
 #import "APService.h"
 #import <ShareSDK/ShareSDK.h>
 #import "SVWebViewController.h"
+#import "GHRootViewController.h"
 #import "GlobalConfigure.h"
 #import "Globle.h"
+
+#import "MDSlideNavigationViewController.h"
 
 #pragma mark -
 #pragma mark Private Interface
 @interface AppDelegate ()
 @property (nonatomic, strong) NSDictionary *pushInfo;
+
 @end
 
 @implementation AppDelegate
@@ -42,35 +46,36 @@
 #pragma mark UIApplicationDelegate
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    //    NSArray *familyNames =[[NSArray alloc]initWithArray:[UIFont familyNames]];
-    //    NSArray *fontNames;
-    //    NSInteger indFamily, indFont;
-    //
-    //    for(indFamily=0;indFamily<[familyNames count];++indFamily)
-    //	{
-    //        NSLog(@"Family name: %@", [familyNames objectAtIndex:indFamily]);
-    //        fontNames =[[NSArray alloc]initWithArray:[UIFont fontNamesForFamilyName:[familyNames objectAtIndex:indFamily]]];
-    //        for(indFont=0; indFont<[fontNames count]; ++indFont)
-    //        {
-    //            //NSLog(@"Font name: %@",[fontNames objectAtIndex:indFont]);
-    //        }
-    //	}
+//    NSArray *familyNames =[[NSArray alloc]initWithArray:[UIFont familyNames]];
+//    NSArray *fontNames;
+//    NSInteger indFamily, indFont;
+//
+//    for(indFamily=0;indFamily<[familyNames count];++indFamily)
+//	{
+//        NSLog(@"Family name: %@", [familyNames objectAtIndex:indFamily]);
+//        fontNames =[[NSArray alloc]initWithArray:[UIFont fontNamesForFamilyName:[familyNames objectAtIndex:indFamily]]];
+//        for(indFont=0; indFont<[fontNames count]; ++indFont)
+//        {
+//            //NSLog(@"Font name: %@",[fontNames objectAtIndex:indFont]);
+//        }
+//	}
     
     CGRect screenRect = [[UIScreen mainScreen] bounds];
+    CGRect appBound = [[UIScreen mainScreen] applicationFrame];
     [Globle shareInstance].globleWidth = screenRect.size.width; //屏幕宽度
-    [Globle shareInstance].globleHeight = screenRect.size.height-20;  //屏幕高度（无顶栏）
+    [Globle shareInstance].globleHeight = appBound.size.height;  //屏幕高度（无顶栏）
     [Globle shareInstance].globleAllHeight = screenRect.size.height;  //屏幕高度（有顶栏）
     
-    //ShareSDK
-    [ShareSDK registerApp:@"47cac82fef6"];
-    //添加新浪微博应用
-    [ShareSDK connectSinaWeiboWithAppKey:@"3505932130"
-                               appSecret:@"3d909b20ba5ef58078420f1f940f3765"
-                             redirectUri:@"http://www.appgame.com"];
-    
-    //添加腾讯微博应用
-    [ShareSDK connectTencentWeiboWithAppKey:@"801370579"
-                                  appSecret:@"e0f171e1c89d1b38bcbe54808ad5bbc7" redirectUri:@"http://www.appgame.com"];
+//    //ShareSDK
+//    [ShareSDK registerApp:@"47cac82fef6"];
+//    //添加新浪微博应用
+//    [ShareSDK connectSinaWeiboWithAppKey:@"3505932130"
+//                               appSecret:@"3d909b20ba5ef58078420f1f940f3765"
+//                             redirectUri:@"http://www.appgame.com"];
+//    
+//    //添加腾讯微博应用
+//    [ShareSDK connectTencentWeiboWithAppKey:@"801370579"
+//                                  appSecret:@"e0f171e1c89d1b38bcbe54808ad5bbc7" redirectUri:@"http://www.appgame.com"];
     
     // jpush
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
@@ -114,7 +119,7 @@
     }
     
     //iVersion 更新检测
-    [iVersion sharedInstance].appStoreID = 659534801;
+    [iVersion sharedInstance].appStoreID = 717176414;
     
     
     //初始化
@@ -129,8 +134,8 @@
     }
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    //self.window.rootViewController = self.revealController;
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[HomeScrollView alloc] initWithTitle:@"刀塔英雄攻略"]];
+    //self.window.rootViewController = [[HomeTabViewController alloc] initWithTitle:@"神雕侠侣攻略"];
+    self.window.rootViewController = [[MDSlideNavigationViewController alloc] initWithRootViewController:[[HomeTabViewController alloc] initWithTitle:@"HelloHero攻略"]];
     [self.window makeKeyAndVisible];
     
     //[NSThread sleepForTimeInterval:1];
@@ -167,7 +172,7 @@
             [standardDefaults setBool:YES forKey:kReviewTrollerDoneDefault];
             [standardDefaults synchronize];
             
-            NSString *appId = @"659534801";
+            NSString *appId = @"717176414";
             
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=%@", appId]]];
         }else {
@@ -195,9 +200,22 @@
     NSLog(@"launchNotification");//仅在程序关闭时收到推送被调用
     NSString *urlField = [userInfo valueForKey:@"url"]; //自定义参数，key是自己定义的
     if (urlField != nil) {
-        SVWebViewController *viewController = [[SVWebViewController alloc] initWithURL:[NSURL URLWithString:urlField]];
+        GHRootViewController *viewController = [[GHRootViewController alloc] initWithTitle:@"消息页面" withUrl:urlField];
         [(UINavigationController *)self.window.rootViewController pushViewController:viewController animated:YES];
     }
+//    NSLog(@"launchNotification");//仅在程序关闭时收到推送被调用
+//    NSString *urlField = [userInfo valueForKey:@"url"]; //自定义参数，key是自己定义的
+//    if (urlField != nil) {
+//
+//        UINavigationController *pushViewController = [[UINavigationController alloc] initWithRootViewController:[[GHRootViewController alloc] initWithTitle:@"消息页面" withUrl:urlField withRevealBlock:revealBlock]];
+//        self.revealController.contentViewController = pushViewController;//设置默认页面
+//        
+//        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self.revealController
+//                                                                                     action:@selector(dragContentView:)];
+//        panGesture.cancelsTouchesInView = YES;
+//        //[((UINavigationController *)obj2).navigationBar addGestureRecognizer:panGesture];
+//        [pushViewController.view addGestureRecognizer:panGesture];
+//    }
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {

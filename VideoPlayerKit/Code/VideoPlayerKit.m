@@ -133,6 +133,8 @@ NSString * const kTrackEventVideoComplete = @"Video Complete";
 
     _currentVideoInfo = [[NSDictionary alloc] init];
     
+    //[_videoPlayerView.playPauseButton addTarget:self action:@selector(playPauseHandler) forControlEvents:UIControlEventTouchUpInside];
+    
     [_videoPlayerView.playPauseButton addTarget:self action:@selector(playPauseHandler) forControlEvents:UIControlEventTouchUpInside];
     
     [_videoPlayerView.fullScreenButton addTarget:self action:@selector(fullScreenButtonHandler) forControlEvents:UIControlEventTouchUpInside];
@@ -190,6 +192,12 @@ NSString * const kTrackEventVideoComplete = @"Video Complete";
 
 - (void)playVideoWithTitle:(NSString *)title URL:(NSURL *)url videoID:(NSString *)videoID shareURL:(NSURL *)shareURL isStreaming:(BOOL)streaming playInFullScreen:(BOOL)playInFullScreen
 {
+    self.playerIsBuffering = NO;
+    scrubBuffering = NO;
+    playWhenReady = YES;
+    // Configuration is done, ready to start.
+    //[self updatePlaybackProgress];
+    
     [self.videoPlayer pause];
     
     [[_videoPlayerView activityIndicator] startAnimating];
@@ -403,7 +411,7 @@ NSString * const kTrackEventVideoComplete = @"Video Complete";
 - (void)pinchGesture:(id)sender
 {
     if([(UIPinchGestureRecognizer *)sender state] == UIGestureRecognizerStateEnded) {
-        [self fullScreenButtonHandler];
+        //[self fullScreenButtonHandler];
     }
 }
 

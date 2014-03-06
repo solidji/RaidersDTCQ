@@ -73,20 +73,20 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
     self.navigationItem.leftBarButtonItem = temporaryLeftBarButtonItem;
     
-    UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    rightButton.frame = CGRectMake(0, 0, 52, 52);
-    //[rightButton setBackgroundImage:[UIImage imageNamed:@"Share-right.png"] forState:UIControlStateNormal];
-    [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-    [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-    [rightButton setShowsTouchWhenHighlighted:YES];
-    [rightButton addTarget:self action:@selector(shareClicked:) forControlEvents:UIControlEventTouchUpInside];
-    [rightButton setTitle:@"分享" forState:UIControlStateNormal];
-    [rightButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15.0]];
-    rightButton.titleLabel.textColor = [UIColor whiteColor];
-
-    UIBarButtonItem *temporaryRightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
-    temporaryRightBarButtonItem.style = UIBarButtonItemStylePlain;
-    self.navigationItem.rightBarButtonItem = temporaryRightBarButtonItem;
+//    UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    rightButton.frame = CGRectMake(0, 0, 52, 52);
+//    //[rightButton setBackgroundImage:[UIImage imageNamed:@"Share-right.png"] forState:UIControlStateNormal];
+//    [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+//    [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+//    [rightButton setShowsTouchWhenHighlighted:YES];
+//    [rightButton addTarget:self action:@selector(shareClicked:) forControlEvents:UIControlEventTouchUpInside];
+//    [rightButton setTitle:@"分享" forState:UIControlStateNormal];
+//    [rightButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15.0]];
+//    rightButton.titleLabel.textColor = [UIColor whiteColor];
+//
+//    UIBarButtonItem *temporaryRightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+//    temporaryRightBarButtonItem.style = UIBarButtonItemStylePlain;
+//    self.navigationItem.rightBarButtonItem = temporaryRightBarButtonItem;
     
     self.title = title;
     return self;
@@ -102,6 +102,9 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     //self.view.frame = CGRectMake(0, 0, [Globle shareInstance].globleWidth, [Globle shareInstance].globleHeight);
     //self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background-2.png"]];
     UIImage *image = [UIImage imageNamed:@"Background.png"];
+    if (IPhone5) {
+        image = [UIImage imageNamed:@"Backgroundh.png"];
+    }
     UIImageView *bg = [[UIImageView alloc] initWithImage:image];
     bg.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
     bg.alpha = 0.5f;
@@ -160,12 +163,12 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
         [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
         
         if ([self.navigationController.toolbar respondsToSelector:@selector(setBackgroundImage:forToolbarPosition:barMetrics:)]) {
-            [self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"fot.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+            [self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"tabbarbg.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
         }
         self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:UITextAttributeTextColor];
     }else {//IOS4
         
-        [self.navigationController.toolbar insertSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fot.png"]] atIndex:0];
+        [self.navigationController.toolbar insertSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tabbarbg.png"]] atIndex:0];
     }
 }
 
