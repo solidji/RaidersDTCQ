@@ -9,7 +9,7 @@
 #import "SVWebViewController.h"
 #import "AFHTTPClient.h"
 #import "AFXMLRequestOperation.h"
-#import <ShareSDK/ShareSDK.h>
+//#import <ShareSDK/ShareSDK.h>
 #import "GlobalConfigure.h"
 
 @interface SVWebViewController () <UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
@@ -46,7 +46,6 @@
 - (void)goForwardClicked:(UIBarButtonItem *)sender;
 - (void)reloadClicked:(UIBarButtonItem *)sender;
 - (void)stopClicked:(UIBarButtonItem *)sender;
-- (void)actionButtonClicked:(UIBarButtonItem *)sender;
 
 - (void)goFavoriteClicked:(UIButton *)sender;
 - (void)goCommentClicked:(UIButton *)sender;
@@ -144,7 +143,7 @@
 - (UIBarButtonItem *)actionBarButtonItem {
     
     if (!actionBarButtonItem) {
-        actionBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonClicked:)];
+        actionBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareClicked:)];
     }
     return actionBarButtonItem;
 }
@@ -794,185 +793,90 @@
 - (void)shareClicked:(UIButton *)sender {
     
     
-    ArticleItem *aArticleItem = (ArticleItem*)self.htmlString;
-	NSString *shareString =  [NSString stringWithFormat:@"%@\r\n%@\r\n---任玩堂", aArticleItem.title, aArticleItem.articleURL];
-    
-    if (self.htmlString == nil) {
-        shareString =  [NSString stringWithFormat:@"%@\r\n%@\r\n---任玩堂", [self.mainWebView stringByEvaluatingJavaScriptFromString:@"document.title"], self.mainWebView.request.URL.absoluteString];
-    }
-    
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        id<ISSContainer> container = [ShareSDK container];
-        [container setIPadContainerWithView:self.navigationItem.rightBarButtonItem.customView arrowDirect:UIPopoverArrowDirectionUp];
-        NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"logoshare" ofType:@"jpg"];
-        //构造分享内容
-        id<ISSContent> publishContent = [ShareSDK content:shareString
-                                           defaultContent:@"默认分享内容,没内容时显示"
-                                                    image:[ShareSDK imageWithPath:imagePath]
-                                                    title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
-        
-        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, nil];//ShareTypeSMS, ShareTypeAirPrint, ShareTypeCopy
-        [ShareSDK showShareActionSheet:container shareList:shareList
-                               content:publishContent
-                         statusBarTips:YES
-                           authOptions:[ShareSDK authOptionsWithAutoAuth:YES
-                                                           allowCallback:NO
-                                                           authViewStyle:SSAuthViewStyleModal
-                                                            viewDelegate:nil
-                                                 authManagerViewDelegate:nil]
-                          shareOptions:[ShareSDK defaultShareOptionsWithTitle:@"分享"
-                                                              oneKeyShareList:shareList
-                                                               qqButtonHidden:YES
-                                                        wxSessionButtonHidden:YES
-                                                       wxTimelineButtonHidden:YES
-                                                         showKeyboardOnAppear:NO
-                                                            shareViewDelegate:nil
-                                                          friendsViewDelegate:nil
-                                                        picViewerViewDelegate:nil]
-                                result:^(ShareType type, SSPublishContentState state,
-                                         id<ISSStatusInfo> statusInfo, id<ICMErrorInfo> error, BOOL end) {
-                                    if (state == SSPublishContentStateSuccess)
-                                    {
-                                        NSLog(@"分享成功");
-                                    }
-                                    else if (state == SSPublishContentStateFail) {
-                                        NSLog(@"分享失败,错误码:%d,错误描述:%@", [error errorCode], [error errorDescription]);
-                                    } }];
-        
-        //[self.pageActionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
-    }else {
-        NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"logoshare" ofType:@"jpg"];
-        //构造分享内容
-        id<ISSContent> publishContent = [ShareSDK content:shareString
-                                           defaultContent:@"默认分享内容,没内容时显示"
-                                                    image:[ShareSDK imageWithPath:imagePath]
-                                                    title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
-        
-        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, nil];//ShareTypeSMS, ShareTypeAirPrint, ShareTypeCopy
-        [ShareSDK showShareActionSheet:nil shareList:shareList
-                               content:publishContent
-                         statusBarTips:YES
-                           authOptions:[ShareSDK authOptionsWithAutoAuth:YES
-                                                           allowCallback:NO
-                                                           authViewStyle:SSAuthViewStyleModal
-                                                            viewDelegate:nil
-                                                 authManagerViewDelegate:nil]
-                          shareOptions:[ShareSDK defaultShareOptionsWithTitle:@"分享"
-                                                              oneKeyShareList:shareList
-                                                               qqButtonHidden:YES
-                                                        wxSessionButtonHidden:YES
-                                                       wxTimelineButtonHidden:YES
-                                                         showKeyboardOnAppear:NO
-                                                            shareViewDelegate:nil
-                                                          friendsViewDelegate:nil
-                                                        picViewerViewDelegate:nil]
-                                result:^(ShareType type, SSPublishContentState state,
-                                         id<ISSStatusInfo> statusInfo, id<ICMErrorInfo> error, BOOL end) {
-                                    if (state == SSPublishContentStateSuccess)
-                                    {
-                                        NSLog(@"分享成功");
-                                    }
-                                    else if (state == SSPublishContentStateFail) {
-                                        NSLog(@"分享失败,错误码:%d,错误描述:%@", [error errorCode], [error errorDescription]);
-                                    } }];
-    }
+//    ArticleItem *aArticleItem = (ArticleItem*)self.htmlString;
+//	NSString *shareString =  [NSString stringWithFormat:@"%@\r\n%@\r\n---任玩堂", aArticleItem.title, aArticleItem.articleURL];
+//    
+//    if (self.htmlString == nil) {
+//        shareString =  [NSString stringWithFormat:@"%@\r\n%@\r\n---任玩堂", [self.mainWebView stringByEvaluatingJavaScriptFromString:@"document.title"], self.mainWebView.request.URL.absoluteString];
+//    }
+//    
+//    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+//        id<ISSContainer> container = [ShareSDK container];
+//        [container setIPadContainerWithView:self.navigationItem.rightBarButtonItem.customView arrowDirect:UIPopoverArrowDirectionUp];
+//        NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"logoshare" ofType:@"jpg"];
+//        //构造分享内容
+//        id<ISSContent> publishContent = [ShareSDK content:shareString
+//                                           defaultContent:@"默认分享内容,没内容时显示"
+//                                                    image:[ShareSDK imageWithPath:imagePath]
+//                                                    title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
+//        
+//        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, nil];//ShareTypeSMS, ShareTypeAirPrint, ShareTypeCopy
+//        [ShareSDK showShareActionSheet:container shareList:shareList
+//                               content:publishContent
+//                         statusBarTips:YES
+//                           authOptions:[ShareSDK authOptionsWithAutoAuth:YES
+//                                                           allowCallback:NO
+//                                                           authViewStyle:SSAuthViewStyleModal
+//                                                            viewDelegate:nil
+//                                                 authManagerViewDelegate:nil]
+//                          shareOptions:[ShareSDK defaultShareOptionsWithTitle:@"分享"
+//                                                              oneKeyShareList:shareList
+//                                                               qqButtonHidden:YES
+//                                                        wxSessionButtonHidden:YES
+//                                                       wxTimelineButtonHidden:YES
+//                                                         showKeyboardOnAppear:NO
+//                                                            shareViewDelegate:nil
+//                                                          friendsViewDelegate:nil
+//                                                        picViewerViewDelegate:nil]
+//                                result:^(ShareType type, SSPublishContentState state,
+//                                         id<ISSStatusInfo> statusInfo, id<ICMErrorInfo> error, BOOL end) {
+//                                    if (state == SSPublishContentStateSuccess)
+//                                    {
+//                                        NSLog(@"分享成功");
+//                                    }
+//                                    else if (state == SSPublishContentStateFail) {
+//                                        NSLog(@"分享失败,错误码:%d,错误描述:%@", [error errorCode], [error errorDescription]);
+//                                    } }];
+//        
+//        //[self.pageActionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
+//    }else {
+//        NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"logoshare" ofType:@"jpg"];
+//        //构造分享内容
+//        id<ISSContent> publishContent = [ShareSDK content:shareString
+//                                           defaultContent:@"默认分享内容,没内容时显示"
+//                                                    image:[ShareSDK imageWithPath:imagePath]
+//                                                    title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
+//        
+//        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, nil];//ShareTypeSMS, ShareTypeAirPrint, ShareTypeCopy
+//        [ShareSDK showShareActionSheet:nil shareList:shareList
+//                               content:publishContent
+//                         statusBarTips:YES
+//                           authOptions:[ShareSDK authOptionsWithAutoAuth:YES
+//                                                           allowCallback:NO
+//                                                           authViewStyle:SSAuthViewStyleModal
+//                                                            viewDelegate:nil
+//                                                 authManagerViewDelegate:nil]
+//                          shareOptions:[ShareSDK defaultShareOptionsWithTitle:@"分享"
+//                                                              oneKeyShareList:shareList
+//                                                               qqButtonHidden:YES
+//                                                        wxSessionButtonHidden:YES
+//                                                       wxTimelineButtonHidden:YES
+//                                                         showKeyboardOnAppear:NO
+//                                                            shareViewDelegate:nil
+//                                                          friendsViewDelegate:nil
+//                                                        picViewerViewDelegate:nil]
+//                                result:^(ShareType type, SSPublishContentState state,
+//                                         id<ISSStatusInfo> statusInfo, id<ICMErrorInfo> error, BOOL end) {
+//                                    if (state == SSPublishContentStateSuccess)
+//                                    {
+//                                        NSLog(@"分享成功");
+//                                    }
+//                                    else if (state == SSPublishContentStateFail) {
+//                                        NSLog(@"分享失败,错误码:%d,错误描述:%@", [error errorCode], [error errorDescription]);
+//                                    } }];
+//    }
 }
-- (void)actionButtonClicked:(id)sender {
-    
-    if(pageActionSheet)
-        return;
-	
-//    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-//        [self.pageActionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
-//    else
-//        [self.pageActionSheet showFromToolbar:self.navigationController.toolbar];
-    
-    //IADisquser *iaDisquser = [[IADisquser alloc] initWithIdentifier:@"disqus.com"];//path
-    //CommentViewController *viewController = [[CommentViewController alloc] initWithTitle:self.htmlString.title withUrl:self.htmlString.articleURL.absoluteString];
-    
-    ArticleItem *aArticleItem = (ArticleItem*)self.htmlString;
-	NSString *shareString =  [NSString stringWithFormat:@"%@\r\n%@\r\n---任玩堂", aArticleItem.title, aArticleItem.articleURL];
-    
-    if (self.htmlString == nil) {
-        shareString =  [NSString stringWithFormat:@"%@\r\n%@\r\n---任玩堂", [self.mainWebView stringByEvaluatingJavaScriptFromString:@"document.title"], self.mainWebView.request.URL.absoluteString];
-    }
-    
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        id<ISSContainer> container = [ShareSDK container];
-        [container setIPadContainerWithView:self.navigationItem.rightBarButtonItem.customView arrowDirect:UIPopoverArrowDirectionUp];
-        NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"logoshare" ofType:@"jpg"];
-        //构造分享内容
-        id<ISSContent> publishContent = [ShareSDK content:shareString
-                                           defaultContent:@"默认分享内容,没内容时显示"
-                                                    image:[ShareSDK imageWithPath:imagePath]
-                                                    title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
-        
-        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, ShareTypeSMS, ShareTypeAirPrint, nil];//ShareTypeCopy
-        [ShareSDK showShareActionSheet:container shareList:shareList
-                               content:publishContent
-                         statusBarTips:YES
-                           authOptions:[ShareSDK authOptionsWithAutoAuth:YES
-                                                           allowCallback:NO
-                                                           authViewStyle:SSAuthViewStyleModal
-                                                            viewDelegate:nil
-                                                 authManagerViewDelegate:nil]
-                          shareOptions:[ShareSDK defaultShareOptionsWithTitle:@"分享"
-                                                              oneKeyShareList:shareList
-                                                               qqButtonHidden:YES
-                                                        wxSessionButtonHidden:YES
-                                                       wxTimelineButtonHidden:YES
-                                                         showKeyboardOnAppear:NO
-                                                            shareViewDelegate:nil
-                                                          friendsViewDelegate:nil
-                                                        picViewerViewDelegate:nil]
-                                result:^(ShareType type, SSPublishContentState state,
-                                         id<ISSStatusInfo> statusInfo, id<ICMErrorInfo> error, BOOL end) {
-                                    if (state == SSPublishContentStateSuccess)
-                                    {
-                                        NSLog(@"分享成功");
-                                    }
-                                    else if (state == SSPublishContentStateFail) {
-                                        NSLog(@"分享失败,错误码:%d,错误描述:%@", [error errorCode], [error errorDescription]);
-                                    } }];
-        
-        //[self.pageActionSheet showFromBarButtonItem:self.actionBarButtonItem animated:YES];
-    }else {
-        NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"logoshare" ofType:@"jpg"];
-        //构造分享内容
-        id<ISSContent> publishContent = [ShareSDK content:shareString
-                                           defaultContent:@"默认分享内容,没内容时显示"
-                                                    image:[ShareSDK imageWithPath:imagePath]
-                                                    title:@"任玩堂" url:@"http://www.appgame.com" description:@"这是⼀条信息" mediaType:SSPublishContentMediaTypeNews];
-        
-        NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo, ShareTypeTencentWeibo, ShareTypeMail, ShareTypeSMS, ShareTypeAirPrint, nil];//ShareTypeCopy
-        [ShareSDK showShareActionSheet:nil shareList:shareList
-                               content:publishContent
-                         statusBarTips:YES
-                           authOptions:[ShareSDK authOptionsWithAutoAuth:YES
-                                                           allowCallback:NO
-                                                           authViewStyle:SSAuthViewStyleModal
-                                                            viewDelegate:nil
-                                                 authManagerViewDelegate:nil]
-                          shareOptions:[ShareSDK defaultShareOptionsWithTitle:@"分享"
-                                                              oneKeyShareList:shareList
-                                                               qqButtonHidden:YES
-                                                        wxSessionButtonHidden:YES
-                                                       wxTimelineButtonHidden:YES
-                                                         showKeyboardOnAppear:NO
-                                                            shareViewDelegate:nil
-                                                          friendsViewDelegate:nil
-                                                        picViewerViewDelegate:nil]
-                                result:^(ShareType type, SSPublishContentState state,
-                                         id<ISSStatusInfo> statusInfo, id<ICMErrorInfo> error, BOOL end) {
-                                    if (state == SSPublishContentStateSuccess)
-                                    {
-                                        NSLog(@"分享成功");
-                                    }
-                                    else if (state == SSPublishContentStateFail) {
-                                        NSLog(@"分享失败,错误码:%d,错误描述:%@", [error errorCode], [error errorDescription]);
-                                    } }];
-    }
-}
+
 
 - (void)doneButtonClicked:(id)sender {
     //[self dismissModalViewControllerAnimated:YES];
