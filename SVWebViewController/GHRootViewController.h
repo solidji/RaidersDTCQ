@@ -21,7 +21,7 @@ typedef NSUInteger GHWebViewControllerAvailableActions;
 typedef void (^RevealBlock)();
 //UIViewController
 @interface GHRootViewController : UIViewController <UIWebViewDelegate,UIGestureRecognizerDelegate>{
-    
+    UIWebView *mainWebView;
     NSURL *webURL;
     UIActivityIndicatorView *activityIndicator;
 @private
@@ -29,9 +29,11 @@ typedef void (^RevealBlock)();
 }
 
 @property (nonatomic, strong) NSURL *webURL;
+@property (nonatomic, strong) UIWebView *mainWebView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, readwrite) GHWebViewControllerAvailableActions availableActions;
 
 - (id)initWithTitle:(NSString *)title withUrl:(NSString *)url withRevealBlock:(RevealBlock)revealBlock;
 - (id)initWithTitle:(NSString *)title withUrl:(NSString *)url;
+- (void)reloadClicked;
 @end

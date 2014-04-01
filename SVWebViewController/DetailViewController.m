@@ -472,10 +472,10 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
                                        contentHtml = [contentHtml stringByReplacingOccurrencesOfString:@"<!--content-->" withString:aArticle.content];
                                        aArticle.content = contentHtml;
                                        
-                                       SVWebViewController *viewController = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];
+                                       SVWebViewController *vc = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];
                                        
                                        //NSLog(@"didSelectArticle:%@",aArticle.content);
-                                       [self.navigationController pushViewController:viewController animated:YES];
+                                       [self.navigationController pushViewController:vc animated:YES];
                                    }
                                }
                            }

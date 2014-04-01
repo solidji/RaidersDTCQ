@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PullToRefreshTableView.h"
+//#import "PullToRefreshTableView.h"
 #import "AlerViewManager.h"
 #import "TFIndicatorView.h"
 
@@ -15,7 +15,7 @@
 {
     NSString *searchStr;
     UISearchBar *_searchBar;
-    PullToRefreshTableView *searchView;
+    UITableView *searchView;
     NSMutableArray *articles;//搜索结果,文章数据源
     AlerViewManager *alerViewManager;
     TFIndicatorView *etActivity;
@@ -25,12 +25,9 @@
 }
 
 @property (nonatomic, copy) NSString *searchStr;
-@property (nonatomic, strong) PullToRefreshTableView *searchView;
+@property (nonatomic, strong) UITableView *searchView;
 @property (strong, nonatomic) NSMutableArray *articles;
 
 - (id)initWithTitle:(NSString *)title withFrame:(CGRect)frame;
-
-- (void)updateThread:(NSString *)returnKey;
-- (void)updateTableView;
 
 @end

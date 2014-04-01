@@ -11,6 +11,7 @@
 #import "AFXMLRequestOperation.h"
 //#import <ShareSDK/ShareSDK.h>
 #import "GlobalConfigure.h"
+#import "GHRootViewController.h"
 
 @interface SVWebViewController () <UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
 @property (nonatomic, strong, readonly) UIBarButtonItem *popBarButtonItem;
@@ -226,20 +227,20 @@
     temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
     self.navigationItem.leftBarButtonItem = temporaryLeftBarButtonItem;
     
-    UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    rightButton.frame = CGRectMake(0, 0, 52, 52);
-    //[rightButton setBackgroundImage:[UIImage imageNamed:@"Share-right.png"] forState:UIControlStateNormal];
-    [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-    [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-    [rightButton setShowsTouchWhenHighlighted:YES];
-    [rightButton addTarget:self action:@selector(shareClicked:) forControlEvents:UIControlEventTouchUpInside];
-    [rightButton setTitle:@"分享" forState:UIControlStateNormal];
-    [rightButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15.0]];
-    rightButton.titleLabel.textColor = [UIColor whiteColor];
-    
-    UIBarButtonItem *temporaryRightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
-    temporaryRightBarButtonItem.style = UIBarButtonItemStylePlain;
-    self.navigationItem.rightBarButtonItem = temporaryRightBarButtonItem;
+//    UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    rightButton.frame = CGRectMake(0, 0, 52, 52);
+//    //[rightButton setBackgroundImage:[UIImage imageNamed:@"Share-right.png"] forState:UIControlStateNormal];
+//    [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+//    [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+//    [rightButton setShowsTouchWhenHighlighted:YES];
+//    [rightButton addTarget:self action:@selector(shareClicked:) forControlEvents:UIControlEventTouchUpInside];
+//    [rightButton setTitle:@"分享" forState:UIControlStateNormal];
+//    [rightButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15.0]];
+//    rightButton.titleLabel.textColor = [UIColor whiteColor];
+//    
+//    UIBarButtonItem *temporaryRightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+//    temporaryRightBarButtonItem.style = UIBarButtonItemStylePlain;
+//    self.navigationItem.rightBarButtonItem = temporaryRightBarButtonItem;
     
     self.title = @"任玩堂";
     
@@ -594,15 +595,20 @@
         //[[UIApplication sharedApplication] openURL:[inRequest URL]];
         //NSLog(@"host:%@\npath:%@",[[inRequest URL] host],[[inRequest URL] path]);
         if ([[[inRequest URL] host] rangeOfString:@".appgame.com"].location != NSNotFound) {
-            if ([[[inRequest URL] host] rangeOfString:@"bbs.appgame.com"].location != NSNotFound) {
-                return YES;//对论坛站直接用网页打开
+            NSString *host = [[inRequest URL] host];
+            NSString *absolute = [[inRequest URL] absoluteString];
+            if ([[[inRequest URL] host] rangeOfString:@"bbs.appgame.com"].location != NSNotFound || absolute.length - host.length < 9) {
+                GHRootViewController * viewController= [[GHRootViewController alloc] initWithTitle:@"论坛" withUrl:inRequest.URL.absoluteString];
+                [viewController.mainWebView loadRequest:[NSURLRequest requestWithURL:viewController.webURL]];
+                [self.navigationController pushViewController:viewController animated:YES];
+                return NO;//对论坛站或者主页面直接用网页打开self.mainWebView.request.URL.absoluteString
             }
-        //if (self.htmlString != nil) {
             NSLog(@"站内页面");
             AFHTTPClient *jsonapiClient = [AFHTTPClient clientWithBaseURL:[inRequest URL]];
             
             NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        @"get_post", @"json",
+                                        @"1", @"json",
+                                        @"attachments", @"exclude",
                                         nil];
             
             [jsonapiClient getPath:@""
@@ -612,22 +618,6 @@
                                __block NSString *jsonString = operation.responseString;
                                
                                //过滤掉w3tc缓存附加在json数据后面的
-                               /*
-                                <!-- W3 Total Cache: Page cache debug info:
-                                Engine:             memcached
-                                Cache key:          4e14f98a5d7a178df9c7d3251ace098d
-                                Caching:            enabled
-                                Status:             not cached
-                                Creation Time:      2.143s
-                                Header info:
-                                X-Powered-By:        PHP/5.4.14-1~precise+1
-                                X-W3TC-Minify:       On
-                                Last-Modified:       Sun, 12 May 2013 16:17:48 GMT
-                                Vary:
-                                X-Pingback:           http://www.appgame.com/xmlrpc.php
-                                Content-Type:         application/json; charset=UTF-8
-                                -->
-                                */
                                NSError *error;
                                //(.|\\s)*或([\\s\\S]*)可以匹配包括换行在内的任意字符
                                NSRegularExpression *regexW3tc = [NSRegularExpression
@@ -653,38 +643,59 @@
                                if (![code isEqualToString:@"ok"]) {   // there's an error
                                    NSLog(@"获取文章json异常:%@",inRequest.URL);
                                }else {
-                                   ArticleItem *aArticle = [[ArticleItem alloc] init];
-                                   aArticle.articleURL = inRequest.URL;
-                                   aArticle.title = [[responseDictionary objectForKey:@"post"] objectForKey:@"title"];
-                                   aArticle.creator = [[[responseDictionary objectForKey:@"post"] objectForKey:@"author"] objectForKey:@"nickname"];
                                    
-                                   aArticle.articleIconURL = [NSURL URLWithString:[[[responseDictionary objectForKey:@"post"] objectForKey:@"thumbnail"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                                   NSLog(@"isPage=%d",[[responseDictionary objectForKey:@"page"] count]);
+                                   if ([[responseDictionary objectForKey:@"page"] count] > 0) {
+                                       NSLog(@"是一个页面");
+                                       GHRootViewController *vc = [[GHRootViewController alloc] initWithTitle:@"任玩堂" withUrl:inRequest.URL.absoluteString];
+                                       [self.navigationController pushViewController:vc animated:YES];
+                                   }
                                    
-                                   aArticle.description = [[responseDictionary objectForKey:@"post"] objectForKey:@"excerpt"];
+                                   NSLog(@"isPosts=%d",[[responseDictionary objectForKey:@"posts"] count]);
+                                   if ([[responseDictionary objectForKey:@"posts"] count] > 0) {
+                                       NSLog(@"是一个列表");
+//                                       HomeViewController *viewController = [[HomeViewController alloc] initWithTitle:@"新闻" withUrl:inRequest.URL.absoluteString];
+//                                       [self.navigationController pushViewController:viewController animated:YES];
+                                       //return NO;
+                                   }
                                    
-                                   aArticle.content = [[responseDictionary objectForKey:@"post"] objectForKey:@"content"];
-                                   NSDateFormatter *df = [[NSDateFormatter alloc] init];
-                                   NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-                                   [df setLocale:locale];
-                                   [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-                                   
-                                   aArticle.pubDate = [df dateFromString:[[[responseDictionary objectForKey:@"post"] objectForKey:@"date"] stringByReplacingOccurrencesOfString:@"T" withString:@" "]];
-                                   
-                                   if (aArticle.content != nil) {
-                                       NSString *htmlFilePath = [[NSBundle mainBundle] pathForResource:@"appgame" ofType:@"html"];
-                                       NSString *htmlString = [NSString stringWithContentsOfFile:htmlFilePath encoding:NSUTF8StringEncoding error:nil];
-                                       NSString *contentHtml = @"";
-                                       NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                                       [dateFormatter setDateFormat:@"YYYY-MM-dd HH:mm"];
-                                       contentHtml = [contentHtml stringByAppendingFormat:htmlString,
-                                                      aArticle.title, aArticle.creator, [dateFormatter stringFromDate:aArticle.pubDate]];
-                                       contentHtml = [contentHtml stringByReplacingOccurrencesOfString:@"<!--content-->" withString:aArticle.content];
-                                       aArticle.content = contentHtml;
+                                   NSLog(@"isPost=%d",[[responseDictionary objectForKey:@"post"] count]);
+                                   if ([[responseDictionary objectForKey:@"post"] count] > 0) {
+                                       NSLog(@"是一篇文章");
                                        
-                                       SVWebViewController *viewController = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];
+                                       ArticleItem *aArticle = [[ArticleItem alloc] init];
+                                       aArticle.articleURL = inRequest.URL;
+                                       aArticle.title = [[responseDictionary objectForKey:@"post"] objectForKey:@"title"];
+                                       aArticle.creator = [[[responseDictionary objectForKey:@"post"] objectForKey:@"author"] objectForKey:@"nickname"];
                                        
-                                       //NSLog(@"didSelectArticle:%@",aArticle.content);
-                                       [self.navigationController pushViewController:viewController animated:YES];
+                                       aArticle.articleIconURL = [NSURL URLWithString:[[[responseDictionary objectForKey:@"post"] objectForKey:@"thumbnail"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                                       
+                                       aArticle.description = [[responseDictionary objectForKey:@"post"] objectForKey:@"excerpt"];
+                                       
+                                       aArticle.content = [[responseDictionary objectForKey:@"post"] objectForKey:@"content"];
+                                       NSDateFormatter *df = [[NSDateFormatter alloc] init];
+                                       NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+                                       [df setLocale:locale];
+                                       [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+                                       
+                                       aArticle.pubDate = [df dateFromString:[[[responseDictionary objectForKey:@"post"] objectForKey:@"date"] stringByReplacingOccurrencesOfString:@"T" withString:@" "]];
+                                       
+                                       if (aArticle.content != nil) {
+                                           NSString *htmlFilePath = [[NSBundle mainBundle] pathForResource:@"appgame" ofType:@"html"];
+                                           NSString *htmlString = [NSString stringWithContentsOfFile:htmlFilePath encoding:NSUTF8StringEncoding error:nil];
+                                           NSString *contentHtml = @"";
+                                           NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                                           [dateFormatter setDateFormat:@"YYYY-MM-dd HH:mm"];
+                                           contentHtml = [contentHtml stringByAppendingFormat:htmlString,
+                                                          aArticle.title, aArticle.creator, [dateFormatter stringFromDate:aArticle.pubDate]];
+                                           contentHtml = [contentHtml stringByReplacingOccurrencesOfString:@"<!--content-->" withString:aArticle.content];
+                                           aArticle.content = contentHtml;
+                                           
+                                           SVWebViewController *vc = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];
+                                           
+                                           //NSLog(@"didSelectArticle:%@",aArticle.content);
+                                           [self.navigationController pushViewController:vc animated:YES];
+                                       }
                                    }
                                }
                            }
@@ -693,15 +704,13 @@
                                NSLog(@"获取文章json失败:%@",error);
                            }];
             
-            
 //            SVWebViewController *viewController = [[SVWebViewController alloc] initWithURL:[inRequest URL]];
 //            [self.navigationController pushViewController:viewController animated:YES];
-        }else if([[[inRequest URL] host] rangeOfString:@"itunes.apple.com"].location != NSNotFound){
+        }else {
             NSLog(@"站外链接:%@",inRequest.URL);
-            //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"itms-apps://phobos.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=%@", @"586743861"]]];
-            [[UIApplication sharedApplication] openURL:inRequest.URL];
+            return YES;
         }
-        return NO;
+        return YES;
     }
     return YES;
 }

@@ -21,16 +21,22 @@
 #import "SearchViewController.h"
 
 @interface HomeViewController ()
-- (void)revealSidebar;
-- (void)getDatas:(NSString *)slug;
+@property (nonatomic, strong) MJRefreshHeaderView *header,*header2,*header3;
+
+@property (nonatomic) BOOL view2Loaded,view3Loaded;
+
+- (void)getDatasWithSlugAndRefreshview:(NSDictionary *)param;
+
+//- (void)getDatas:(NSString *)slug;
 - (void)goPopClicked:(UIBarButtonItem *)sender;
 - (void)gotoSearch;//搜索文章
 @end
 
 @implementation HomeViewController
 
-@synthesize dataList1,dataList2,dataList3,titleStr,categoryStr,webURL,myframe;
+@synthesize dataList1,dataList2,dataList3,segStr,categoryStr,webURL,myframe;
 @synthesize segOneTableView,segTwoTableView,segmentedPerson,segThreeTableView,segOneBtn,segTwoBtn,segThreeBtn;
+@synthesize header,header2,header3,view2Loaded,view3Loaded;
 
 #pragma mark - View lifecycle
 - (id)initWithTitle:(NSString *)title withUrl:(NSString *)url withFrame:(CGRect)frame{
@@ -148,7 +154,8 @@
     start3 = 0;
     receiveMember3 = 0;
     updating = NO;
-
+    view2Loaded = NO;
+    view3Loaded = NO;
     
     UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                                                                        action:@selector(goPopClicked:)];
@@ -157,7 +164,7 @@
     swipeGesture.cancelsTouchesInView = NO;
     [self.view addGestureRecognizer:swipeGesture];
         
-    segOneTableView = [[PullToRefreshTableView alloc] initWithFrame: CGRectMake(0, 40, self.view.bounds.size.width, self.view.bounds.size.height-40) withType: withStateViews];//[[UIScreen mainScreen] bounds].size.height-20
+    segOneTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 40, self.view.bounds.size.width, self.view.bounds.size.height-40)];//[[UIScreen mainScreen] bounds].size.height-20
     
     //[self.segOneTableView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
     segOneTableView.delegate = self;
@@ -173,8 +180,52 @@
     segOneTableView.tag = 10001;
     [self.view addSubview:segOneTableView];
 
-    segTwoTableView = [[PullToRefreshTableView alloc] initWithFrame: CGRectMake(0, 40, self.view.bounds.size.width, self.view.bounds.size.height-40) withType: withStateViews];//[[UIScreen mainScreen] bounds].size.height-20
+    __unsafe_unretained HomeViewController *vc = self;
+    //添加下拉刷新
+    header = [MJRefreshHeaderView header];
+    header.scrollView = self.segOneTableView;
     
+    header.beginRefreshingBlock = ^(MJRefreshBaseView *refreshView) {
+        // 进入刷新状态就会回调这个Block
+        
+        [vc.dataList1 removeAllObjects];
+        vc->start1 = 0;
+        vc->start = vc->start1;
+        [vc.segOneTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+        
+        NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:
+                               refreshView, @"refreshView",
+                               vc->categoryStr[0], @"slug",
+                               nil];
+        
+        [vc performSelectorOnMainThread:@selector(getDatasWithSlugAndRefreshview:) withObject:param waitUntilDone:NO];
+    };
+    header.endStateChangeBlock = ^(MJRefreshBaseView *refreshView) {
+        // 刷新完毕就会回调这个Block
+        LOG(@"%@----刷新完毕", refreshView.class);
+    };
+    header.refreshStateChangeBlock = ^(MJRefreshBaseView *refreshView, MJRefreshState state) {
+        // 控件的刷新状态切换了就会调用这个block
+        switch (state) {
+            case MJRefreshStateNormal:
+                LOG(@"%@----切换到：普通状态", refreshView.class);
+                break;
+                
+            case MJRefreshStatePulling:
+                LOG(@"%@----切换到：松开即可刷新的状态", refreshView.class);
+                break;
+                
+            case MJRefreshStateRefreshing:
+                LOG(@"%@----切换到：正在刷新状态", refreshView.class);
+                break;
+            default:
+                break;
+        }
+    };
+
+    
+    //segTwoTableView = [[PullToRefreshTableView alloc] initWithFrame: CGRectMake(0, 40, self.view.bounds.size.width, self.view.bounds.size.height-40) withType: withStateViews];//[[UIScreen mainScreen] bounds].size.height-20
+    segTwoTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 40, self.view.bounds.size.width, self.view.bounds.size.height-40)];//[[UIScreen mainScreen] bounds].size.height-20
 
     segTwoTableView.delegate = self;
     segTwoTableView.dataSource = self;
@@ -189,7 +240,47 @@
     segTwoTableView.tag = 10002;
     [self.view addSubview:segTwoTableView];
 
-    segThreeTableView = [[PullToRefreshTableView alloc] initWithFrame: CGRectMake(0, 40, self.view.bounds.size.width, self.view.bounds.size.height-40) withType: withStateViews];//[[UIScreen mainScreen] bounds].size.height-20
+    //添加下拉刷新
+    header2 = [MJRefreshHeaderView header];
+    header2.scrollView = self.segTwoTableView;
+    
+    header2.beginRefreshingBlock = ^(MJRefreshBaseView *refreshView) {
+        // 进入刷新状态就会回调这个Block
+
+        [vc.dataList2 removeAllObjects];
+        vc->start2 = 0;
+        vc->start = vc->start2;
+        [vc.segTwoTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+        
+        NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    refreshView, @"refreshView",
+                                    vc->categoryStr[1], @"slug",
+                                    nil];
+        
+        [vc performSelectorOnMainThread:@selector(getDatasWithSlugAndRefreshview:) withObject:param waitUntilDone:NO];
+    };
+
+    
+//    //添加上拉加载更多
+//    footer = [MJRefreshFooterView footer];
+//    footer.scrollView = self.segTwoTableView;
+//    footer.beginRefreshingBlock = ^(MJRefreshBaseView *refreshView) {
+//
+//        vc->start2 = [vc.dataList2 count]/20 + 1;
+//        vc->start = vc->start2;
+//        
+//        NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:
+//                               refreshView, @"refreshView",
+//                               vc->categoryStr[1], @"slug",
+//                               nil];
+//        [vc performSelectorOnMainThread:@selector(getDatasWithSlugAndRefreshview:) withObject:param waitUntilDone:NO];
+//        
+//        LOG(@"%@----开始进入刷新状态", refreshView.class);
+//    };//[refreshView endRefreshingWithoutIdle];//没有数据了
+    
+    
+    
+    segThreeTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 40, self.view.bounds.size.width, self.view.bounds.size.height-40)];//[[UIScreen mainScreen] bounds].size.height-20
     
 
     segThreeTableView.delegate = self;
@@ -205,6 +296,27 @@
     segThreeTableView.tag = 10003;
     [self.view addSubview:segThreeTableView];
 
+    //添加下拉刷新
+    header3 = [MJRefreshHeaderView header];
+    header3.scrollView = self.segThreeTableView;
+    
+    header3.beginRefreshingBlock = ^(MJRefreshBaseView *refreshView) {
+        // 进入刷新状态就会回调这个Block
+        
+        [vc.dataList3 removeAllObjects];
+        vc->start3 = 0;
+        vc->start = vc->start3;
+        [vc.segThreeTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+        
+        NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:
+                               refreshView, @"refreshView",
+                               vc->categoryStr[2], @"slug",
+                               nil];
+        
+        [vc performSelectorOnMainThread:@selector(getDatasWithSlugAndRefreshview:) withObject:param waitUntilDone:NO];
+    };
+    
+    
     //添加选项卡
     //UIImageView *segBg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"segmented-bg.png"]];
     UIView *segBg = [[UIView alloc] init];
@@ -279,19 +391,9 @@
     // Adding your control to the view
     [self.view addSubview:segmentedPerson];
     
-    // get array of articles    
-//    double delayInSeconds = 10.0;
-//    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-//    dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
-//                   ^(void){
-//                       //your code here
-//                       [self performSelectorInBackground:@selector(getDatas) withObject:nil];
-//                   });
-    //[self performSelectorInBackground:@selector(getDatas) withObject:nil];
-    //[self performSelectorOnMainThread:@selector(getDatas) withObject:nil waitUntilDone:NO];
-    [self getDatas:categoryStr[0]];
-    [self getDatas:categoryStr[1]];
-    [self getDatas:categoryStr[2]];
+    // get array of articles
+    [header beginRefreshing];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -304,6 +406,15 @@
         [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
         //self.navigationController.navigationBar.tintColor = [UIColor blackColor];
     }
+}
+
+- (void)dealloc
+{
+    LOG(@"MJCollectionViewController--dealloc---");
+    [header free];
+    [header2 free];
+    [header3 free];
+    //[_footer free];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -332,17 +443,25 @@
 - (void)segmentedControlValueChanged:(id)sender
 {
     AKSegmentedControl *segmented = (AKSegmentedControl *)sender;
-    NSLog(@"SegmentedControl : Selected Index %@,%d", [segmented selectedIndexes], segmented.tag);
+    LOG(@"SegmentedControl : Selected Index %@,%d", [segmented selectedIndexes], segmented.tag);
     
     if ([segmented selectedIndexes].firstIndex == 0) {
         [self.segOneTableView setHidden:NO];
         [self.segTwoTableView setHidden:YES];
         [self.segThreeTableView setHidden:YES];
     }else if ([segmented selectedIndexes].firstIndex == 1){
+        if (!view2Loaded) {
+            [header2 beginRefreshing];
+            view2Loaded = YES;
+        }
         [self.segOneTableView setHidden:YES];
         [self.segTwoTableView setHidden:NO];
         [self.segThreeTableView setHidden:YES];
     }else if ([segmented selectedIndexes].firstIndex == 2){
+        if (!view3Loaded) {
+            [header3 beginRefreshing];
+            view3Loaded = YES;
+        }
         [self.segOneTableView setHidden:YES];
         [self.segTwoTableView setHidden:YES];
         [self.segThreeTableView setHidden:NO];
@@ -350,9 +469,6 @@
 }
 
 #pragma mark - Class Methods
-- (void)revealSidebar {
-	_revealBlock();
-}
 
 - (void)gotoSearch{
     //设置搜索页出现
@@ -369,71 +485,24 @@
     }
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    if (scrollView.tag == 10001) {
-        [segOneTableView tableViewDidDragging];
-    }else if (scrollView.tag == 10002) {
-        [segTwoTableView tableViewDidDragging];
-    }else if (scrollView.tag == 10003) {
-        [segThreeTableView tableViewDidDragging];
-    }
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{    
-    if (scrollView.tag == 10001) {
-        NSInteger returnKey = [segOneTableView tableViewDidEndDragging];
-        
-        //  returnKey用来判断执行的拖动是下拉还是上拖，如果数据正在加载，则返回DO_NOTHING
-        if (returnKey != k_RETURN_DO_NOTHING)
-        {
-            NSString * key = [NSString stringWithFormat:@"%d", returnKey];
-            [NSThread detachNewThreadSelector:@selector(updateThread:) toTarget:self withObject:key];
-        }
-    }else if (scrollView.tag == 10002) {
-        NSInteger returnKey = [segTwoTableView tableViewDidEndDragging];
-        
-        //  returnKey用来判断执行的拖动是下拉还是上拖，如果数据正在加载，则返回DO_NOTHING
-        if (returnKey != k_RETURN_DO_NOTHING)
-        {
-            NSString * key = [NSString stringWithFormat:@"%d", returnKey];
-            [NSThread detachNewThreadSelector:@selector(updateThread2:) toTarget:self withObject:key];
-        }
-    }else if (scrollView.tag == 10003) {
-        NSInteger returnKey = [segThreeTableView tableViewDidEndDragging];
-        
-        //  returnKey用来判断执行的拖动是下拉还是上拖，如果数据正在加载，则返回DO_NOTHING
-        if (returnKey != k_RETURN_DO_NOTHING)
-        {
-            NSString * key = [NSString stringWithFormat:@"%d", returnKey];
-            [NSThread detachNewThreadSelector:@selector(updateThread3:) toTarget:self withObject:key];
-        }
-    }
-    
-    if (!decelerate)
-    {
-        //[self loadImagesForOnscreenRows];
-    }
-}
 
 #pragma mark -
 #pragma mark - UITableViewDelegate
 
 //某一行被选中,由ViewController来实现push详细页面
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    DetailViewController *viewController = [[DetailViewController alloc] initWithTitle:self.title];
+    DetailViewController *vc = [[DetailViewController alloc] initWithTitle:self.title];
     if(tableView.tag == 10001){
-        viewController.appData = self.dataList1;
+        vc.appData = self.dataList1;
     }else if(tableView.tag == 10002){
-        viewController.appData = self.dataList2;
+        vc.appData = self.dataList2;
     }else if(tableView.tag == 10003){
-        viewController.appData = self.dataList3;
+        vc.appData = self.dataList3;
     }
-    viewController.startIndex = indexPath.row;
+    vc.startIndex = indexPath.row;
 
     //NSLog(@"didSelectArticle:%@",aArticle.content);
-    [self.navigationController pushViewController:viewController animated:YES];
+    [self.navigationController pushViewController:vc animated:YES];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];//反选
 }
 
@@ -582,148 +651,71 @@
     return (ArticleItemCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    //自动载入更新数据,每次载入20条信息，在滚动到倒数第3条以内时，加载更多信息
+    if (tableView.tag == 10001) {
+        if (self.dataList1.count - indexPath.row < 3 && !updating && receiveMember >= 20) {
+            updating = YES;
+            NSLog(@"滚到最后了");
+            
+            start1 = [dataList1 count]/20 + 1;
+            start = start1;
+            
+            NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:
+                                   categoryStr[0], @"slug",
+                                   nil, @"refreshView",
+                                   nil];
+            [self performSelectorOnMainThread:@selector(getDatasWithSlugAndRefreshview:) withObject:param waitUntilDone:NO];
+            // update方法获取到结果后，设置updating为NO
+        }
+    }else if (tableView.tag == 10002) {
+        if (self.dataList2.count - indexPath.row < 3 && !updating && receiveMember2 >= 20) {
+            updating = YES;
+            NSLog(@"滚到最后了");
+            
+            start2 = [dataList2 count]/20 + 1;
+            start = start2;
+
+            NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:
+                                   categoryStr[1], @"slug",
+                                   nil, @"refreshView",
+                                   nil];
+            [self performSelectorOnMainThread:@selector(getDatasWithSlugAndRefreshview:) withObject:param waitUntilDone:NO];
+            // update方法获取到结果后，设置updating为NO
+        }
+    }else if (tableView.tag == 10003) {
+        if (self.dataList3.count - indexPath.row < 3 && !updating && receiveMember3 >= 20) {
+            updating = YES;
+            NSLog(@"滚到最后了");
+            
+            start3 = [dataList3 count]/20 + 1;
+            start = start3;
+            
+            NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:
+                                   categoryStr[2], @"slug",
+                                   nil, @"refreshView",
+                                   nil];
+            [self performSelectorOnMainThread:@selector(getDatasWithSlugAndRefreshview:) withObject:param waitUntilDone:NO];
+            // update方法获取到结果后，设置updating为NO
+        }
+    }
+    
+}
+
 #pragma mark -
 #pragma mark - Table View control
-
-- (void)updateThread:(NSString *)returnKey{
-    @autoreleasepool {
-        sleep(2);
-        switch ([returnKey intValue]) {
-            case k_RETURN_REFRESH:
-            {
-                [dataList1 removeAllObjects];
-                start1 = 0;
-                start = start1;
-                [self performSelectorOnMainThread:@selector(getDatas:) withObject:categoryStr[0] waitUntilDone:NO];
-                break;
-            }
-            case k_RETURN_LOADMORE:
-            {
-                start1 = [self.dataList1 count]/20 + 1;
-                start = start1;
-                [self performSelectorOnMainThread:@selector(getDatas:) withObject:categoryStr[0] waitUntilDone:NO];
-                break;
-            }
-            default:
-                break;
-        }
-    }
-    [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
-}
-
-- (void)updateThread2:(NSString *)returnKey{
-    @autoreleasepool {
-        sleep(2);
-        switch ([returnKey intValue]) {
-            case k_RETURN_REFRESH:
-            {
-                [dataList2 removeAllObjects];
-                start2 = 0;
-                start = start2;
-                [self performSelectorOnMainThread:@selector(getDatas:) withObject:categoryStr[1] waitUntilDone:NO];
-                break;
-            }
-            case k_RETURN_LOADMORE:
-            {
-                start2 = [self.dataList2 count]/20 + 1;
-                start = start2;
-                [self performSelectorOnMainThread:@selector(getDatas:) withObject:categoryStr[1] waitUntilDone:NO];
-                break;
-            }
-            default:
-                break;
-        }
-    }
-    [self performSelectorOnMainThread:@selector(updateTableView2) withObject:nil waitUntilDone:NO];
-}
-
-- (void)updateThread3:(NSString *)returnKey{
-    @autoreleasepool {
-        sleep(2);
-        switch ([returnKey intValue]) {
-            case k_RETURN_REFRESH:
-            {
-                [dataList3 removeAllObjects];
-                start3 = 0;
-                start = start3;
-                [self performSelectorOnMainThread:@selector(getDatas:) withObject:categoryStr[2] waitUntilDone:NO];
-                break;
-            }
-            case k_RETURN_LOADMORE:
-            {
-                start3 = [self.dataList3 count]/20 + 1;
-                start = start3;
-                [self performSelectorOnMainThread:@selector(getDatas:) withObject:categoryStr[2] waitUntilDone:NO];
-                break;
-            }
-            default:
-                break;
-        }
-    }
-    [self performSelectorOnMainThread:@selector(updateTableView3) withObject:nil waitUntilDone:NO];
-}
-
-- (void)updateTableView
-{
-    if (receiveMember  >= 20)
-        //if (hasNext)
-    {
-        //  一定要调用本方法，否则下拉/上拖视图的状态不会还原，会一直转菊花
-        //如果数据还能继续加载，则传入NO
-        [segOneTableView reloadData:NO];
-    }
-    else
-    {
-        //  一定要调用本方法，否则下拉/上拖视图的状态不会还原，会一直转菊花
-        //如果已全部加载，则传入YES
-        [segOneTableView reloadData:YES];
-    }
-}
-
-- (void)updateTableView2
-{
-    if (receiveMember2  >= 20)
-        //if (hasNext)
-    {
-        //  一定要调用本方法，否则下拉/上拖视图的状态不会还原，会一直转菊花
-        //如果数据还能继续加载，则传入NO
-        [segTwoTableView reloadData:NO];
-    }
-    else
-    {
-        //  一定要调用本方法，否则下拉/上拖视图的状态不会还原，会一直转菊花
-        //如果已全部加载，则传入YES
-        [segTwoTableView reloadData:YES];
-    }
-}
-
-- (void)updateTableView3
-{
-    if (receiveMember3 >= 20)
-        //if (hasNext)
-    {
-        //  一定要调用本方法，否则下拉/上拖视图的状态不会还原，会一直转菊花
-        //如果数据还能继续加载，则传入NO
-        [segThreeTableView reloadData:NO];
-    }
-    else
-    {
-        //  一定要调用本方法，否则下拉/上拖视图的状态不会还原，会一直转菊花
-        //如果已全部加载，则传入YES
-        [segThreeTableView reloadData:YES];
-    }
-}
-
-- (void)getDatas:(NSString *)slug {
+- (void)getDatasWithSlugAndRefreshview:(NSDictionary *)param {
     
-    [alerViewManager showMessage:@"正在加载数据" inView:self.view];
+    
+    NSString *slug = [param valueForKey:@"slug"];
+    MJRefreshBaseView *refreshView = [param valueForKey:@"refreshView"];
     
     NSString *starString =  [NSString stringWithFormat:@"%d", start];
     AFHTTPClient *jsonapiClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:@"http://dtcq.appgame.com/"]];
     
     NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:
                                 @"get_category_posts", @"json",
-                                @"20", @"count",                                
+                                @"20", @"count",
                                 @"attachments", @"exclude",
                                 slug, @"slug",
                                 starString, @"page",
@@ -774,7 +766,7 @@
                        NSString *code = [responseDictionary objectForKey:@"status"];
                        
                        if (![code isEqualToString:@"ok"]) {   // there's an error
-                           NSLog(@"获取文章json异常:%@",self.webURL);
+                           LOG(@"获取文章json异常:%@",slug);
                        }else {
                            if ([[responseDictionary objectForKey:@"count"] integerValue] > 0) {
                                NSMutableArray *_comments = [NSMutableArray array];
@@ -853,35 +845,60 @@
                                    [_comments addObject:aComment];
                                }
                                
-                               if ([slug isEqualToString:categoryStr[0]]) {                               
+                               //[alerViewManager showMessage:@"正在加载数据" inView:self.view];
+                               if ([slug isEqualToString:categoryStr[0]]) {
                                    for (ArticleItem *commentItem in _comments) {
                                        [self.dataList1 addObject:commentItem];
                                    }
                                    receiveMember = [[responseDictionary objectForKey:@"count"] integerValue];
-                                   [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:YES];
+                                   [self.segOneTableView reloadData];
+                                   //[self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:YES];
                                }else if ([slug isEqualToString:categoryStr[1]]) {
                                    for (ArticleItem *commentItem in _comments) {
                                        [self.dataList2 addObject:commentItem];
                                    }
                                    receiveMember2 = [[responseDictionary objectForKey:@"count"] integerValue];
-                                   [self performSelectorOnMainThread:@selector(updateTableView2) withObject:nil waitUntilDone:YES];
+                                   
+                                   //[self performSelectorOnMainThread:@selector(updateTableView2) withObject:nil waitUntilDone:YES];
+                                   [self.segTwoTableView reloadData];
+//                                   if (receiveMember2 >= 20) {
+//                                       [refreshView endRefreshing];
+//                                   }else {
+//                                       [refreshView endRefreshing];
+//                                       //[refreshView endRefreshingWithoutIdle];
+//                                       [footer setHidden:YES];
+//                                   }
+                                   
                                }else if ([slug isEqualToString:categoryStr[2]]) {
                                    for (ArticleItem *commentItem in _comments) {
                                        [self.dataList3 addObject:commentItem];
                                    }
                                    receiveMember3 = [[responseDictionary objectForKey:@"count"] integerValue];
-                                   [self performSelectorOnMainThread:@selector(updateTableView3) withObject:nil waitUntilDone:YES];
+                                   [self.segThreeTableView reloadData];
+                                   //[self performSelectorOnMainThread:@selector(updateTableView3) withObject:nil waitUntilDone:YES];
+                                   
                                }
                            }
                            //到这里就是0条数据
                        }
-                       [alerViewManager dismissMessageView:self.view];
+                       if (refreshView != nil) {
+                           [refreshView endRefreshing];
+                       }
+                       updating = NO;
+                       //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                       //[alerViewManager dismissMessageView:self.view];
                    }
                    failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                        // pass error to the block
-                       NSLog(@"获取文章json失败:%@",error);
-                       [alerViewManager dismissMessageView:self.view];
+                       LOG(@"获取文章json失败:%@",error);
+                       if (refreshView != nil) {
+                           [refreshView endRefreshing];
+                       }
+                       updating = NO;
+                       //[alerViewManager dismissMessageView:self.view];
                    }];
+
+    
 }
 
 @end

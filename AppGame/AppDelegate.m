@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import <AVOSCloud/AVOSCloud.h>
+
 #import "HomeTabViewController.h"
 #import "iVersion.h"//StoreKit framework.
 #import "APService.h"
@@ -66,6 +68,13 @@
     [Globle shareInstance].globleHeight = appBound.size.height;  //屏幕高度（无顶栏）
     [Globle shareInstance].globleAllHeight = screenRect.size.height;  //屏幕高度（有顶栏）
     
+    
+//### AVOS云服务
+    [AVOSCloud setApplicationId:@"v0iyd63epej0ynzt7iijfwnq5qdr273fpigwktrngxhjc1ll"
+                      clientKey:@"gyfc4wxpn57f1wnajbqp3ejf1tbk6mtrxwhuoek5plnld51g"];
+
+    [AVAnalytics trackAppOpenedWithLaunchOptions:launchOptions];//跟踪统计应用的打开情况
+    
 //    //ShareSDK
 //    [ShareSDK registerApp:@"47cac82fef6"];
 //    //添加新浪微博应用
@@ -119,7 +128,7 @@
     }
     
     //iVersion 更新检测
-    [iVersion sharedInstance].appStoreID = 717176414;
+    [iVersion sharedInstance].appStoreID = 837896968;
     
     
     //初始化
@@ -135,7 +144,7 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     //self.window.rootViewController = [[HomeTabViewController alloc] initWithTitle:@"神雕侠侣攻略"];
-    self.window.rootViewController = [[MDSlideNavigationViewController alloc] initWithRootViewController:[[HomeTabViewController alloc] initWithTitle:@"HelloHero攻略"]];
+    self.window.rootViewController = [[MDSlideNavigationViewController alloc] initWithRootViewController:[[HomeTabViewController alloc] initWithTitle:@"刀塔传奇攻略"]];
     [self.window makeKeyAndVisible];
     
     //[NSThread sleepForTimeInterval:1];
@@ -172,7 +181,7 @@
             [standardDefaults setBool:YES forKey:kReviewTrollerDoneDefault];
             [standardDefaults synchronize];
             
-            NSString *appId = @"717176414";
+            NSString *appId = @"837896968";
             
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=%@", appId]]];
         }else {
@@ -200,8 +209,8 @@
     NSLog(@"launchNotification");//仅在程序关闭时收到推送被调用
     NSString *urlField = [userInfo valueForKey:@"url"]; //自定义参数，key是自己定义的
     if (urlField != nil) {
-        GHRootViewController *viewController = [[GHRootViewController alloc] initWithTitle:@"消息页面" withUrl:urlField];
-        [(UINavigationController *)self.window.rootViewController pushViewController:viewController animated:YES];
+        GHRootViewController *vc = [[GHRootViewController alloc] initWithTitle:@"消息页面" withUrl:urlField];
+        [(UINavigationController *)self.window.rootViewController pushViewController:vc animated:YES];
     }
 //    NSLog(@"launchNotification");//仅在程序关闭时收到推送被调用
 //    NSString *urlField = [userInfo valueForKey:@"url"]; //自定义参数，key是自己定义的

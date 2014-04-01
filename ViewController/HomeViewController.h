@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <MessageUI/MessageUI.h>
-#import "PullToRefreshTableView.h"
+//#import "PullToRefreshTableView.h"
+#import "MJRefresh.h"
 #import "AlerViewManager.h"
 #import "AKSegmentedControl.h"
 
@@ -30,7 +31,8 @@ typedef void (^HomeRevealBlock)();
     BOOL updating;//正在更新中,不要重复了
     CGRect myframe;
     
-    PullToRefreshTableView *segOneTableView,*segTwoTableView,*segThreeTableView;
+    UITableView *segOneTableView,*segThreeTableView;
+    UITableView *segTwoTableView;
     AKSegmentedControl *segmentedPerson;
     UIButton *segOneBtn,*segTwoBtn,*segThreeBtn;
     
@@ -41,9 +43,10 @@ typedef void (^HomeRevealBlock)();
 @property (nonatomic, copy) NSString *webURL;
 @property (nonatomic) CGRect myframe;
 @property (strong, nonatomic) NSMutableArray *dataList1,*dataList2,*dataList3;
-@property (strong, nonatomic) NSMutableArray *titleStr,*categoryStr;
+@property (strong, nonatomic) NSMutableArray *segStr,*categoryStr;
 
-@property (nonatomic, strong) PullToRefreshTableView *segOneTableView,*segTwoTableView,*segThreeTableView;
+@property (nonatomic, strong) UITableView *segOneTableView,*segThreeTableView;
+@property (nonatomic, strong) UITableView *segTwoTableView;
 @property (nonatomic, strong) AKSegmentedControl *segmentedPerson;
 @property (nonatomic, strong) UIButton *segOneBtn,*segTwoBtn,*segThreeBtn;
 
@@ -53,12 +56,4 @@ typedef void (^HomeRevealBlock)();
 - (id)initWithTitle:(NSString *)title withUrl:(NSString *)url;
 - (id)initWithTitle:(NSString *)title withSeg:(NSArray *)seg withCate:(NSArray *)cate withFrame:(CGRect)frame;
 
-- (void)updateThread:(NSString *)returnKey;
-- (void)updateTableView;
-
-- (void)updateThread2:(NSString *)returnKey;
-- (void)updateTableView2;
-
-- (void)updateThread3:(NSString *)returnKey;
-- (void)updateTableView3;
 @end

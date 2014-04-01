@@ -20,7 +20,7 @@
 @property (nonatomic, strong, readonly) UIBarButtonItem *actionBarButtonItem;
 @property (nonatomic, strong, readonly) UIActionSheet *pageActionSheet;
 
-@property (nonatomic, strong) UIWebView *mainWebView;
+//@property (nonatomic, strong) UIWebView *mainWebView;
 @property (nonatomic, strong) NSURL *URL;
 @property (nonatomic) BOOL isHide;
 
@@ -53,7 +53,7 @@
 
 #pragma mark Memory Management
 - (id)initWithTitle:(NSString *)title withUrl:(NSString *)url {
-    if (self = [super initWithNibName:nil bundle:nil]) {
+    if (self = [super init]) {
 		self.title = title;
         self.webURL = [NSURL URLWithString:url];
         self.URL = [NSURL URLWithString:url];
@@ -85,7 +85,7 @@
 }
 
 - (id)initWithTitle:(NSString *)title withUrl:(NSString *)url withRevealBlock:(RevealBlock)revealBlock {
-    if (self = [super initWithNibName:nil bundle:nil]) {
+    if (self = [super init]) {
 		self.title = title;
         self.webURL = [NSURL URLWithString:url];
         self.URL = [NSURL URLWithString:url];
@@ -380,7 +380,7 @@
     mainWebView = [[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     mainWebView.delegate = self;
     mainWebView.scalesPageToFit = YES;
-    [mainWebView loadRequest:[NSURLRequest requestWithURL:self.URL]];
+    //[mainWebView loadRequest:[NSURLRequest requestWithURL:self.URL]];
     self.view = mainWebView;
 }
 
@@ -408,15 +408,15 @@
     if ([mainWebView isLoading]) {
         [mainWebView stopLoading];
     }//每次切换tabbar,重新刷新默认页面
-    [mainWebView loadRequest:[NSURLRequest requestWithURL:self.URL]];
+    //[mainWebView loadRequest:[NSURLRequest requestWithURL:self.URL]];
     
 	self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        self.navigationController.toolbar.barStyle = UIBarStyleBlack;
+        //self.navigationController.toolbar.barStyle = UIBarStyleBlack;
         //[self.navigationController.toolbar setTranslucent:YES];
-        [self.navigationController.navigationBar setTranslucent:YES];
-        [self.navigationController setToolbarHidden:NO animated:animated];
+        //[self.navigationController.navigationBar setTranslucent:YES];
+        [self.navigationController setToolbarHidden:YES animated:animated];
         //self.navigationController.toolbar.translucent = NO;
         
         if ([[[UIDevice currentDevice] systemVersion] floatValue] > 4.9) {
@@ -439,8 +439,8 @@
     [super viewWillDisappear:animated];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [self.navigationController.navigationBar setTranslucent:NO];
-        [self.navigationController setToolbarHidden:YES animated:animated];
+        //[self.navigationController.navigationBar setTranslucent:NO];
+        //[self.navigationController setToolbarHidden:YES animated:animated];
     }
 }
 
@@ -591,8 +591,20 @@
     [mainWebView goForward];
 }
 
+- (void)reloadClicked {
+    if ([mainWebView.request.URL.absoluteString isEqualToString:@""]) {
+        [mainWebView loadRequest:[NSURLRequest requestWithURL:self.URL]];
+    }else {
+        [mainWebView reload];
+    }
+}
+
 - (void)reloadClicked:(UIBarButtonItem *)sender {
-    [mainWebView reload];
+    if (mainWebView.request == nil) {
+        [mainWebView loadRequest:[NSURLRequest requestWithURL:self.URL]];
+    }else {
+        [mainWebView reload];
+    }
 }
 
 - (void)stopClicked:(UIBarButtonItem *)sender {

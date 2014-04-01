@@ -7,8 +7,9 @@
 //
 
 #import "HomeTabViewController.h"
+
 #import "SVWebViewController.h"
-#import "doubleWebViewController.h"
+#import "segWebViewController.h"
 #import "HMSideMenu.h"
 #import "SearchViewController.h"
 #import "Globle.h"
@@ -18,6 +19,7 @@
 #import "CustomBackgroundLayer.h"
 #import "CustomNoiseBackgroundView.h"
 #import "UIView+Positioning.h"
+
 
 //@implementation UINavigationBar (CustomHeight)
 //- (CGSize)sizeThatFits:(CGSize)size {
@@ -91,23 +93,48 @@
     self.view.backgroundColor = [UIColor clearColor];
     self.view.backgroundColor = [UIColor whiteColor];
     self.view.frame = CGRectMake(0, 44, [Globle shareInstance].globleWidth, [Globle shareInstance].globleHeight-44);
-	// Do any additional setup after loading the view.
-//    filterView = [[DMFilterView alloc] initWithStrings:@[@"攻略", @"数据库", @"资讯", @"论坛"] containerView:self.view];
-//    [self.filterView attachToContainerView];
-//    [self.filterView setDelegate:self];
-//    
-//    [self.filterView setSelectedItemBackgroundImage:[UIImage imageNamed:@"tb-selected.png"]];
-//    [self.filterView setBackgroundImage:[UIImage imageNamed:@"tabbarbg.png"]];
-//
-//    [self.filterView setTitlesColor:[UIColor whiteColor]];
-//    [self.filterView setTitlesFont:[UIFont fontWithName:@"FZHuangCao-S09S" size:20.0]];//[UIFont systemFontOfSize:16]];
-//    [self.filterView setTitleInsets:UIEdgeInsetsMake(7, 0, 0, 0)];
-//    [self.filterView setDraggable:YES];
-    //[self.filterView hide:NO animated:YES animationCompletion:^{ }];
+
+    NSDictionary *dictionary;
+    NSString *bbsUrlStr = @"http://bbs.appgame.com/forum-141-1.html";
+    
+//    AVObject *vcKeyObject = [AVObject objectWithClassName:@"VcKeyObject"];
+//    [vcKeyObject setObject:dictionary forKey:@"VcKeyDictionary"];
+//    [vcKeyObject save];
+    AVQuery *query = [AVQuery queryWithClassName:@"VcKeyObject"];
+    AVObject *VcKeyObject = [query getFirstObject];
+    if(!VcKeyObject){
+        dictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"热门推荐", @"title11",
+                      @"hot", @"cate11",
+                      @"刀塔小说", @"title12",
+                      @"novel",  @"cate12",
+                      @"公告活动", @"title13",
+                      @"gong-gao",  @"cate13",
+                      
+                      @"新手指导", @"title21",
+                      @"http://dtcq.appgame.com/xin-shou-zhi-dao", @"cate21",
+                      @"进阶技巧", @"title22",
+                      @"http://dtcq.appgame.com/jin-jie-ji-qiao", @"cate22",
+                      @"英雄专题", @"title23",
+                      @"http://dtcq.appgame.com/ying-xiong-zhuan-ti", @"cate23",
+                      
+                      @"阵容搭配", @"title31",
+                      @"http://dtcq.appgame.com/zhen-rong-da-pei", @"cate31",
+                      @"副本攻略", @"title32",
+                      @"http://dtcq.appgame.com/fu-ben-gong-lue", @"cate32",
+                      @"竞技场透析", @"title33",
+                      @"http://dtcq.appgame.com/jing-ji-chang-tou-xi", @"cate33",
+                      
+                      @"论坛", @"bbsTitle",
+                      @"http://bbs.appgame.com/forum-141-1.html", @"bbsUrl",
+                      nil];
+    }else {
+        dictionary = [VcKeyObject objectForKey:@"VcKeyDictionary"];
+        bbsUrlStr = [VcKeyObject objectForKey:@"BbsUrlStr"];
+    }
     
     
     //第一页,资讯
-    newsViewController = [[HomeViewController alloc] initWithTitle:@"资讯" withSeg:@[@"热门推荐", @"刀塔小说", @"公告活动"] withCate:@[@"hot", @"novel", @"gong-gao"] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-40)];
+    newsViewController = [[HomeViewController alloc] initWithTitle:@"资讯" withSeg:@[[dictionary objectForKey:@"title11"] , [dictionary objectForKey:@"title12"], [dictionary objectForKey:@"title13"]] withCate:@[[dictionary objectForKey:@"cate11"], [dictionary objectForKey:@"cate12"], [dictionary objectForKey:@"cate13"]] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
     [self addChildViewController:newsViewController];
     //[hotViewController.view setFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
     [self.view addSubview:newsViewController.view];
@@ -115,7 +142,7 @@
     
     //第二页,攻略
     //hotViewController = [[HomeViewController alloc] initWithTitle:@"攻略" withUrl:@"re-men-wen-zhang" withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
-    hotViewController = [[HomeViewController alloc] initWithTitle:@"攻略" withSeg:@[@"新手指导", @"进阶技巧", @"英雄专题"] withCate:@[@"xin-shou-zhi-dao", @"jin-jie-ji-qiao", @"ying-xiong-zhuan-ti"] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-40-44)];
+    hotViewController = [[segWebViewController alloc] initWithTitle:@"攻略" withSeg:@[[dictionary objectForKey:@"title21"], [dictionary objectForKey:@"title22"], [dictionary objectForKey:@"title23"]] withCate:@[[dictionary objectForKey:@"cate21"], [dictionary objectForKey:@"cate22"], [dictionary objectForKey:@"cate23"]] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
     [self addChildViewController:hotViewController];
     //[hotViewController.view setFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
     [self.view addSubview:hotViewController.view];
@@ -123,35 +150,27 @@
     
     
     //第三页,数据库
-    dataViewController = [[HorizonViewController alloc] initWithTitle:@"图鉴"];
+    //dataViewController = [[HorizonViewController alloc] initWithTitle:@"图鉴"];
+    dataViewController = [[DataViewController alloc] init];
     [self addChildViewController:dataViewController];
-    [dataViewController.view setFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-40)];
+    [dataViewController.view setFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
     [self.view addSubview:dataViewController.view];
     [self.dataViewController.view setHidden:YES];
     
 
     //第四页,竞技场 视频
-    videoViewController = [[HomeViewController alloc] initWithTitle:@"竞技场" withSeg:@[@"阵容搭配", @"副本攻略", @"竞技场透析"] withCate:@[@"zhen-rong-da-pei", @"fu-ben-gong-lue", @"jing-ji-chang-tou-xi"] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-40-44)];
+    videoViewController = [[segWebViewController alloc] initWithTitle:@"竞技场" withSeg:@[[dictionary objectForKey:@"title31"], [dictionary objectForKey:@"title32"], [dictionary objectForKey:@"title33"]] withCate:@[[dictionary objectForKey:@"cate31"], [dictionary objectForKey:@"cate32"], [dictionary objectForKey:@"cate33"]] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
     [self addChildViewController:videoViewController];
     [self.view addSubview:videoViewController.view];
     [videoViewController.view setHidden:YES];
     
-//    videoViewController = [[VideoViewController alloc] initWithTitle:@"精彩视频" withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
-//    //videoViewController = [[HomeViewController alloc] initWithTitle:@"竞技场视频" withSeg:@[@"新手入门", @"进阶技巧", @"副本攻略"] withCate:@[@"xin-shou-gong-lue", @"master", @"fu-ben-gong-lue"] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-40-44)];
-//    [self addChildViewController:videoViewController];
-//    //[hotViewController.view setFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
-//    [self.view addSubview:videoViewController.view];
-//    [videoViewController.view setHidden:YES];
-    
-    
-    
-    
-    
+
     //第五页,论坛
-    bbsViewController = [[SVWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://bbs.appgame.com/forum-141-1.html"]];
-    NSLog(@"init url:%@",bbsViewController.mainWebView.request.URL.absoluteString);
+    //bbsViewController = [[SVWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://bbs.appgame.com/forum-141-1.html"]];
+    bbsViewController = [[GHRootViewController alloc] initWithTitle:[dictionary objectForKey:@"bbsTitle"] withUrl:bbsUrlStr];
+    //NSLog(@"init url:%@",bbsViewController.mainWebView.request.URL.absoluteString);
     [self addChildViewController:bbsViewController];
-    [bbsViewController.view setFrame:CGRectMake(0, -44, 320, [Globle shareInstance].globleHeight-44)];
+    [bbsViewController.view setFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
     [self.view addSubview:bbsViewController.view];
     [bbsViewController.view setHidden:YES];
     //添加刷新与后退按钮
@@ -174,8 +193,8 @@
     
     UIView *browserItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
     [browserItem setMenuActionWithBlock:^{
-        NSLog(@"reload url:%@",bbsViewController.mainWebView.request.URL.absoluteString);
-        [[bbsViewController mainWebView] reload];
+        NSLog(@"reload url:%@,weburl:%@",bbsViewController.mainWebView.request.URL.absoluteString,self.bbsViewController.webURL);
+        [bbsViewController reloadClicked];
     }];
     UIImageView *browserIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
     [browserIcon setImage:[UIImage imageNamed:@"Refresh"]];
@@ -225,6 +244,7 @@
     
     [tabView setSelectedIndex:0];
     [self.view addSubview:tabView];
+    [self.bbsViewController.mainWebView loadRequest:[NSURLRequest requestWithURL:self.bbsViewController.webURL]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -282,20 +302,6 @@
     [self.navigationController pushViewController:searchController animated:YES];
 }
 
-//#pragma mark - ScrollView delegate
-//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-//    //[self.filterView hide:YES animated:YES animationCompletion:^{}];
-//    [self.bbsSideMenu close];
-//    [self.officialSideMenu close];
-//}
-//
-//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-//{
-//    //[self.filterView hide:NO animated:YES animationCompletion:^{}];
-//    [self.bbsSideMenu open];
-//    [self.officialSideMenu open];
-//
-//}
 
 - (void)toggleMenu {
     if (self.bbsSideMenu.isOpen)

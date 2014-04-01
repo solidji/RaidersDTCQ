@@ -17,14 +17,17 @@
 #import "AFXMLRequestOperation.h"
 #import "RSSParser.h"
 #import "RSSItem.h"
-
+#import "MJRefresh.h"
 
 @interface SearchViewController ()
 - (void)getArticles;//搜索文章
+
+@property (nonatomic, strong) MJRefreshHeaderView *header;
+@property (nonatomic) BOOL updating;
 @end
 
 @implementation SearchViewController
-@synthesize searchStr,searchView,articles;
+@synthesize searchStr,searchView,articles,header,updating;
 
 - (id)initWithTitle:(NSString *)title withFrame:(CGRect)frame {
     if (self = [super initWithNibName:nil bundle:nil]) {
@@ -58,6 +61,7 @@
     alerViewManager = [[AlerViewManager alloc] init];
     start = 0;
     receiveMember = 0;
+    updating = NO;
     ifNeedFristLoading = YES;
     
     return self;
@@ -71,8 +75,7 @@
     self.view.backgroundColor = [UIColor colorWithRed:248.0f/255.0f green:244.0f/255.0f blue:239.0f/255.0f alpha:1.0f];
     self.view.frame = CGRectMake(0, 0, [Globle shareInstance].globleWidth, [Globle shareInstance].globleHeight);
     
-    self.searchView = [[PullToRefreshTableView alloc] initWithFrame: CGRectMake(0, 40, self.view.bounds.size.width,[Globle shareInstance].globleHeight-40) withType: withStateViews];
-    self.searchView.tag = 100000;
+    self.searchView = [[UITableView alloc] initWithFrame: CGRectMake(0, 40, self.view.bounds.size.width,[Globle shareInstance].globleHeight-40)];
     
     [self.searchView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
     searchView.delegate = self;
@@ -93,11 +96,19 @@
     _searchBar.keyboardType=UIKeyboardTypeNamePhonePad;
     _searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
     _searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    _searchBar.backgroundColor=[UIColor clearColor];
-    [[_searchBar.subviews objectAtIndex:0]removeFromSuperview];
+    float version = [[[UIDevice currentDevice] systemVersion] floatValue];
+    if (version >= 7.0)
+    {
+        //        if ([_searchBar respondsToSelector:@selector(barTintColor)]) {
+        //            [_searchBar setBarTintColor:[UIColor iOS7lightGrayColor]];//for ios7
+        //        }
+    }else {//ios7以下系统
+        _searchBar.backgroundColor=[UIColor clearColor];
+        [[_searchBar.subviews objectAtIndex:0]removeFromSuperview];
+    }
     [self.view addSubview:_searchBar];
     
-    etActivity = [[TFIndicatorView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2-30, self.view.bounds.size.height/2-30, 60, 60)];
+    //etActivity = [[TFIndicatorView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width/2-30, self.view.bounds.size.height/2-30, 60, 60)];
     
     UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                                                                        action:@selector(goPopClicked:)];
@@ -106,8 +117,24 @@
     swipeGesture.cancelsTouchesInView = NO;
     [self.view addGestureRecognizer:swipeGesture];
     
-    // get array of articles
-    [self getArticles];
+    __unsafe_unretained SearchViewController *vc = self;
+    //添加下拉刷新
+    header = [MJRefreshHeaderView header];
+    header.scrollView = self.searchView;
+    
+    header.beginRefreshingBlock = ^(MJRefreshBaseView *refreshView) {
+        // 进入刷新状态就会回调这个Block
+        
+        [vc.articles removeAllObjects];
+        [vc.searchView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+
+        vc->start = 0;
+        vc->receiveMember = 0;
+        
+        [vc performSelectorOnMainThread:@selector(getArticles) withObject:nil waitUntilDone:NO];
+
+    };
+    [header beginRefreshing];
 }
 
 - (void)didReceiveMemoryWarning
@@ -130,75 +157,32 @@
 }
 
 - (void)goPopClicked:(UIBarButtonItem *)sender {
+    
     if ([[self navigationController].viewControllers count]>1)
     {
         [[self navigationController] popViewControllerAnimated:YES];
     }
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+- (void)dealloc
 {
-    [searchView tableViewDidDragging];
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    NSInteger returnKey = [searchView tableViewDidEndDragging];
-    
-    //  returnKey用来判断执行的拖动是下拉还是上拖，如果数据正在加载，则返回DO_NOTHING
-    if (returnKey != k_RETURN_DO_NOTHING)
-    {
-        NSString * key = [NSString stringWithFormat:@"%d", returnKey];
-        [NSThread detachNewThreadSelector:@selector(updateThread:) toTarget:self withObject:key];
-    }
-    
-    if (!decelerate)
-    {
-        //[self loadImagesForOnscreenRows];
-    }
+    LOG(@"MJCollectionViewController--dealloc---");
+    [header free];
+    //[_footer free];
 }
 
 #pragma mark -
 #pragma mark - Table View control
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    //自动载入更新数据,每次载入20条信息，在滚动到倒数第3条以内时，加载更多信息
+    if (self.articles.count - indexPath.row < 3 && !updating && receiveMember >= 20) {
+        updating = YES;
+        NSLog(@"滚到最后了");
+        
+        start = [self.articles count]/20 + 1;
 
-- (void)updateThread:(NSString *)returnKey{
-    @autoreleasepool {
-        sleep(2);
-        switch ([returnKey intValue]) {
-            case k_RETURN_REFRESH:
-            {
-                [articles removeAllObjects];
-                start = 0;
-                [self performSelectorOnMainThread:@selector(getArticles) withObject:nil waitUntilDone:NO];
-                
-                break;
-            }
-            case k_RETURN_LOADMORE:
-            {
-                start = [self.articles count]/20 + 1;
-                
-                [self performSelectorOnMainThread:@selector(getArticles) withObject:nil waitUntilDone:NO];
-                break;
-            }
-            default:
-                break;
-        }
-    }
-}
-
-- (void)updateTableView
-{
-    if (receiveMember  >= 20)
-    {
-        //  一定要调用本方法，否则下拉/上拖视图的状态不会还原，会一直转菊花
-        //如果数据还能继续加载，则传入NO
-        [searchView reloadData:NO];
-    }
-    else
-    {
-        //  一定要调用本方法，否则下拉/上拖视图的状态不会还原，会一直转菊花
-        //如果已全部加载，则传入YES
-        [searchView reloadData:YES];
+        [self performSelectorOnMainThread:@selector(getArticles) withObject:nil waitUntilDone:NO];
+        // update方法获取到结果后，设置updating为NO
     }
 }
 
@@ -210,10 +194,10 @@
     
     if ([self.articles count] > indexPath.row) {
         ArticleItem *aArticle = [self.articles objectAtIndex:indexPath.row];
-        SVWebViewController *viewController = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];
+        SVWebViewController *vc = [[SVWebViewController alloc] initWithHTMLString:aArticle URL:aArticle.articleURL];
         
         //NSLog(@"didSelectArticle:%@",aArticle.content);
-        [self.navigationController pushViewController:viewController animated:YES];
+        [self.navigationController pushViewController:vc animated:YES];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
 }
@@ -230,10 +214,6 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if ([articles count] == 0) {
-        //  本方法是为了在数据为空时，让“下拉刷新”视图可直接显示，比较直观
-        tableView.contentInset = UIEdgeInsetsMake(k_STATE_VIEW_HEIGHT, 0, 0, 0);
-    }
     return [articles count];
     
 }
@@ -333,8 +313,8 @@
 
 - (void)getArticles {
     //[alerViewManager showMessage:@"正在加载数据" inView:self.view];
-    [self.view addSubview:etActivity];
-    [etActivity startAnimating];
+    //[self.view addSubview:etActivity];
+    //[etActivity startAnimating];
     
     NSString *starString =  [NSString stringWithFormat:@"%ld", (long)start];
     AFHTTPClient *jsonapiClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:@"http://dtcq.appgame.com/"]];
@@ -355,7 +335,12 @@
         ifNeedFristLoading = YES;
         [articles removeAllObjects];
         start = 0;
-        [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
+        [self.searchView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+        [header endRefreshing];
+        updating = NO;
+        //[etActivity stopAnimating];
+        //[etActivity removeFromSuperview];
+        return;
     }
     
     [jsonapiClient getPath:@""
@@ -484,20 +469,29 @@
                                }
                                //self.comments = [NSMutableArray arrayWithArray:_comments];
                                
-                               [self performSelectorOnMainThread:@selector(updateTableView) withObject:nil waitUntilDone:NO];
+                               [self.searchView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
                            }
                            //到这里就是0条数据
                        }
                        //[alerViewManager dismissMessageView:self.view];
-                       [etActivity stopAnimating];
-                       [etActivity removeFromSuperview];
+                       if (header.isRefreshing) {
+                           [header endRefreshing];
+                       }
+                       updating = NO;
+                       //[etActivity stopAnimating];
+                       //[etActivity removeFromSuperview];
                    }
                    failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                        // pass error to the block
                        NSLog(@"搜索文章json失败:%@",error);
+                       if (header.isRefreshing) {
+                           [header endRefreshing];
+                       }
+                       updating = NO;
                        //[alerViewManager dismissMessageView:self.view];
-                       [etActivity stopAnimating];
-                       [etActivity removeFromSuperview];
+                       //[etActivity stopAnimating];
+                       //[etActivity removeFromSuperview];
                    }];
 }
+
 @end
