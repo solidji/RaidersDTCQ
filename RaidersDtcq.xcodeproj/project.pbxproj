@@ -27,7 +27,6 @@
 		DB0CF20B18CD22B000943A15 /* add@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0CF20918CD22B000943A15 /* add@2x.png */; };
 		DB2C2AD917CD76250087C64C /* HomeTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB2C2AD817CD76250087C64C /* HomeTabViewController.m */; };
 		DB2C2AE217CD79710087C64C /* DMFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = DB2C2ADF17CD79710087C64C /* DMFilterView.m */; };
-		DB38FDB1178DEA3D004D2A5C /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB38FDB0178DEA3D004D2A5C /* StoreKit.framework */; };
 		DB3CE94917CD9E79005C58E9 /* MDSlideNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB3CE94817CD9E79005C58E9 /* MDSlideNavigationViewController.m */; };
 		DB3CE94C17CDBAB8005C58E9 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB3CE94B17CDBAB8005C58E9 /* SearchViewController.m */; };
 		DB3CE95017CDBB1B005C58E9 /* TFIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = DB3CE94F17CDBB1B005C58E9 /* TFIndicatorView.m */; };
@@ -135,6 +134,7 @@
 		DBBEC3B4181FFF15000EABD3 /* tb-icon-five@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBBEC3B2181FFF15000EABD3 /* tb-icon-five@2x.png */; };
 		DBC15A14171209AC00967301 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBC15A13171209AB00967301 /* MapKit.framework */; };
 		DBC15A16171209B900967301 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBC15A15171209B900967301 /* CoreLocation.framework */; };
+		DBC5E94D18FC5472005DAB73 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBC5E94C18FC5472005DAB73 /* StoreKit.framework */; };
 		DBDF6C7216E68C0700B07DA9 /* AlerViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DBDF6C7116E68C0700B07DA9 /* AlerViewManager.m */; };
 		DBE4C0C718DEC9A500B195CB /* AVOSCloud.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBE4C0C618DEC9A500B195CB /* AVOSCloud.framework */; };
 		DBF11A6017934CF2005EA2C2 /* SearchItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DBF11A5F17933D64005EA2C2 /* SearchItemCell.m */; };
@@ -180,7 +180,6 @@
 		DB2C2AD817CD76250087C64C /* HomeTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeTabViewController.m; sourceTree = "<group>"; };
 		DB2C2ADE17CD79710087C64C /* DMFilterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMFilterView.h; sourceTree = "<group>"; };
 		DB2C2ADF17CD79710087C64C /* DMFilterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMFilterView.m; sourceTree = "<group>"; };
-		DB38FDB0178DEA3D004D2A5C /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		DB3AE5AB18DE1FFC000EE1AF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		DB3CE94717CD9E79005C58E9 /* MDSlideNavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDSlideNavigationViewController.h; sourceTree = "<group>"; };
 		DB3CE94817CD9E79005C58E9 /* MDSlideNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDSlideNavigationViewController.m; sourceTree = "<group>"; };
@@ -339,6 +338,7 @@
 		DBBEC3B2181FFF15000EABD3 /* tb-icon-five@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tb-icon-five@2x.png"; sourceTree = "<group>"; };
 		DBC15A13171209AB00967301 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DBC15A15171209B900967301 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		DBC5E94C18FC5472005DAB73 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		DBDF6C7016E68C0700B07DA9 /* AlerViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlerViewManager.h; sourceTree = "<group>"; };
 		DBDF6C7116E68C0700B07DA9 /* AlerViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlerViewManager.m; sourceTree = "<group>"; };
 		DBE4C0C618DEC9A500B195CB /* AVOSCloud.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AVOSCloud.framework; sourceTree = "<group>"; };
@@ -378,7 +378,7 @@
 				DBA0154F16D8AF89007B2AE5 /* Foundation.framework in Frameworks */,
 				DB9F33DC16F3296400B26B52 /* libPushSDK-Simulator.a in Frameworks */,
 				DB9F33DD16F3296400B26B52 /* libPushSDK.a in Frameworks */,
-				DB38FDB1178DEA3D004D2A5C /* StoreKit.framework in Frameworks */,
+				DBC5E94D18FC5472005DAB73 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -579,13 +579,13 @@
 		DBA0154B16D8AF89007B2AE5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DBC5E94C18FC5472005DAB73 /* StoreKit.framework */,
 				DBE4C0C618DEC9A500B195CB /* AVOSCloud.framework */,
 				DB3AE5AB18DE1FFC000EE1AF /* libz.dylib */,
 				DBA2CA7E17992BEE00E75420 /* CoreMedia.framework */,
 				DBA2CA7917991B4200E75420 /* AVFoundation.framework */,
 				DBA2CA7717991B3A00E75420 /* MediaPlayer.framework */,
 				DBA2CA7517991B1100E75420 /* AudioToolbox.framework */,
-				DB38FDB0178DEA3D004D2A5C /* StoreKit.framework */,
 				DB9F48671757BEE2002F9C29 /* libicucore.dylib */,
 				DB9FD85516E2863A00F206AE /* MobileCoreServices.framework */,
 				DB9FD85116E26B4300F206AE /* Security.framework */,
@@ -828,6 +828,9 @@
 							com.apple.InAppPurchase = {
 								enabled = 1;
 							};
+							com.apple.iOS = {
+								enabled = 0;
+							};
 						};
 					};
 				};
@@ -1032,7 +1035,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1059,11 +1062,11 @@
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/JPush";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
-				PROVISIONING_PROFILE = "30DC0924-8756-41D4-AAAB-4EFE182FB358";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "30DC0924-8756-41D4-AAAB-4EFE182FB358";
+				PROVISIONING_PROFILE = "5C391A4A-F20B-4D87-94A9-697CBE5CFE17";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5C391A4A-F20B-4D87-94A9-697CBE5CFE17";
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/JPush \"${PROJECT_DIR}/QuickDialog\"/**";
-				VALID_ARCHS = "armv7 armv7s arm64";
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Debug;
 		};
@@ -1071,7 +1074,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1092,12 +1095,12 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "";
-				PROVISIONING_PROFILE = "87ADECDA-6A42-49F4-B303-8384ABFDB148";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "87ADECDA-6A42-49F4-B303-8384ABFDB148";
+				PROVISIONING_PROFILE = "6B6563AF-1A92-44BF-9DF4-5AA231DE750B";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6B6563AF-1A92-44BF-9DF4-5AA231DE750B";
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/JPush \"${PROJECT_DIR}/QuickDialog\"/**";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv7 armv7s arm64";
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Release;
 		};
@@ -1107,7 +1110,6 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_IDENTITY = "iPhone Developer: App Game (HY872Y64YR)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: App Game (HY872Y64YR)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/solidji/code/RaidersDTCQ,
@@ -1123,10 +1125,10 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "刀塔传奇攻略";
-				PROVISIONING_PROFILE = "30DC0924-8756-41D4-AAAB-4EFE182FB358";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "30DC0924-8756-41D4-AAAB-4EFE182FB358";
+				PROVISIONING_PROFILE = "5C391A4A-F20B-4D87-94A9-697CBE5CFE17";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5C391A4A-F20B-4D87-94A9-697CBE5CFE17";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/JPush";
-				VALID_ARCHS = "armv7 armv7s arm64";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1137,7 +1139,6 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Ge Liang (9ATJLJZ6BL)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Ge Liang (9ATJLJZ6BL)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/solidji/code/RaidersDTCQ,
@@ -1153,10 +1154,10 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "刀塔传奇攻略";
-				PROVISIONING_PROFILE = "87ADECDA-6A42-49F4-B303-8384ABFDB148";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "87ADECDA-6A42-49F4-B303-8384ABFDB148";
+				PROVISIONING_PROFILE = "6B6563AF-1A92-44BF-9DF4-5AA231DE750B";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6B6563AF-1A92-44BF-9DF4-5AA231DE750B";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/JPush";
-				VALID_ARCHS = "armv7 armv7s arm64";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

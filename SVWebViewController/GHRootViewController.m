@@ -7,6 +7,7 @@
 
 #import "GHRootViewController.h"
 //#import "GHPushedViewController.h"
+#import "APService.h"//for open uuid
 
 
 #pragma mark -
@@ -380,6 +381,17 @@
     mainWebView = [[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     mainWebView.delegate = self;
     mainWebView.scalesPageToFit = YES;
+    //app应用相关信息的获取
+    NSDictionary *dicInfo = [[NSBundle mainBundle] infoDictionary];
+    //设备相关信息的获取
+    NSString *strAgent = [NSString stringWithFormat:@"openUDID:%@,systemName:%@,systemVersion:%@,deviceName:%@,appName:%@,appVersion:%@,appBuild:%@",[APService openUDID],[[UIDevice currentDevice] systemName],[[UIDevice currentDevice] systemVersion],[[UIDevice currentDevice] name],[dicInfo objectForKey:@"CFBundleDisplayName"],[dicInfo objectForKey:@"CFBundleShortVersionString"],[dicInfo objectForKey:@"CFBundleVersion"]];
+    
+    NSLog(@"strAgent:%@",strAgent);
+    
+    //设置User_Agent
+    NSMutableURLRequest *requestObj = [NSMutableURLRequest requestWithURL:self.URL];
+    [requestObj addValue:strAgent forHTTPHeaderField:@"User_Agent"];
+    [mainWebView loadRequest:requestObj];
     //[mainWebView loadRequest:[NSURLRequest requestWithURL:self.URL]];
     self.view = mainWebView;
 }

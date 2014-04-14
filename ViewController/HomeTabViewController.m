@@ -100,29 +100,29 @@
 //    AVObject *vcKeyObject = [AVObject objectWithClassName:@"VcKeyObject"];
 //    [vcKeyObject setObject:dictionary forKey:@"VcKeyDictionary"];
 //    [vcKeyObject save];
-    AVQuery *query = [AVQuery queryWithClassName:@"VcKeyObject"];
+    AVQuery *query = [AVQuery queryWithClassName:@"VcKeyObject_v1_1"];//不同版本,配置表不同,这个表示v1.1
     AVObject *VcKeyObject = [query getFirstObject];
     if(!VcKeyObject){
         dictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"热门推荐", @"title11",
                       @"hot", @"cate11",
                       @"刀塔小说", @"title12",
                       @"novel",  @"cate12",
-                      @"公告活动", @"title13",
+                      @"新闻公告", @"title13",
                       @"gong-gao",  @"cate13",
                       
                       @"新手指导", @"title21",
-                      @"http://dtcq.appgame.com/xin-shou-zhi-dao", @"cate21",
+                      @"newer", @"cate21",
                       @"进阶技巧", @"title22",
-                      @"http://dtcq.appgame.com/jin-jie-ji-qiao", @"cate22",
+                      @"gong-lue", @"cate22",
                       @"英雄专题", @"title23",
-                      @"http://dtcq.appgame.com/ying-xiong-zhuan-ti", @"cate23",
+                      @"xin-de", @"cate23",
                       
                       @"阵容搭配", @"title31",
-                      @"http://dtcq.appgame.com/zhen-rong-da-pei", @"cate31",
+                      @"zr-dp", @"cate31",
                       @"副本攻略", @"title32",
-                      @"http://dtcq.appgame.com/fu-ben-gong-lue", @"cate32",
-                      @"竞技场透析", @"title33",
-                      @"http://dtcq.appgame.com/jing-ji-chang-tou-xi", @"cate33",
+                      @"fu-ben-gl", @"cate32",
+                      @"竞技视频", @"title33",
+                      @"pk-video", @"cate33",
                       
                       @"论坛", @"bbsTitle",
                       @"http://bbs.appgame.com/forum-141-1.html", @"bbsUrl",
@@ -131,6 +131,8 @@
         dictionary = [VcKeyObject objectForKey:@"VcKeyDictionary"];
         bbsUrlStr = [VcKeyObject objectForKey:@"BbsUrlStr"];
     }
+
+//    {"title22":"进阶技巧","title21":"新手指导","cate11":"hot","title13":"公告活动","title12":"刀塔小说","title11":"热门推荐","title31":"阵容搭配","title32":"副本攻略","bbsUrl":"http://bbs.appgame.com/forum-141-1.html","cate13":"gong-gao","cate12":"novel","bbsTitle":"论坛","cate31":"zr-dp","cate32":"fu-ben-gl","cate33":"pk-video","cate23":"xin-de","title33":"竞技场透析","cate21":"newer","cate22":"gong-lue","title23":"英雄专题"}
     
     
     //第一页,资讯
@@ -142,7 +144,7 @@
     
     //第二页,攻略
     //hotViewController = [[HomeViewController alloc] initWithTitle:@"攻略" withUrl:@"re-men-wen-zhang" withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
-    hotViewController = [[segWebViewController alloc] initWithTitle:@"攻略" withSeg:@[[dictionary objectForKey:@"title21"], [dictionary objectForKey:@"title22"], [dictionary objectForKey:@"title23"]] withCate:@[[dictionary objectForKey:@"cate21"], [dictionary objectForKey:@"cate22"], [dictionary objectForKey:@"cate23"]] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
+    hotViewController = [[HomeViewController alloc] initWithTitle:@"攻略" withSeg:@[[dictionary objectForKey:@"title21"], [dictionary objectForKey:@"title22"], [dictionary objectForKey:@"title23"]] withCate:@[[dictionary objectForKey:@"cate21"], [dictionary objectForKey:@"cate22"], [dictionary objectForKey:@"cate23"]] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
     [self addChildViewController:hotViewController];
     //[hotViewController.view setFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
     [self.view addSubview:hotViewController.view];
@@ -159,7 +161,7 @@
     
 
     //第四页,竞技场 视频
-    videoViewController = [[segWebViewController alloc] initWithTitle:@"竞技场" withSeg:@[[dictionary objectForKey:@"title31"], [dictionary objectForKey:@"title32"], [dictionary objectForKey:@"title33"]] withCate:@[[dictionary objectForKey:@"cate31"], [dictionary objectForKey:@"cate32"], [dictionary objectForKey:@"cate33"]] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
+    videoViewController = [[HomeViewController alloc] initWithTitle:@"竞技场" withSeg:@[[dictionary objectForKey:@"title31"], [dictionary objectForKey:@"title32"], [dictionary objectForKey:@"title33"]] withCate:@[[dictionary objectForKey:@"cate31"], [dictionary objectForKey:@"cate32"], [dictionary objectForKey:@"cate33"]] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
     [self addChildViewController:videoViewController];
     [self.view addSubview:videoViewController.view];
     [videoViewController.view setHidden:YES];
@@ -244,7 +246,7 @@
     
     [tabView setSelectedIndex:0];
     [self.view addSubview:tabView];
-    [self.bbsViewController.mainWebView loadRequest:[NSURLRequest requestWithURL:self.bbsViewController.webURL]];
+    //[self.bbsViewController.mainWebView loadRequest:[NSURLRequest requestWithURL:self.bbsViewController.webURL]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

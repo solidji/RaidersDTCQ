@@ -21,16 +21,16 @@
 @interface HomeTabViewController : UIViewController <DMFilterViewDelegate,JMTabViewDelegate>
 {
     HomeViewController *newsViewController;
-    segWebViewController *videoViewController;
+    HomeViewController *videoViewController;
     DataViewController *dataViewController;
-    segWebViewController *hotViewController;
+    HomeViewController *hotViewController;
     GHRootViewController *bbsViewController,*officialWebView;
     HMSideMenu *bbsSideMenu,*officialSideMenu;
 }
 
 @property (nonatomic, strong) DMFilterView *filterView;
 @property (nonatomic, strong) HomeViewController *newsViewController;
-@property (nonatomic, strong) segWebViewController *videoViewController,*hotViewController;
+@property (nonatomic, strong) HomeViewController *videoViewController,*hotViewController;
 @property (nonatomic, strong) DataViewController *dataViewController;
 @property (nonatomic, strong) GHRootViewController *bbsViewController,*officialWebView;
 @property (nonatomic, strong) HMSideMenu *bbsSideMenu,*officialSideMenu;

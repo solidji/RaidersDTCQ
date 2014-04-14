@@ -35,7 +35,7 @@
             [articleLabel setMinimumScaleFactor:12.0];
         }
         else {
-            [articleLabel setMinimumFontSize:12.0];
+            [articleLabel setMinimumScaleFactor:12.0];
         }
         [articleLabel setBackgroundColor:[UIColor clearColor]];
         [articleLabel setLineBreakMode:NSLineBreakByTruncatingTail];//UILineBreakModeWordWrap

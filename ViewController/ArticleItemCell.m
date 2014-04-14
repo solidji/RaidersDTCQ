@@ -23,13 +23,13 @@
         articleLabel = [[UILabel alloc] init];
         [articleLabel setTextColor:[UIColor blackColor]];
         //[articleLabel setTextColor:[UIColor colorWithRed:135.0/255.0 green:200.0/255.0 blue:235.0/255.0 alpha:1.0]];
-        [articleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:15.0]];
+        [articleLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:15.0]];
         //[articleLabel setMinimumScaleFactor:12.0];//setMinimumFontSize
         if ([articleLabel respondsToSelector: @selector(setMinimumScaleFactor:)]) {
             [articleLabel setMinimumScaleFactor:15.0];
         }
         else {
-            [articleLabel setMinimumFontSize:15.0];
+            [articleLabel setMinimumScaleFactor:15.0];
         }
         [articleLabel setBackgroundColor:[UIColor clearColor]];
         [articleLabel setLineBreakMode:NSLineBreakByWordWrapping];//UILineBreakModeWordWrap  
@@ -44,7 +44,7 @@
             [descriptLabel setMinimumScaleFactor:13.0];
         }
         else {
-            [descriptLabel setMinimumFontSize:13.0];
+            [descriptLabel setMinimumScaleFactor:13.0];
         }
         [descriptLabel setBackgroundColor:[UIColor clearColor]];
         [descriptLabel setLineBreakMode:NSLineBreakByTruncatingTail];

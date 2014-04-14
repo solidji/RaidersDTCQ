@@ -211,6 +211,7 @@
     if (urlField != nil) {
         GHRootViewController *vc = [[GHRootViewController alloc] initWithTitle:@"消息页面" withUrl:urlField];
         [(UINavigationController *)self.window.rootViewController pushViewController:vc animated:YES];
+        //[vc.mainWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlField]]];
     }
 //    NSLog(@"launchNotification");//仅在程序关闭时收到推送被调用
 //    NSString *urlField = [userInfo valueForKey:@"url"]; //自定义参数，key是自己定义的
