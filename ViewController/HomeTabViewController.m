@@ -12,6 +12,7 @@
 #import "segWebViewController.h"
 #import "HMSideMenu.h"
 #import "SearchViewController.h"
+#import "NewsViewController.h"
 #import "Globle.h"
 
 #import "CustomTabItem.h"
@@ -50,6 +51,7 @@
 
 @interface HomeTabViewController ()
 - (void)gotoSearch;//搜索文章
+- (void)gotoNews;//打开主站资讯文章
 @end
 
 @implementation HomeTabViewController
@@ -77,11 +79,23 @@
         [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setShowsTouchWhenHighlighted:YES];
-        [leftButton addTarget:self action:@selector(gotoSearch) forControlEvents:UIControlEventTouchUpInside];
+        [leftButton addTarget:self action:@selector(gotoNews) forControlEvents:UIControlEventTouchUpInside];
         
         UIBarButtonItem *temporaryLeftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
         temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;
-        self.navigationItem.rightBarButtonItem = temporaryLeftBarButtonItem;
+        self.navigationItem.leftBarButtonItem = temporaryLeftBarButtonItem;
+        
+        UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        rightButton.frame = CGRectMake(0, 0, 22, 22);
+        [rightButton setBackgroundImage:[UIImage imageNamed:@"search.png"] forState:UIControlStateNormal];
+        [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+        [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+        [rightButton setShowsTouchWhenHighlighted:YES];
+        [rightButton addTarget:self action:@selector(gotoSearch) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIBarButtonItem *temporaryRightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+        temporaryRightBarButtonItem.style = UIBarButtonItemStylePlain;
+        self.navigationItem.rightBarButtonItem = temporaryRightBarButtonItem;
     }
 
     return self;
@@ -302,6 +316,14 @@
     SearchViewController *searchController = [[SearchViewController alloc] initWithTitle:@"搜索" withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight)];
     
     [self.navigationController pushViewController:searchController animated:YES];
+}
+
+- (void)gotoNews{
+    //设置搜索页出现
+    //[self.RootScrollView setContentOffset:CGPointMake(6*320, 0) animated:YES];
+    NewsViewController *vc = [[NewsViewController alloc] initWithNibName:@"NewsViewController" bundle:nil];
+    
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 

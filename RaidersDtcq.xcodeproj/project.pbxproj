@@ -25,6 +25,9 @@
 		DB0CF20718CBC4B800943A15 /* dataCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0CF20618CBC4B800943A15 /* dataCell.m */; };
 		DB0CF20A18CD22B000943A15 /* add.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0CF20818CD22B000943A15 /* add.png */; };
 		DB0CF20B18CD22B000943A15 /* add@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0CF20918CD22B000943A15 /* add@2x.png */; };
+		DB2A232F19F00DC80026BCE1 /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB2A232D19F00DC80026BCE1 /* NewsViewController.m */; };
+		DB2A233019F00DC80026BCE1 /* NewsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB2A232E19F00DC80026BCE1 /* NewsViewController.xib */; };
+		DB2A233319F0524B0026BCE1 /* UIViewController+AGExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = DB2A233219F0524B0026BCE1 /* UIViewController+AGExtension.m */; };
 		DB2C2AD917CD76250087C64C /* HomeTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB2C2AD817CD76250087C64C /* HomeTabViewController.m */; };
 		DB2C2AE217CD79710087C64C /* DMFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = DB2C2ADF17CD79710087C64C /* DMFilterView.m */; };
 		DB3CE94917CD9E79005C58E9 /* MDSlideNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB3CE94817CD9E79005C58E9 /* MDSlideNavigationViewController.m */; };
@@ -167,6 +170,11 @@
 		DB0CF20618CBC4B800943A15 /* dataCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = dataCell.m; sourceTree = "<group>"; };
 		DB0CF20818CD22B000943A15 /* add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add.png; sourceTree = "<group>"; };
 		DB0CF20918CD22B000943A15 /* add@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add@2x.png"; sourceTree = "<group>"; };
+		DB2A232C19F00DC80026BCE1 /* NewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsViewController.h; sourceTree = "<group>"; };
+		DB2A232D19F00DC80026BCE1 /* NewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsViewController.m; sourceTree = "<group>"; };
+		DB2A232E19F00DC80026BCE1 /* NewsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewsViewController.xib; sourceTree = "<group>"; };
+		DB2A233119F0524B0026BCE1 /* UIViewController+AGExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+AGExtension.h"; sourceTree = "<group>"; };
+		DB2A233219F0524B0026BCE1 /* UIViewController+AGExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+AGExtension.m"; sourceTree = "<group>"; };
 		DB2C2AD717CD76250087C64C /* HomeTabViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeTabViewController.h; sourceTree = "<group>"; };
 		DB2C2AD817CD76250087C64C /* HomeTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeTabViewController.m; sourceTree = "<group>"; };
 		DB2C2ADE17CD79710087C64C /* DMFilterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMFilterView.h; sourceTree = "<group>"; };
@@ -636,6 +644,8 @@
 		DBA015B816D8B0B7007B2AE5 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				DB2A233119F0524B0026BCE1 /* UIViewController+AGExtension.h */,
+				DB2A233219F0524B0026BCE1 /* UIViewController+AGExtension.m */,
 				DB0CF20518CBC4B800943A15 /* dataCell.h */,
 				DB0CF20618CBC4B800943A15 /* dataCell.m */,
 				DB0CF20218CBC47400943A15 /* LineLayout.h */,
@@ -660,6 +670,9 @@
 				DBF92EA917D1729300C368A3 /* segWebViewController.m */,
 				DB2C2AD717CD76250087C64C /* HomeTabViewController.h */,
 				DB2C2AD817CD76250087C64C /* HomeTabViewController.m */,
+				DB2A232C19F00DC80026BCE1 /* NewsViewController.h */,
+				DB2A232D19F00DC80026BCE1 /* NewsViewController.m */,
+				DB2A232E19F00DC80026BCE1 /* NewsViewController.xib */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -877,6 +890,7 @@
 				DBBEC3B3181FFF15000EABD3 /* tb-icon-five.png in Resources */,
 				DBBEC3B4181FFF15000EABD3 /* tb-icon-five@2x.png in Resources */,
 				DB0CF1E018C8CE1E00943A15 /* Backgroundh@2x.png in Resources */,
+				DB2A233019F00DC80026BCE1 /* NewsViewController.xib in Resources */,
 				DB0CF1DF18C8CE1E00943A15 /* Backgroundh.png in Resources */,
 				DB0CF1E318C8CFF200943A15 /* tb-current.png in Resources */,
 			);
@@ -976,7 +990,9 @@
 				DBA7AC8A17F0AB0E003FD892 /* CustomBackgroundLayer.m in Sources */,
 				DBA7AC8B17F0AB0E003FD892 /* CustomNoiseBackgroundView.m in Sources */,
 				DB0CF20718CBC4B800943A15 /* dataCell.m in Sources */,
+				DB2A232F19F00DC80026BCE1 /* NewsViewController.m in Sources */,
 				DBA7AC8C17F0AB0E003FD892 /* CustomSelectionView.m in Sources */,
+				DB2A233319F0524B0026BCE1 /* UIViewController+AGExtension.m in Sources */,
 				DBA7AC8D17F0AB0E003FD892 /* CustomTabItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -25,6 +25,7 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import "NSObject+Subscripts.h"
+#import "UIViewController+AGExtension.h"
 #endif
 
 #ifdef DEBUG

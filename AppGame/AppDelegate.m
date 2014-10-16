@@ -144,7 +144,7 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     //self.window.rootViewController = [[HomeTabViewController alloc] initWithTitle:@"神雕侠侣攻略"];
-    self.window.rootViewController = [[MDSlideNavigationViewController alloc] initWithRootViewController:[[HomeTabViewController alloc] initWithTitle:@"刀塔传奇攻略"]];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[HomeTabViewController alloc] initWithTitle:@"刀塔传奇攻略"]];
     [self.window makeKeyAndVisible];
     
     //[NSThread sleepForTimeInterval:1];
