@@ -75,11 +75,14 @@
         
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
         leftButton.frame = CGRectMake(0, 0, 22, 22);
-        [leftButton setBackgroundImage:[UIImage imageNamed:@"search.png"] forState:UIControlStateNormal];
+        [leftButton setBackgroundImage:[UIImage imageNamed:@"article.png"] forState:UIControlStateNormal];
         [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setShowsTouchWhenHighlighted:YES];
         [leftButton addTarget:self action:@selector(gotoNews) forControlEvents:UIControlEventTouchUpInside];
+
+        //[leftButton setTitle:@"更多资讯" forState:UIControlStateNormal];
+        //[leftButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         
         UIBarButtonItem *temporaryLeftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
         temporaryLeftBarButtonItem.style = UIBarButtonItemStylePlain;

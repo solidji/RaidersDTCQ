@@ -9,6 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface NewsViewController : UIViewController
-@property (weak, nonatomic) IBOutlet UITableView *newsTableView;
 
 @end

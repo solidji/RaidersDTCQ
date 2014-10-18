@@ -25,6 +25,7 @@
 		DB0CF20718CBC4B800943A15 /* dataCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0CF20618CBC4B800943A15 /* dataCell.m */; };
 		DB0CF20A18CD22B000943A15 /* add.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0CF20818CD22B000943A15 /* add.png */; };
 		DB0CF20B18CD22B000943A15 /* add@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0CF20918CD22B000943A15 /* add@2x.png */; };
+		DB1B29D819F2C79200994ABD /* article.png in Resources */ = {isa = PBXBuildFile; fileRef = DB1B29D719F2C79200994ABD /* article.png */; };
 		DB2A232F19F00DC80026BCE1 /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB2A232D19F00DC80026BCE1 /* NewsViewController.m */; };
 		DB2A233019F00DC80026BCE1 /* NewsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB2A232E19F00DC80026BCE1 /* NewsViewController.xib */; };
 		DB2A233319F0524B0026BCE1 /* UIViewController+AGExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = DB2A233219F0524B0026BCE1 /* UIViewController+AGExtension.m */; };
@@ -170,6 +171,7 @@
 		DB0CF20618CBC4B800943A15 /* dataCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = dataCell.m; sourceTree = "<group>"; };
 		DB0CF20818CD22B000943A15 /* add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add.png; sourceTree = "<group>"; };
 		DB0CF20918CD22B000943A15 /* add@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add@2x.png"; sourceTree = "<group>"; };
+		DB1B29D719F2C79200994ABD /* article.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = article.png; sourceTree = "<group>"; };
 		DB2A232C19F00DC80026BCE1 /* NewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsViewController.h; sourceTree = "<group>"; };
 		DB2A232D19F00DC80026BCE1 /* NewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsViewController.m; sourceTree = "<group>"; };
 		DB2A232E19F00DC80026BCE1 /* NewsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewsViewController.xib; sourceTree = "<group>"; };
@@ -415,6 +417,7 @@
 			children = (
 				DB0CF20818CD22B000943A15 /* add.png */,
 				DB0CF20918CD22B000943A15 /* add@2x.png */,
+				DB1B29D719F2C79200994ABD /* article.png */,
 				DBBEC3B1181FFF15000EABD3 /* tb-icon-five.png */,
 				DBBEC3B2181FFF15000EABD3 /* tb-icon-five@2x.png */,
 				DB997BD717F5EDDF000145EC /* tb-icon-four.png */,
@@ -871,6 +874,7 @@
 				DB640A01178C8E780074E77C /* top@2x.png in Resources */,
 				DB890CB617CF2C3D0090EB4C /* Subcategories-pressed.png in Resources */,
 				DB890CB717CF2C3D0090EB4C /* Subcategories-pressed@2x.png in Resources */,
+				DB1B29D819F2C79200994ABD /* article.png in Resources */,
 				DB890CB817CF2C3D0090EB4C /* Subcategories.png in Resources */,
 				DB9BB61819ED9B0100FCFCCA /* Icon.xcassets in Resources */,
 				DB890CB917CF2C3D0090EB4C /* Subcategories@2x.png in Resources */,
@@ -1088,7 +1092,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5946C348808D4D14A5940C67 /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
+				ARCHS = (
+					armv7s,
+					armv7,
+				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: App Game (HY872Y64YR)";
@@ -1104,7 +1111,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/JPush\"",
 				);
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "刀塔传奇攻略";
 				PROVISIONING_PROFILE = "5C391A4A-F20B-4D87-94A9-697CBE5CFE17";
@@ -1119,7 +1126,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5946C348808D4D14A5940C67 /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
+				ARCHS = (
+					armv7s,
+					armv7,
+				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Ge Liang (9ATJLJZ6BL)";
