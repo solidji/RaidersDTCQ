@@ -160,15 +160,16 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
     
     if ([[[UIDevice currentDevice] systemVersion] floatValue] > 4.9) {
         //IOS5
-        [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
+        //[self.navigationController.navigationBar setBackgroundImage:kAGNavibarImage forBarMetrics:UIBarMetricsDefault];
+        [self.navigationController.navigationBar setBackgroundColor:[UIColor colorWithRed:4./255 green:160./255 blue:233./255 alpha:1.0]];
         
         if ([self.navigationController.toolbar respondsToSelector:@selector(setBackgroundImage:forToolbarPosition:barMetrics:)]) {
-            [self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"tabbarbg.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+            [self.navigationController.toolbar setBackgroundImage:kAGTabbarImage forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
         }
         self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:UITextAttributeTextColor];
     }else {//IOS4
         
-        [self.navigationController.toolbar insertSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tabbarbg.png"]] atIndex:0];
+        [self.navigationController.toolbar insertSubview:[[UIImageView alloc] initWithImage:kAGTabbarImage] atIndex:0];
     }
 }
 

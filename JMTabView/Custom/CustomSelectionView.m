@@ -24,8 +24,10 @@
 //    [trianglePath closePath];
 //    [trianglePath fill];
     
-    UIImage *img = [UIImage imageNamed:@"tb-current.png"];
-    [img drawInRect:rect];
+    //UIImage *img = [UIImage imageNamed:@"tb-current.png"];
+    //[img drawInRect:rect];
+    [[UIColor colorWithRed:4./255 green:160./255 blue:233./255 alpha:1.0] setFill];
+    UIRectFill(rect);
 }
 
 + (CustomSelectionView *) createSelectionView;

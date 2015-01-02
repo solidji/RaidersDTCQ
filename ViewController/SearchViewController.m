@@ -150,8 +150,8 @@
     
     if ([[[UIDevice currentDevice] systemVersion] floatValue] > 4.9) {
         //IOS5
-        [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
-        //self.navigationController.navigationBar.tintColor = [UIColor blackColor];
+        //[self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
+        self.navigationController.navigationBar.tintColor = [UIColor colorWithRed:4./255 green:160./255 blue:233./255 alpha:1.0];
         self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:UITextAttributeTextColor];
     }
 }

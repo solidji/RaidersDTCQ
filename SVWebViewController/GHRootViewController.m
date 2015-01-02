@@ -8,7 +8,7 @@
 #import "GHRootViewController.h"
 //#import "GHPushedViewController.h"
 #import "APService.h"//for open uuid
-
+#import "AGConstants.h"
 
 #pragma mark -
 #pragma mark Private Interface
@@ -433,15 +433,15 @@
         
         if ([[[UIDevice currentDevice] systemVersion] floatValue] > 4.9) {
             //IOS5
-            [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
+            //[self.navigationController.navigationBar setBackgroundImage:kAGNavibarImage forBarMetrics:UIBarMetricsDefault];
             self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:UITextAttributeTextColor];
             
             if ([self.navigationController.toolbar respondsToSelector:@selector(setBackgroundImage:forToolbarPosition:barMetrics:)]) {
-                [self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"tabbarbg.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+                [self.navigationController.toolbar setBackgroundImage:kAGTabbarImage forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
             }
         }else {//IOS4
             
-            [self.navigationController.toolbar insertSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tabbarbg.png"]] atIndex:0];
+            [self.navigationController.toolbar insertSubview:[[UIImageView alloc] initWithImage:kAGTabbarImage] atIndex:0];
         }
     }
     

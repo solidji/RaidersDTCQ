@@ -1,6 +1,6 @@
 #import "CustomTabItem.h"
 
-#define kTabDemoVerticalItemPaddingSize CGSizeMake(18., 0.)
+#define kTabDemoVerticalItemPaddingSize CGSizeMake(18., 4.)
 #define kTabDemoVerticalItemFont [UIFont boldSystemFontOfSize:10.]
 
 @implementation CustomTabItem
@@ -22,7 +22,7 @@
     
     CGFloat height = 44.;
     
-    return CGSizeMake(64, height);
+    return CGSizeMake(80, height);
 }
 
 - (void)drawRect:(CGRect)rect;
@@ -39,13 +39,13 @@
     [iconImage drawAtPoint:CGPointMake(iconMarginWidth, yOffset)];
     
     // calculate title position
-    //CGFloat titleWidth = [self.title sizeWithFont:kTabDemoVerticalItemFont].width;
-    //CGFloat titleMarginWidth = (bounds.size.width - titleWidth) / 2;
-    
-    //UIColor * textColor = self.highlighted ? [UIColor lightGrayColor] : [UIColor whiteColor];
+    CGFloat titleWidth = [self.title sizeWithFont:kTabDemoVerticalItemFont].width;
+    CGFloat titleMarginWidth = (bounds.size.width - titleWidth) / 2;
+
+    UIColor * textColor = (self.highlighted || [self isSelectedTabItem]) ? [UIColor whiteColor] : [UIColor grayColor];
     //UIColor * textColor = self.highlighted ? [UIColor brownColor] : [UIColor brownColor];
-    //[textColor set];
-    //[self.title drawAtPoint:CGPointMake(titleMarginWidth, yOffset + 32.) withFont:kTabDemoVerticalItemFont];
+    [textColor set];
+    [self.title drawAtPoint:CGPointMake(titleMarginWidth, yOffset + 24.) withFont:kTabDemoVerticalItemFont];
 }
 
 + (CustomTabItem *)tabItemWithTitle:(NSString *)title icon:(UIImage *)icon alternateIcon:(UIImage *)alternativeIcon;

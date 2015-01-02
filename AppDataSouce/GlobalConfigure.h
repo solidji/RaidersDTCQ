@@ -7,7 +7,7 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
-
+#import "AGConstants.h"
 //################################  不可修改部分 ################################
 
 #define kAppDelegate            ((AppDelegate *)[[UIApplication sharedApplication] delegate])

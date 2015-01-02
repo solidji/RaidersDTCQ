@@ -75,7 +75,7 @@
         
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
         leftButton.frame = CGRectMake(0, 0, 22, 22);
-        [leftButton setBackgroundImage:[UIImage imageNamed:@"article.png"] forState:UIControlStateNormal];
+        [leftButton setBackgroundImage:[UIImage imageNamed:@"新闻"] forState:UIControlStateNormal];
         [leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [leftButton setShowsTouchWhenHighlighted:YES];
@@ -90,7 +90,7 @@
         
         UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
         rightButton.frame = CGRectMake(0, 0, 22, 22);
-        [rightButton setBackgroundImage:[UIImage imageNamed:@"search.png"] forState:UIControlStateNormal];
+        [rightButton setBackgroundImage:[UIImage imageNamed:@"搜索"] forState:UIControlStateNormal];
         [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [rightButton setShowsTouchWhenHighlighted:YES];
@@ -240,17 +240,17 @@
     //UIImage * standardIcon = [UIImage imageNamed:@"icon3.png"];
     //UIImage * highlightedIcon = [UIImage imageNamed:@"icon2.png"];
     
-    CustomTabItem * tabItem1 = [CustomTabItem tabItemWithTitle:@"资讯" icon:[UIImage imageNamed:@"tb-icon-one.png"] alternateIcon:[UIImage imageNamed:@"tb-icon-one.png"]];
-    CustomTabItem * tabItem2 = [CustomTabItem tabItemWithTitle:@"攻略" icon:[UIImage imageNamed:@"tb-icon-two.png"] alternateIcon:[UIImage imageNamed:@"tb-icon-two.png"]];
-    CustomTabItem * tabItem3 = [CustomTabItem tabItemWithTitle:@"图鉴" icon:[UIImage imageNamed:@"tb-icon-three.png"] alternateIcon:[UIImage imageNamed:@"tb-icon-three.png"]];
-    CustomTabItem * tabItem4 = [CustomTabItem tabItemWithTitle:@"竞技场" icon:[UIImage imageNamed:@"tb-icon-four.png"] alternateIcon:[UIImage imageNamed:@"tb-icon-four.png"]];
-    CustomTabItem * tabItem5 = [CustomTabItem tabItemWithTitle:@"论坛" icon:[UIImage imageNamed:@"tb-icon-five.png"] alternateIcon:[UIImage imageNamed:@"tb-icon-five.png"]];
+    CustomTabItem * tabItem1 = [CustomTabItem tabItemWithTitle:@"攻略" icon:[UIImage imageNamed:@"攻略-未按"] alternateIcon:[UIImage imageNamed:@"攻略-按下"]];
+    CustomTabItem * tabItem2 = [CustomTabItem tabItemWithTitle:@"巡回赛" icon:[UIImage imageNamed:@"巡回赛-未按"] alternateIcon:[UIImage imageNamed:@"巡回赛-按下"]];
+    CustomTabItem * tabItem3 = [CustomTabItem tabItemWithTitle:@"论坛" icon:[UIImage imageNamed:@"论坛-未按"] alternateIcon:[UIImage imageNamed:@"论坛-按下"]];
+    CustomTabItem * tabItem4 = [CustomTabItem tabItemWithTitle:@"问答" icon:[UIImage imageNamed:@"问答-未按"] alternateIcon:[UIImage imageNamed:@"问答-按下"]];
+    //CustomTabItem * tabItem5 = [CustomTabItem tabItemWithTitle:@"论坛" icon:[UIImage imageNamed:@"tb-icon-five.png"] alternateIcon:[UIImage imageNamed:@"tb-icon-five.png"]];
     
     [tabView addTabItem:tabItem1];
     [tabView addTabItem:tabItem2];
     [tabView addTabItem:tabItem3];
     [tabView addTabItem:tabItem4];
-    [tabView addTabItem:tabItem5];
+    //[tabView addTabItem:tabItem5];
     
     [tabView setSelectionView:[CustomSelectionView createSelectionView]];
     [tabView setItemSpacing:1.];
@@ -272,8 +272,9 @@
     //[self.navigationController.navigationBar setTranslucent:NO];
     if ([[[UIDevice currentDevice] systemVersion] floatValue] > 4.9) {
         //IOS5
-        [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
-        //self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
+        //[self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
+        self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:4./255 green:160./255 blue:233./255 alpha:1.0];
+        self.navigationController.navigationBar.tintColor = [UIColor colorWithRed:4./255 green:160./255 blue:233./255 alpha:1.0];
         //self.navigationController.navigationBar.tintColor = [UIColor clearColor];
         self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor] ,UITextAttributeTextColor,[UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0], UITextAttributeFont,nil];
     }
@@ -322,7 +323,7 @@
 }
 
 - (void)gotoNews{
-    //设置搜索页出现
+    //设置新闻页出现
     //[self.RootScrollView setContentOffset:CGPointMake(6*320, 0) animated:YES];
     NewsViewController *vc = [[NewsViewController alloc] initWithNibName:@"NewsViewController" bundle:nil];
     

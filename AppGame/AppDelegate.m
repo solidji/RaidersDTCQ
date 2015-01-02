@@ -61,6 +61,7 @@
 //            //NSLog(@"Font name: %@",[fontNames objectAtIndex:indFont]);
 //        }
 //	}
+    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:4./255 green:160./255 blue:233./255 alpha:1.0]];
     
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGRect appBound = [[UIScreen mainScreen] applicationFrame];

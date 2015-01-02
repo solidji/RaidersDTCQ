@@ -62,7 +62,7 @@
         
         UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
         rightButton.frame = CGRectMake(0, 0, 26, 26);
-        [rightButton setBackgroundImage:[UIImage imageNamed:@"search.png"] forState:UIControlStateNormal];
+        [rightButton setBackgroundImage:[UIImage imageNamed:@"搜索"] forState:UIControlStateNormal];
         [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [rightButton setShowsTouchWhenHighlighted:YES];
@@ -110,7 +110,7 @@
         
         UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
         rightButton.frame = CGRectMake(0, 0, 22, 22);
-        [rightButton setBackgroundImage:[UIImage imageNamed:@"search.png"] forState:UIControlStateNormal];
+        [rightButton setBackgroundImage:[UIImage imageNamed:@"搜索"] forState:UIControlStateNormal];
         [rightButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [rightButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [rightButton setShowsTouchWhenHighlighted:YES];
@@ -329,7 +329,8 @@
     // Setting the resizable background image
     //UIImage *backgroundImage = [UIImage imageNamed:@"Subcategories.png"];
     //[segmentedPerson setBackgroundImage:backgroundImage];
-    [segmentedPerson setBackgroundColor:[UIColor colorWithRed:233.0f/255.0f green:235.0f/255.0f blue:228.0f/255.0f alpha:1.0f]];
+    //[segmentedPerson setBackgroundColor:[UIColor colorWithRed:233.0f/255.0f green:235.0f/255.0f blue:228.0f/255.0f alpha:1.0f]];
+    [segmentedPerson setBackgroundColor:[UIColor whiteColor]];
     // Setting the behavior mode of the control
     [segmentedPerson setSegmentedControlMode:AKSegmentedControlModeSticky];
     
@@ -403,8 +404,9 @@
     [self.navigationController setToolbarHidden:YES animated:animated];
     if ([[[UIDevice currentDevice] systemVersion] floatValue] > 4.9) {
         //IOS5
-        [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
-        //self.navigationController.navigationBar.tintColor = [UIColor blackColor];
+        //[self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"top.png"] forBarMetrics:UIBarMetricsDefault];
+        self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:4./255 green:160./255 blue:233./255 alpha:1.0];
+        self.navigationController.navigationBar.tintColor = [UIColor colorWithRed:4./255 green:160./255 blue:233./255 alpha:1.0];
     }
 }
 
