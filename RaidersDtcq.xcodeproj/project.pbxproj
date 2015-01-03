@@ -50,6 +50,8 @@
 		DB6411B817F475A700EA650B /* tabbarbg.png in Resources */ = {isa = PBXBuildFile; fileRef = DB6411B617F475A700EA650B /* tabbarbg.png */; };
 		DB6411B917F475A700EA650B /* tabbarbg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB6411B717F475A700EA650B /* tabbarbg@2x.png */; };
 		DB7831A71A56142300C7E1A8 /* Image.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB7831A61A56142300C7E1A8 /* Image.xcassets */; };
+		DB7831A91A5842DF00C7E1A8 /* libPushSDK-1.8.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DB7831A81A5842DF00C7E1A8 /* libPushSDK-1.8.2.a */; };
+		DB7831AA1A584A9600C7E1A8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DB3AE5AB18DE1FFC000EE1AF /* libz.dylib */; };
 		DB890CB617CF2C3D0090EB4C /* Subcategories-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = DB890CB017CF2C3D0090EB4C /* Subcategories-pressed.png */; };
 		DB890CB717CF2C3D0090EB4C /* Subcategories-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB890CB117CF2C3D0090EB4C /* Subcategories-pressed@2x.png */; };
 		DB890CB817CF2C3D0090EB4C /* Subcategories.png in Resources */ = {isa = PBXBuildFile; fileRef = DB890CB217CF2C3D0090EB4C /* Subcategories.png */; };
@@ -70,8 +72,6 @@
 		DB9E9FD316F2325500ED6B61 /* iVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9E9FD116F2325500ED6B61 /* iVersion.m */; };
 		DB9EAB551763BEEA00D870B1 /* HMSideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9EAB541763BEEA00D870B1 /* HMSideMenu.m */; };
 		DB9EDD9D16E7B54D005C4CAC /* appgame.html in Resources */ = {isa = PBXBuildFile; fileRef = DB9EDD9C16E7B54D005C4CAC /* appgame.html */; };
-		DB9F33DC16F3296400B26B52 /* libPushSDK-Simulator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DB9F33DA16F3296400B26B52 /* libPushSDK-Simulator.a */; };
-		DB9F33DD16F3296400B26B52 /* libPushSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DB9F33DB16F3296400B26B52 /* libPushSDK.a */; };
 		DB9F33DF16F3297C00B26B52 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB9F33DE16F3297C00B26B52 /* CFNetwork.framework */; };
 		DB9F33E116F3299300B26B52 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB9F33E016F3299300B26B52 /* CoreFoundation.framework */; };
 		DB9F33E316F3299F00B26B52 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB9F33E216F3299F00B26B52 /* CoreTelephony.framework */; };
@@ -140,8 +140,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1D63769ADD9847DEAEC2D2F7 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		5946C348808D4D14A5940C67 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		D2512E1717CB20EE00FEA535 /* GHRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GHRootViewController.h; sourceTree = "<group>"; };
 		D2512E1817CB20EE00FEA535 /* GHRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHRootViewController.m; sourceTree = "<group>"; };
 		D2512E1A17CB20FB00FEA535 /* Globle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Globle.h; sourceTree = "<group>"; };
@@ -204,6 +202,7 @@
 		DB6411B717F475A700EA650B /* tabbarbg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tabbarbg@2x.png"; sourceTree = "<group>"; };
 		DB7831A51A560C8200C7E1A8 /* AGConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGConstants.h; sourceTree = "<group>"; };
 		DB7831A61A56142300C7E1A8 /* Image.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Image.xcassets; sourceTree = "<group>"; };
+		DB7831A81A5842DF00C7E1A8 /* libPushSDK-1.8.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libPushSDK-1.8.2.a"; sourceTree = "<group>"; };
 		DB890CB017CF2C3D0090EB4C /* Subcategories-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Subcategories-pressed.png"; sourceTree = "<group>"; };
 		DB890CB117CF2C3D0090EB4C /* Subcategories-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Subcategories-pressed@2x.png"; sourceTree = "<group>"; };
 		DB890CB217CF2C3D0090EB4C /* Subcategories.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Subcategories.png; sourceTree = "<group>"; };
@@ -231,8 +230,6 @@
 		DB9EAB541763BEEA00D870B1 /* HMSideMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMSideMenu.m; sourceTree = "<group>"; };
 		DB9EDD9C16E7B54D005C4CAC /* appgame.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = appgame.html; sourceTree = "<group>"; };
 		DB9F33D916F3296400B26B52 /* APService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APService.h; sourceTree = "<group>"; };
-		DB9F33DA16F3296400B26B52 /* libPushSDK-Simulator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libPushSDK-Simulator.a"; sourceTree = "<group>"; };
-		DB9F33DB16F3296400B26B52 /* libPushSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libPushSDK.a; sourceTree = "<group>"; };
 		DB9F33DE16F3297C00B26B52 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		DB9F33E016F3299300B26B52 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		DB9F33E216F3299F00B26B52 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
@@ -348,6 +345,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB7831AA1A584A9600C7E1A8 /* libz.dylib in Frameworks */,
 				DB9F33E316F3299F00B26B52 /* CoreTelephony.framework in Frameworks */,
 				DB9FD85616E2863A00F206AE /* MobileCoreServices.framework in Frameworks */,
 				DB9FD85416E2863300F206AE /* SystemConfiguration.framework in Frameworks */,
@@ -367,9 +365,8 @@
 				DBA0161116D8B104007B2AE5 /* MessageUI.framework in Frameworks */,
 				DBA0154D16D8AF89007B2AE5 /* UIKit.framework in Frameworks */,
 				DBA0154F16D8AF89007B2AE5 /* Foundation.framework in Frameworks */,
-				DB9F33DC16F3296400B26B52 /* libPushSDK-Simulator.a in Frameworks */,
-				DB9F33DD16F3296400B26B52 /* libPushSDK.a in Frameworks */,
 				DBC5E94D18FC5472005DAB73 /* StoreKit.framework in Frameworks */,
+				DB7831A91A5842DF00C7E1A8 /* libPushSDK-1.8.2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -485,14 +482,13 @@
 			path = HMSideMenu;
 			sourceTree = "<group>";
 		};
-		DB9F33D816F3296400B26B52 /* JPush-OpenUDID-1.5.2 */ = {
+		DB9F33D816F3296400B26B52 /* JPush-1.8.2.a */ = {
 			isa = PBXGroup;
 			children = (
 				DB9F33D916F3296400B26B52 /* APService.h */,
-				DB9F33DA16F3296400B26B52 /* libPushSDK-Simulator.a */,
-				DB9F33DB16F3296400B26B52 /* libPushSDK.a */,
+				DB7831A81A5842DF00C7E1A8 /* libPushSDK-1.8.2.a */,
 			);
-			name = "JPush-OpenUDID-1.5.2";
+			name = "JPush-1.8.2.a";
 			path = JPush;
 			sourceTree = "<group>";
 		};
@@ -542,7 +538,7 @@
 				DBA7AC4917F098DA003FD892 /* JMTabView */,
 				DB3CE94D17CDBB1B005C58E9 /* TFIndicatorView */,
 				DB3CE94617CD9E79005C58E9 /* MDSlideNavigation */,
-				DB9F33D816F3296400B26B52 /* JPush-OpenUDID-1.5.2 */,
+				DB9F33D816F3296400B26B52 /* JPush-1.8.2.a */,
 				DB64097A178C8E780074E77C /* Images */,
 				DBA47D8517896B34004DE89E /* AKSegmentedControl */,
 				DB9E9FCE16F2325500ED6B61 /* iVersion */,
@@ -558,7 +554,6 @@
 				DBA0155216D8AF89007B2AE5 /* AppGame */,
 				DBA0154B16D8AF89007B2AE5 /* Frameworks */,
 				DBA0154A16D8AF89007B2AE5 /* Products */,
-				5946C348808D4D14A5940C67 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -594,7 +589,6 @@
 				DBA0154C16D8AF89007B2AE5 /* UIKit.framework */,
 				DBA0154E16D8AF89007B2AE5 /* Foundation.framework */,
 				DBA0155016D8AF89007B2AE5 /* CoreGraphics.framework */,
-				1D63769ADD9847DEAEC2D2F7 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -783,11 +777,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DBA0156616D8AF89007B2AE5 /* Build configuration list for PBXNativeTarget "RaidersDtcq.temp_caseinsensitive_rename" */;
 			buildPhases = (
-				2932542C4DA9499F8C7CAF67 /* Check Pods Manifest.lock */,
 				DBA0154516D8AF89007B2AE5 /* Sources */,
 				DBA0154616D8AF89007B2AE5 /* Frameworks */,
 				DBA0154716D8AF89007B2AE5 /* Resources */,
-				D2385D5C54D746DC9B96F893 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -804,7 +796,7 @@
 		DBA0154116D8AF89007B2AE5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = "计 炜";
 				TargetAttributes = {
 					DBA0154816D8AF89007B2AE5 = {
@@ -900,39 +892,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		2932542C4DA9499F8C7CAF67 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		D2385D5C54D746DC9B96F893 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		DBA0154516D8AF89007B2AE5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -1017,7 +976,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1056,7 +1014,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1088,18 +1045,13 @@
 		};
 		DBA0156716D8AF89007B2AE5 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5946C348808D4D14A5940C67 /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					armv7s,
-					armv7,
-				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: App Game (HY872Y64YR)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/solidji/code/RaidersDTCQ,
+					"$(SRCROOT)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppGame/RaidersDtcq.temp_caseinsensitive_rename-Prefix.pch";
@@ -1115,25 +1067,20 @@
 				PROVISIONING_PROFILE = "5c7817eb-3e09-4fd3-af60-878cc4d1a6d2";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5c7817eb-3e09-4fd3-af60-878cc4d1a6d2";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/JPush";
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
 		};
 		DBA0156816D8AF89007B2AE5 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5946C348808D4D14A5940C67 /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					armv7s,
-					armv7,
-				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Ge Liang (9ATJLJZ6BL)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/solidji/code/RaidersDTCQ,
+					"$(SRCROOT)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppGame/RaidersDtcq.temp_caseinsensitive_rename-Prefix.pch";
@@ -1149,7 +1096,7 @@
 				PROVISIONING_PROFILE = "6B6563AF-1A92-44BF-9DF4-5AA231DE750B";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6B6563AF-1A92-44BF-9DF4-5AA231DE750B";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/JPush";
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -91,18 +91,39 @@
     // jpush
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
     
-    [defaultCenter addObserver:self selector:@selector(networkDidSetup:) name:kAPNetworkDidSetupNotification object:nil];
-    [defaultCenter addObserver:self selector:@selector(networkDidClose:) name:kAPNetworkDidCloseNotification object:nil];
-    [defaultCenter addObserver:self selector:@selector(networkDidRegister:) name:kAPNetworkDidRegisterNotification object:nil];
-    [defaultCenter addObserver:self selector:@selector(networkDidLogin:) name:kAPNetworkDidLoginNotification object:nil];
-    [defaultCenter addObserver:self selector:@selector(networkDidReceiveMessage:) name:kAPNetworkDidReceiveMessageNotification object:nil];
+    [defaultCenter addObserver:self selector:@selector(networkDidSetup:) name:kJPFNetworkDidSetupNotification object:nil];
+    [defaultCenter addObserver:self selector:@selector(networkDidClose:) name:kJPFNetworkDidCloseNotification object:nil];
+    [defaultCenter addObserver:self selector:@selector(networkDidRegister:) name:kJPFNetworkDidRegisterNotification object:nil];
+    [defaultCenter addObserver:self selector:@selector(networkDidLogin:) name:kJPFNetworkDidLoginNotification object:nil];
+    [defaultCenter addObserver:self selector:@selector(networkDidReceiveMessage:) name:kJPFNetworkDidReceiveMessageNotification object:nil];
     //NSLog(@"openuuid:%@",[APService openUDID]);
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     BOOL bPush = [standardDefaults boolForKey:kPushDefault];
     if (!bPush) {
+        // Required
+        #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+        if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
+            //可以添加自定义categories
+            [APService registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge |
+                                                           UIUserNotificationTypeSound |
+                                                           UIUserNotificationTypeAlert)
+                                               categories:nil];
+        }
+        else {
+            //categories 必须为nil
+            [APService registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+                                                           UIRemoteNotificationTypeSound |
+                                                           UIRemoteNotificationTypeAlert)
+                                               categories:nil];
+        }
+        #else
+        //categories 必须为nil
         [APService registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
                                                        UIRemoteNotificationTypeSound |
-                                                       UIRemoteNotificationTypeAlert)];
+                                                       UIRemoteNotificationTypeAlert)
+                                           categories:nil];
+        #endif
+        
     }else {
         if ([application enabledRemoteNotificationTypes] != 0) {
             [[UIApplication sharedApplication] unregisterForRemoteNotifications];
@@ -271,6 +292,48 @@
         [alertView show];
     }
     
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    
+    // 取得 APNs 标准信息内容
+    pushInfo = userInfo;
+    NSDictionary *aps = [userInfo valueForKey:@"aps"];
+    NSString *content = [aps valueForKey:@"alert"]; //推送显示的内容
+    NSInteger badge = [[aps valueForKey:@"badge"] integerValue]; //badge数量
+    NSString *sound = [aps valueForKey:@"sound"]; //播放的声音
+    
+    // 取得自定义字段内容
+    NSString *urlField = [userInfo valueForKey:@"url"]; //自定义参数，key是自己定义的
+    NSLog(@"content=[%@], badge=[%d], sound=[%@], urlField=[%@]",content,badge,sound,urlField);
+    
+    // IOS 7 Support Required
+    [APService handleRemoteNotification:userInfo];
+    completionHandler(UIBackgroundFetchResultNewData);
+    
+    UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
+    if(appState == UIApplicationStateInactive){
+        //NSLog(@"程序在锁屏与后台状态");
+        //[self launchNotification:userInfo];
+        [self performSelector:@selector(launchNotification:) withObject:userInfo afterDelay:1.0];
+    }
+    else if(appState == UIApplicationStateBackground)
+    {
+        //NSLog(@"程序在后台状态");
+        [self performSelector:@selector(launchNotification:) withObject:userInfo afterDelay:1.0];
+    }
+    else if(appState == UIApplicationStateActive)
+    {
+        //NSLog(@"程序在运行状态");
+        NSString *title = @"最新消息";
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title
+                                                            message:content
+                                                           delegate:self
+                                                  cancelButtonTitle:NSLocalizedString(@"忽略", Nil)
+                                                  otherButtonTitles:NSLocalizedString(@"查看", Nil), Nil];
+        alertView.tag = 100;
+        [alertView show];
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
