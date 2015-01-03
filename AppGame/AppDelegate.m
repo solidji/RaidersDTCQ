@@ -62,6 +62,7 @@
 //        }
 //	}
     [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:4./255 green:160./255 blue:233./255 alpha:1.0]];
+    //[[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"nav_bg.png"] forBarMetrics:UIBarMetricsDefault];
     
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGRect appBound = [[UIScreen mainScreen] applicationFrame];

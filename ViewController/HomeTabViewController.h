@@ -18,22 +18,22 @@
 #import "HMSideMenu.h"
 #import "JMTabView.h"
 
-@interface HomeTabViewController : UIViewController <DMFilterViewDelegate,JMTabViewDelegate>
+@interface HomeTabViewController : UIViewController <JMTabViewDelegate>
 {
-    HomeViewController *newsViewController;
-    HomeViewController *videoViewController;
-    DataViewController *dataViewController;
-    HomeViewController *hotViewController;
+    GHRootViewController *newsViewController;
+    GHRootViewController *videoViewController;
+    GHRootViewController *hotViewController;
     GHRootViewController *bbsViewController,*officialWebView;
-    HMSideMenu *bbsSideMenu,*officialSideMenu;
+    
+    DataViewController *dataViewController;
+    HMSideMenu *bbsSideMenu,*officialSideMenu,*newsSideMenu,*tourSideMenu;
 }
 
-@property (nonatomic, strong) DMFilterView *filterView;
-@property (nonatomic, strong) HomeViewController *newsViewController;
-@property (nonatomic, strong) HomeViewController *videoViewController,*hotViewController;
+@property (nonatomic, strong) GHRootViewController *newsViewController;
+@property (nonatomic, strong) GHRootViewController *videoViewController,*hotViewController;
 @property (nonatomic, strong) DataViewController *dataViewController;
 @property (nonatomic, strong) GHRootViewController *bbsViewController,*officialWebView;
-@property (nonatomic, strong) HMSideMenu *bbsSideMenu,*officialSideMenu;
+@property (nonatomic, strong) HMSideMenu *bbsSideMenu,*officialSideMenu,*newsSideMenu,*tourSideMenu;
 
 - (id)initWithTitle:(NSString *)title;
 @end

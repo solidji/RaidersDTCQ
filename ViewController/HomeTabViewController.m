@@ -55,7 +55,7 @@
 @end
 
 @implementation HomeTabViewController
-@synthesize filterView,hotViewController,newsViewController,videoViewController,dataViewController,bbsViewController,officialWebView,bbsSideMenu,officialSideMenu;
+@synthesize hotViewController,newsViewController,videoViewController,dataViewController,bbsViewController,officialWebView,bbsSideMenu,officialSideMenu,newsSideMenu,tourSideMenu;
 
 //- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 //{
@@ -107,17 +107,23 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor clearColor];
     self.view.backgroundColor = [UIColor whiteColor];
-    self.view.frame = CGRectMake(0, 44, [Globle shareInstance].globleWidth, [Globle shareInstance].globleHeight-44);
+    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
+    {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    }
+    //self.view.frame = CGRectMake(0, 44, [Globle shareInstance].globleWidth, [Globle shareInstance].globleHeight-44);
 
     NSDictionary *dictionary;
     NSString *bbsUrlStr = @"http://bbs.appgame.com/forum-141-1.html";
+    NSString *newsUrlStr = @"http://dtcq.appgame.com/";
+    NSString *tourUrlStr = @"http://dtcq.appgame.com/tour";
+    NSString *qaUrlStr = @"http://we.appgame.com/?/topic/%E5%88%80%E5%A1%94%E4%BC%A0%E5%A5%87";
     
 //    AVObject *vcKeyObject = [AVObject objectWithClassName:@"VcKeyObject"];
 //    [vcKeyObject setObject:dictionary forKey:@"VcKeyDictionary"];
 //    [vcKeyObject save];
-    AVQuery *query = [AVQuery queryWithClassName:@"VcKeyObject_v1_1"];//不同版本,配置表不同,这个表示v1.1
+    AVQuery *query = [AVQuery queryWithClassName:@"VcKeyObject_v1_2"];//不同版本,配置表不同,这个表示v1.2.x
     AVObject *VcKeyObject = [query getFirstObject];
     if(!VcKeyObject){
         dictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"热门推荐", @"title11",
@@ -143,86 +149,209 @@
                       
                       @"论坛", @"bbsTitle",
                       @"http://bbs.appgame.com/forum-141-1.html", @"bbsUrl",
+                      
+                      @"攻略", @"newsTitle",
+                      @"http://dtcq.appgame.com/", @"newsUrl",
+                      
+                      @"巡回赛", @"tourTitle",
+                      @"http://dtcq.appgame.com/tour", @"tourUrl",
+                      
+                      @"问答", @"qaTitle",
+                      @"http://we.appgame.com/?/topic/%E5%88%80%E5%A1%94%E4%BC%A0%E5%A5%87", @"qaUrl",
+                      
                       nil];
     }else {
         dictionary = [VcKeyObject objectForKey:@"VcKeyDictionary"];
-        bbsUrlStr = [VcKeyObject objectForKey:@"BbsUrlStr"];
+        bbsUrlStr = [VcKeyObject objectForKey:@"bbsUrlStr"];
+        newsUrlStr = [VcKeyObject objectForKey:@"newsUrlStr"];
+        tourUrlStr = [VcKeyObject objectForKey:@"tourUrlStr"];
+        qaUrlStr = [VcKeyObject objectForKey:@"qaUrlStr"];
     }
 
 //    {"title22":"进阶技巧","title21":"新手指导","cate11":"hot","title13":"公告活动","title12":"刀塔小说","title11":"热门推荐","title31":"阵容搭配","title32":"副本攻略","bbsUrl":"http://bbs.appgame.com/forum-141-1.html","cate13":"gong-gao","cate12":"novel","bbsTitle":"论坛","cate31":"zr-dp","cate32":"fu-ben-gl","cate33":"pk-video","cate23":"xin-de","title33":"竞技场透析","cate21":"newer","cate22":"gong-lue","title23":"英雄专题"}
     
+    //    //数据库
+    //    //dataViewController = [[HorizonViewController alloc] initWithTitle:@"图鉴"];
+    ////    dataViewController = [[DataViewController alloc] init];
+    ////    [self addChildViewController:dataViewController];
+    ////    [dataViewController.view setFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
+    ////    [self.view addSubview:dataViewController.view];
+    ////    [self.dataViewController.view setHidden:YES];
+    //
+    //
+    //    //竞技场 视频
+    //    videoViewController = [[HomeViewController alloc] initWithTitle:@"竞技场" withSeg:@[[dictionary objectForKey:@"title31"], [dictionary objectForKey:@"title32"], [dictionary objectForKey:@"title33"]] withCate:@[[dictionary objectForKey:@"cate31"], [dictionary objectForKey:@"cate32"], [dictionary objectForKey:@"cate33"]] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
+    //    [self addChildViewController:videoViewController];
+    //    [self.view addSubview:videoViewController.view];
+    //    [videoViewController.view setHidden:YES];
+
     
-    //第一页,资讯
-    newsViewController = [[HomeViewController alloc] initWithTitle:@"资讯" withSeg:@[[dictionary objectForKey:@"title11"] , [dictionary objectForKey:@"title12"], [dictionary objectForKey:@"title13"]] withCate:@[[dictionary objectForKey:@"cate11"], [dictionary objectForKey:@"cate12"], [dictionary objectForKey:@"cate13"]] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
+    
+    //newsViewController = [[HomeViewController alloc] initWithTitle:@"资讯" withSeg:@[[dictionary objectForKey:@"title11"] , [dictionary objectForKey:@"title12"], [dictionary objectForKey:@"title13"]] withCate:@[[dictionary objectForKey:@"cate11"], [dictionary objectForKey:@"cate12"], [dictionary objectForKey:@"cate13"]] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
+    
+    //第一页,攻略
+    newsViewController = [[GHRootViewController alloc] initWithTitle:[dictionary objectForKey:@"newsTitle"] withUrl:newsUrlStr];
     [self addChildViewController:newsViewController];
-    //[hotViewController.view setFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
     [self.view addSubview:newsViewController.view];
+    //[newsViewController.view setFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-44)];
     [newsViewController.view setHidden:NO];
+    {
+        //添加刷新与后退按钮
+        UIView *twitterItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [twitterItem setMenuActionWithBlock:^{
+            [[newsViewController mainWebView] goBack];
+        }];
+        UIImageView *twitterIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [twitterIcon setImage:[UIImage imageNamed:@"Retreat"]];
+        [twitterItem addSubview:twitterIcon];
+        
+        UIView *emailItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [emailItem setMenuActionWithBlock:^{
+            [[newsViewController mainWebView] goForward];
+        }];
+        UIImageView *emailIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [emailIcon setImage:[UIImage imageNamed:@"Advance"]];
+        [emailItem addSubview:emailIcon];
+        
+        
+        UIView *browserItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [browserItem setMenuActionWithBlock:^{
+            NSLog(@"reload url:%@,weburl:%@",newsViewController.mainWebView.request.URL.absoluteString,self.bbsViewController.webURL);
+            [newsViewController reloadClicked];
+        }];
+        UIImageView *browserIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [browserIcon setImage:[UIImage imageNamed:@"Refresh"]];
+        [browserItem addSubview:browserIcon];
+        
+        newsSideMenu = [[HMSideMenu alloc] initWithItems:@[twitterItem, emailItem, browserItem]];
+        [newsSideMenu setItemSpacing:5.0f];
+        [[newsViewController mainWebView] addSubview:newsSideMenu];
+        [newsSideMenu open];
+    }
     
-    //第二页,攻略
-    //hotViewController = [[HomeViewController alloc] initWithTitle:@"攻略" withUrl:@"re-men-wen-zhang" withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
-    hotViewController = [[HomeViewController alloc] initWithTitle:@"攻略" withSeg:@[[dictionary objectForKey:@"title21"], [dictionary objectForKey:@"title22"], [dictionary objectForKey:@"title23"]] withCate:@[[dictionary objectForKey:@"cate21"], [dictionary objectForKey:@"cate22"], [dictionary objectForKey:@"cate23"]] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
+    
+    //第二页,巡回赛
+    hotViewController = [[GHRootViewController alloc] initWithTitle:[dictionary objectForKey:@"tourTitle"] withUrl:tourUrlStr];
     [self addChildViewController:hotViewController];
-    //[hotViewController.view setFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
     [self.view addSubview:hotViewController.view];
+    //[hotViewController.view setFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-44)];
     [hotViewController.view setHidden:YES];
-    
-    
-    //第三页,数据库
-    //dataViewController = [[HorizonViewController alloc] initWithTitle:@"图鉴"];
-    dataViewController = [[DataViewController alloc] init];
-    [self addChildViewController:dataViewController];
-    [dataViewController.view setFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
-    [self.view addSubview:dataViewController.view];
-    [self.dataViewController.view setHidden:YES];
-    
+    {
+        //添加刷新与后退按钮
+        UIView *twitterItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [twitterItem setMenuActionWithBlock:^{
+            [[hotViewController mainWebView] goBack];
+        }];
+        UIImageView *twitterIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [twitterIcon setImage:[UIImage imageNamed:@"Retreat"]];
+        [twitterItem addSubview:twitterIcon];
+        
+        UIView *emailItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [emailItem setMenuActionWithBlock:^{
+            [[hotViewController mainWebView] goForward];
+        }];
+        UIImageView *emailIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [emailIcon setImage:[UIImage imageNamed:@"Advance"]];
+        [emailItem addSubview:emailIcon];
+        
+        
+        UIView *browserItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [browserItem setMenuActionWithBlock:^{
+            NSLog(@"reload url:%@,weburl:%@",hotViewController.mainWebView.request.URL.absoluteString,self.bbsViewController.webURL);
+            [hotViewController reloadClicked];
+        }];
+        UIImageView *browserIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [browserIcon setImage:[UIImage imageNamed:@"Refresh"]];
+        [browserItem addSubview:browserIcon];
+        
+        tourSideMenu = [[HMSideMenu alloc] initWithItems:@[twitterItem, emailItem, browserItem]];
+        [tourSideMenu setItemSpacing:5.0f];
+        [[hotViewController mainWebView] addSubview:tourSideMenu];
+        [tourSideMenu open];
+    }
 
-    //第四页,竞技场 视频
-    videoViewController = [[HomeViewController alloc] initWithTitle:@"竞技场" withSeg:@[[dictionary objectForKey:@"title31"], [dictionary objectForKey:@"title32"], [dictionary objectForKey:@"title33"]] withCate:@[[dictionary objectForKey:@"cate31"], [dictionary objectForKey:@"cate32"], [dictionary objectForKey:@"cate33"]] withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
-    [self addChildViewController:videoViewController];
-    [self.view addSubview:videoViewController.view];
-    [videoViewController.view setHidden:YES];
-    
 
-    //第五页,论坛
-    //bbsViewController = [[SVWebViewController alloc] initWithURL:[NSURL URLWithString:@"http://bbs.appgame.com/forum-141-1.html"]];
+    //第三页,论坛
     bbsViewController = [[GHRootViewController alloc] initWithTitle:[dictionary objectForKey:@"bbsTitle"] withUrl:bbsUrlStr];
     //NSLog(@"init url:%@",bbsViewController.mainWebView.request.URL.absoluteString);
     [self addChildViewController:bbsViewController];
-    [bbsViewController.view setFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight-44-44)];
+    //[bbsViewController.view setFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-44)];
     [self.view addSubview:bbsViewController.view];
     [bbsViewController.view setHidden:YES];
-    //添加刷新与后退按钮
-    UIView *twitterItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [twitterItem setMenuActionWithBlock:^{
-        [[bbsViewController mainWebView] goBack];
-    }];
-    UIImageView *twitterIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [twitterIcon setImage:[UIImage imageNamed:@"Retreat"]];
-    [twitterItem addSubview:twitterIcon];
+    {
+        //添加刷新与后退按钮
+        UIView *twitterItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [twitterItem setMenuActionWithBlock:^{
+            [[bbsViewController mainWebView] goBack];
+        }];
+        UIImageView *twitterIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [twitterIcon setImage:[UIImage imageNamed:@"Retreat"]];
+        [twitterItem addSubview:twitterIcon];
+        
+        UIView *emailItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [emailItem setMenuActionWithBlock:^{
+            [[bbsViewController mainWebView] goForward];
+        }];
+        UIImageView *emailIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [emailIcon setImage:[UIImage imageNamed:@"Advance"]];
+        [emailItem addSubview:emailIcon];
+        
+        
+        UIView *browserItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [browserItem setMenuActionWithBlock:^{
+            NSLog(@"reload url:%@,weburl:%@",bbsViewController.mainWebView.request.URL.absoluteString,self.bbsViewController.webURL);
+            [bbsViewController reloadClicked];
+        }];
+        UIImageView *browserIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [browserIcon setImage:[UIImage imageNamed:@"Refresh"]];
+        [browserItem addSubview:browserIcon];
+        
+        bbsSideMenu = [[HMSideMenu alloc] initWithItems:@[twitterItem, emailItem, browserItem]];
+        [bbsSideMenu setItemSpacing:5.0f];
+        [[bbsViewController mainWebView] addSubview:bbsSideMenu];
+        [bbsSideMenu open];
+    }
     
-    UIView *emailItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [emailItem setMenuActionWithBlock:^{
-        [[bbsViewController mainWebView] goForward];
-    }];
-    UIImageView *emailIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [emailIcon setImage:[UIImage imageNamed:@"Advance"]];
-    [emailItem addSubview:emailIcon];
-    
-    
-    UIView *browserItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [browserItem setMenuActionWithBlock:^{
-        NSLog(@"reload url:%@,weburl:%@",bbsViewController.mainWebView.request.URL.absoluteString,self.bbsViewController.webURL);
-        [bbsViewController reloadClicked];
-    }];
-    UIImageView *browserIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [browserIcon setImage:[UIImage imageNamed:@"Refresh"]];
-    [browserItem addSubview:browserIcon];
-    
-    bbsSideMenu = [[HMSideMenu alloc] initWithItems:@[twitterItem, emailItem, browserItem]];
-    [bbsSideMenu setItemSpacing:5.0f];
-    [[bbsViewController mainWebView] addSubview:bbsSideMenu];
-    [bbsSideMenu open];
+   
+    //第四页,问答社区
+    officialWebView = [[GHRootViewController alloc] initWithTitle:[dictionary objectForKey:@"qaTitle"] withUrl:qaUrlStr];
+    [self addChildViewController:officialWebView];
+    //[officialWebView.view setFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-44)];
+    [self.view addSubview:officialWebView.view];
+    [officialWebView.view setHidden:YES];
+    {
+        //添加刷新与后退按钮
+        UIView *twitterItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [twitterItem setMenuActionWithBlock:^{
+            [[officialWebView mainWebView] goBack];
+        }];
+        UIImageView *twitterIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [twitterIcon setImage:[UIImage imageNamed:@"Retreat"]];
+        [twitterItem addSubview:twitterIcon];
+        
+        UIView *emailItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [emailItem setMenuActionWithBlock:^{
+            [[officialWebView mainWebView] goForward];
+        }];
+        UIImageView *emailIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [emailIcon setImage:[UIImage imageNamed:@"Advance"]];
+        [emailItem addSubview:emailIcon];
+        
+        
+        UIView *browserItem = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [browserItem setMenuActionWithBlock:^{
+            NSLog(@"reload url:%@,weburl:%@",officialWebView.mainWebView.request.URL.absoluteString,self.bbsViewController.webURL);
+            [officialWebView reloadClicked];
+        }];
+        UIImageView *browserIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [browserIcon setImage:[UIImage imageNamed:@"Refresh"]];
+        [browserItem addSubview:browserIcon];
+        
+        officialSideMenu = [[HMSideMenu alloc] initWithItems:@[twitterItem, emailItem, browserItem]];
+        [officialSideMenu setItemSpacing:5.0f];
+        [[officialWebView mainWebView] addSubview:officialSideMenu];
+        [officialSideMenu open];
+    }
     
     //添加点击手势
 //    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
@@ -278,7 +407,19 @@
         //self.navigationController.navigationBar.tintColor = [UIColor clearColor];
         self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor] ,UITextAttributeTextColor,[UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0], UITextAttributeFont,nil];
     }
+    
+    [newsViewController.view setFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-44)];
+    [hotViewController.view setFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-44)];
+    [bbsViewController.view setFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-44)];
+    [officialWebView.view setFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-44)];
 }
+
+//- (void)viewWillLayoutSubviews  {
+//    [newsViewController.view setFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-44)];
+//    [hotViewController.view setFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-44)];
+//    [bbsViewController.view setFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-44)];
+//    [officialWebView.view setFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height-44)];
+//}
 
 - (BOOL) automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers {
     return YES;
@@ -317,7 +458,7 @@
 - (void)gotoSearch{
     //设置搜索页出现
     //[self.RootScrollView setContentOffset:CGPointMake(6*320, 0) animated:YES];
-    SearchViewController *searchController = [[SearchViewController alloc] initWithTitle:@"搜索" withFrame:CGRectMake(0, 0, 320, [Globle shareInstance].globleHeight)];
+    SearchViewController *searchController = [[SearchViewController alloc] initWithTitle:@"搜索" withFrame:CGRectMake(0, 0, 320, self.view.bounds.size.height)];
     
     [self.navigationController pushViewController:searchController animated:YES];
 }
@@ -338,106 +479,42 @@
         [self.bbsSideMenu open];    
 }
 
-#pragma mark - FilterVie delegate
-- (void)filterView:(DMFilterView *)filterView didSelectedAtIndex:(NSInteger)index
-{
-    NSLog(@"%d", index);
-    switch (index) {
-        case 0:
-            newsViewController.view.hidden = NO;
-            hotViewController.view.hidden = YES;
-            dataViewController.view.hidden = YES;
-            videoViewController.view.hidden = YES;
-            bbsViewController.view.hidden = YES;
-            break;
-        
-        case 1:
-            newsViewController.view.hidden = YES;
-            hotViewController.view.hidden = NO;
-            dataViewController.view.hidden = YES;
-            videoViewController.view.hidden = YES;
-            bbsViewController.view.hidden = YES;
-            break;
-
-        case 2:
-            newsViewController.view.hidden = YES;
-            hotViewController.view.hidden = YES;
-            dataViewController.view.hidden = NO;
-            videoViewController.view.hidden = YES;
-            bbsViewController.view.hidden = YES;
-            break;
-
-        case 3:
-            newsViewController.view.hidden = YES;
-            hotViewController.view.hidden = YES;
-            dataViewController.view.hidden = YES;
-            videoViewController.view.hidden = NO;
-            bbsViewController.view.hidden = YES;
-            break;
-            
-        case 4:
-            newsViewController.view.hidden = YES;
-            hotViewController.view.hidden = YES;
-            dataViewController.view.hidden = YES;
-            videoViewController.view.hidden = YES;
-            bbsViewController.view.hidden = NO;
-            break;
-            
-        default:
-            break;
-    }
-}
-
-- (CGFloat )filterViewSelectionAnimationSpeed:(DMFilterView *)filterView
-{
-    //return the default value as example, you don't have to implement this delegate
-    //if you don't want to modify the selection speed
-    //Or you can return 0.0 to disable the animation totally
-    return kAnimationSpeed;
-}
-
+#pragma mark - JMTabView delegate
 -(void)tabView:(JMTabView *)tabView didSelectTabAtIndex:(NSUInteger)itemIndex;
 {
     NSLog(@"Selected Tab Index: %d", itemIndex);
     switch (itemIndex) {
         case 0:
+//            newsViewController.view.hidden = NO;
+//            hotViewController.view.hidden = YES;
+//            dataViewController.view.hidden = YES;
+//            videoViewController.view.hidden = YES;
+//            bbsViewController.view.hidden = YES;
             newsViewController.view.hidden = NO;
             hotViewController.view.hidden = YES;
-            dataViewController.view.hidden = YES;
-            videoViewController.view.hidden = YES;
             bbsViewController.view.hidden = YES;
+            officialWebView.view.hidden = YES;
             break;
             
         case 1:
             newsViewController.view.hidden = YES;
             hotViewController.view.hidden = NO;
-            dataViewController.view.hidden = YES;
-            videoViewController.view.hidden = YES;
             bbsViewController.view.hidden = YES;
+            officialWebView.view.hidden = YES;
             break;
             
         case 2:
             newsViewController.view.hidden = YES;
             hotViewController.view.hidden = YES;
-            dataViewController.view.hidden = NO;
-            videoViewController.view.hidden = YES;
-            bbsViewController.view.hidden = YES;
+            bbsViewController.view.hidden = NO;
+            officialWebView.view.hidden = YES;
             break;
             
         case 3:
             newsViewController.view.hidden = YES;
             hotViewController.view.hidden = YES;
-            dataViewController.view.hidden = YES;
-            videoViewController.view.hidden = NO;
             bbsViewController.view.hidden = YES;
-            break;
-            
-        case 4:
-            newsViewController.view.hidden = YES;
-            hotViewController.view.hidden = YES;
-            dataViewController.view.hidden = YES;
-            videoViewController.view.hidden = YES;
-            bbsViewController.view.hidden = NO;
+            officialWebView.view.hidden = NO;
             break;
             
         default:

@@ -70,12 +70,16 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
+    {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    }
 	// Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor clearColor];
     self.view.backgroundColor = [UIColor colorWithRed:248.0f/255.0f green:244.0f/255.0f blue:239.0f/255.0f alpha:1.0f];
-    self.view.frame = CGRectMake(0, 0, [Globle shareInstance].globleWidth, [Globle shareInstance].globleHeight);
+    //self.view.frame = CGRectMake(0, 0, [Globle shareInstance].globleWidth, [Globle shareInstance].globleHeight);
     
-    self.searchView = [[UITableView alloc] initWithFrame: CGRectMake(0, 40, self.view.bounds.size.width,[Globle shareInstance].globleHeight-40)];
+    self.searchView = [[UITableView alloc] initWithFrame: CGRectMake(0, 40, self.view.bounds.size.width,[Globle shareInstance].globleHeight-20)];
     
     [self.searchView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
     searchView.delegate = self;
